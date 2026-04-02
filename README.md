@@ -6,6 +6,13 @@
 /
 ├── app/
 │   ├── Models/
+│   │   ├── Glossary/
+│   │   │   ├── Category.php
+│   │   │   ├── Glossary.php
+│   │   │   ├── Limitation.php
+│   │   │   ├── Term.php
+│   │   │   ├── TermImageMap.php
+│   │   │   └── TermRelationship.php
 │   │   ├── Mapper/
 │   │   │   ├── Assertion.php
 │   │   │   ├── MapOverlay.php
@@ -134,7 +141,14 @@
     │   ├── 2026_03_30_000052_create_map_overlays_table.php
     │   ├── 2026_03_30_000053_create_taxon_concept_map_overlay_map_materialized_view.php
     │   ├── 2026_03_30_000054_create_taxon_concept_phenology_map.php
-    │   └── 2026_03_31_000055_create_search_materialized_view.php
+    │   ├── 2026_03_31_000055_create_search_materialized_view.php
+    │   ├── 2026_04_02_000001_create_glossary_table.php
+    │   ├── 2026_04_02_000002_create_glossary_terms_table.php
+    │   ├── 2026_04_02_000003_create_categories_table.php
+    │   ├── 2026_04_02_000004_create_term_relationships_table.php
+    │   ├── 2026_04_02_000005_create_limitations_table.php
+    │   ├── 2026_04_02_000006_create_term_limitation_map_table.php
+    │   └── 2026_04_02_000007_create_term_image_map_table.php
     └── seeders/
         ├── ControlledVocabularySeeder.php
         ├── DatabaseSeeder.php
