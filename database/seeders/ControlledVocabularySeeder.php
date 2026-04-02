@@ -6,6 +6,7 @@ use Database\Seeders\Vocabularies\AgentTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\ChangeTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\DegreeOfEstablishmentVocabularySeeder;
 use Database\Seeders\Vocabularies\EstablishmentMeansVocabularySeeder;
+use Database\Seeders\Vocabularies\GlossaryTermRelationshipTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\ImageRoleVocabularySeeder;
 use Database\Seeders\Vocabularies\ImageTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\ImageVariantVocabularySeeder;
@@ -54,6 +55,7 @@ class ControlledVocabularySeeder extends Seeder
             ImageRoleVocabularySeeder::class,
             ImageTypeVocabularySeeder::class,
             ImageVariantVocabularySeeder::class,
+            GlossaryTermRelationshipTypeVocabularySeeder::class,
         ]);
     }
 }
