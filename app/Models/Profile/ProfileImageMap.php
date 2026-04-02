@@ -2,6 +2,8 @@
 
 namespace App\Models\Profile;
 
+use App\Models\Image\Image;
+use App\Models\Image\ImageCaption;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonTree;
 use App\Observers\ProfileImageMapObserver;

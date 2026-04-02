@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models\Profile;
+namespace App\Models\Image;
 
+use App\Models\Profile\Specimen;
+use App\Models\Profile\SpecimenImageMap;
 use App\Models\Shared\ControlledTerm;
 use App\Observers\ImageObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -58,7 +60,7 @@ class Image extends Model
             ?->access_iri;
     }
 
-    // Inside App\Models\Profile\Image.php
+    // Inside App\Models\Image\Image.php
 
     /**
      * Get the specimens this image represents.

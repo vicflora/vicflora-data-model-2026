@@ -13,6 +13,10 @@
 │   │   │   ├── Term.php
 │   │   │   ├── TermImageMap.php
 │   │   │   └── TermRelationship.php
+│   │   ├── Image/
+│   │   │   ├── Image.php
+│   │   │   ├── ImageAccessPoint.php
+│   │   │   └── ImageCaption.php
 │   │   ├── Mapper/
 │   │   │   ├── Assertion.php
 │   │   │   ├── MapOverlay.php
@@ -25,9 +29,6 @@
 │   │   │   └── TaxonConceptPhenologyMap.php
 │   │   ├── Profile/
 │   │   │   ├── Gazetteer.php
-│   │   │   ├── Image.php
-│   │   │   ├── ImageAccessPoint.php
-│   │   │   ├── ImageCaption.php
 │   │   │   ├── Profile.php
 │   │   │   ├── ProfileAreaMap.php
 │   │   │   ├── ProfileDefItem.php

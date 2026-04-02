@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Profile;
+namespace App\Models\Image;
 
 use App\Models\Shared\ControlledTerm;
 use Illuminate\Database\Eloquent\Model;

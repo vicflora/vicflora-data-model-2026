@@ -2,7 +2,7 @@
 
 namespace App\Models\Glossary;
 
-use App\Models\Profile\Image;
+use App\Models\Image\Image;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
