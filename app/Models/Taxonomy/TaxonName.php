@@ -2,6 +2,9 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\EntityIdentityMap;
+use App\Models\Shared\ExternalIdentity;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;

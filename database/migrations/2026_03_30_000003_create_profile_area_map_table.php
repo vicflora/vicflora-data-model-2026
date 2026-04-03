@@ -16,18 +16,16 @@ return new class extends Migration
             
             // The Anchor
             $table->foreignId('profile_id')
-                ->constrained('profiles', 'taxon_concept_id')
-                ->onDelete('cascade');
+                ->constrained('profiles', 'taxon_concept_id');
 
             // The Sanity Check / Scope
             $table->foreignId('taxon_tree_id')
-                ->constrained('taxon_trees')
-                ->onDelete('no action');
+                ->constrained('taxon_trees');
 
-            // The 'Where'
-            $table->string('location_id')->index(); 
+            // The 'Where' - NOW FORMALIZED
+            $table->foreignId('area_code_id')->constrained('area_codes'); 
             $table->foreignId('gazetteer_id')->constrained('references'); 
-            $table->string('locality')->nullable();
+            $table->string('locality')->nullable(); // For specific place names within the Area
 
             // The 'Status' (Controlled Terms)
             $table->foreignId('occurrence_status_id')->nullable()->constrained('controlled_terms');
@@ -49,8 +47,8 @@ return new class extends Migration
             $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
 
-            // Composite index for tree-specific distribution queries
-            $table->index(['taxon_tree_id', 'gazetteer_id', 'location_id'], 'dist_tree_gaz_loc_idx');
+            // Refactored composite index
+            $table->index(['taxon_tree_id', 'area_code_id', 'gazetteer_id'], 'dist_tree_area_gaz_idx');
         });
     }
 

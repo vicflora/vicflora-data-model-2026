@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('related_term_id')->constrained('glossary.terms');
             
             // Link to Shared ControlledTerm (Synonym, Antonym, Broader, Narrower)
-            $table->foreignId('relationship_type_id')->constrained('shared.controlled_terms');
+            $table->foreignId('relationship_type_id')->constrained('controlled_terms');
             
             // Optional limitation (e.g. only a synonym in the context of Orchids)
             $table->foreignId('limitation_id')->nullable()->constrained('glossary.limitations');
@@ -25,8 +25,8 @@ return new class extends Migration
 
             // Versioning, Blameable and Timestamps
             $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('shared.agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('shared.agents');
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
         });
     }

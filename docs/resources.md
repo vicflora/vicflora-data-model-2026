@@ -24,6 +24,38 @@ attribution, ORCIDs, and ownership across all data layers.
 
 ---
 
+### Area
+
+**Fields**
+
+| Field | Type | Nullable | Description |
+| --- | --- | --- | --- |
+| **id** | `int` | No | **Primary Key**. |
+| **name** | `string` | No |  |
+| **area_type_id** | `string` | No | **FK to Area** |
+| **geography_code** | `string` | Yes | ISO code |
+| **wgs_code** | `string` | Yes | TDWG World Geographic Scheme code |
+| **is_accepted** | `bool` | No | |
+| **parent_id** | `int` | Yes | Self-referenceing **FK to Area** |
+| **accepted_id** | `int` | Yes | Self-referenceing **FK to Area** |
+| **area_path** | `string` | No | |
+
+**Relationships**
+
+| Relationship | Type | Related model |
+| --- | --- | --- |
+| **parent_id** | `BelongsTo` | Area |
+| **accepted_id** | `BelongsTo` | Area |
+
+**Enums**
+
+| Field | Vocabulary | Key terms |
+| --- | --- | --- |
+| **area_type_id** | `AreaType` | `CONTINENT`, `COUNTRY`, `STATE_PROVINCE`, `COUNTY` |
+
+
+---
+
 ### ExternalIdentity
 
 **Table name:** external_identities \

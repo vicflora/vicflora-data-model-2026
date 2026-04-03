@@ -10,6 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         // Create the physical schema in Postgres
+        DB::statement('DROP SCHEMA IF EXISTS glossary CASCADE');
         DB::statement('CREATE SCHEMA IF NOT EXISTS glossary');
 
         // The high-level Glossary container

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Profile;
+namespace App\Models\Geography;
 
 use App\Models\Shared\Reference;
 use App\Models\Traits\HasSidecar;

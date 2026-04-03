@@ -6,6 +6,10 @@
 /
 ├── app/
 │   ├── Models/
+│   │   ├── Geography/
+│   │   │   ├── Area.php
+│   │   │   ├── AreaCode.php
+│   │   │   └── Gazetteer.php
 │   │   ├── Glossary/
 │   │   │   ├── Category.php
 │   │   │   ├── Glossary.php
@@ -28,7 +32,6 @@
 │   │   │   ├── TaxonConceptOccurrenceMap.php
 │   │   │   └── TaxonConceptPhenologyMap.php
 │   │   ├── Profile/
-│   │   │   ├── Gazetteer.php
 │   │   │   ├── Profile.php
 │   │   │   ├── ProfileAreaMap.php
 │   │   │   ├── ProfileDefItem.php
@@ -125,12 +128,14 @@
     │   ├── 2026_03_28_000035_create_profiles_table.php
     │   ├── 2026_03_28_000036_create_profile_sections_table.php
     │   ├── 2026_03_29_000037_create_profile_specimen_map_table.php
-    │   ├── 2026_03_29_000038_create_profile_area_map_table.php
     │   ├── 2026_03_29_000039_create_images_table.php
     │   ├── 2026_03_29_000040_create_image_access_points_table.php
     │   ├── 2026_03_29_000041_create_image_captions_table.php
     │   ├── 2026_03_29_000042_create_profile_image_map_table.php
     │   ├── 2026_03_29_000043_create_specimen_image_map_table.php
+    │   ├── 2026_03_30_000001_create_areas_table.php
+    │   ├── 2026_03_30_000002_create_area_codes_table.php
+    │   ├── 2026_03_30_000003_create_profile_area_map_table.php
     │   ├── 2026_03_30_000044_enable_postgis_extension.php
     │   ├── 2026_03_30_000045_create_assertions_table.php
     │   ├── 2026_03_30_000046_create_mapper_schema.php
@@ -145,9 +150,9 @@
     │   ├── 2026_03_31_000055_create_search_materialized_view.php
     │   ├── 2026_04_02_000001_create_glossary_table.php
     │   ├── 2026_04_02_000002_create_glossary_terms_table.php
+    │   ├── 2026_04_02_0000035_create_limitations_table.php
     │   ├── 2026_04_02_000003_create_categories_table.php
     │   ├── 2026_04_02_000004_create_term_relationships_table.php
-    │   ├── 2026_04_02_000005_create_limitations_table.php
     │   ├── 2026_04_02_000006_create_term_limitation_map_table.php
     │   └── 2026_04_02_000007_create_term_image_map_table.php
     └── seeders/
@@ -155,9 +160,11 @@
         ├── DatabaseSeeder.php
         └── Vocabularies/
             ├── AgentTypeVocabularySeeder.php
+            ├── AreaTypeVocabularySeeder.php
             ├── ChangeTypeVocabularySeeder.php
             ├── DegreeOfEstablishmentVocabularySeeder.php
             ├── EstablishmentMeansVocabularySeeder.php
+            ├── GlossaryTermRelationshipTypeVocabularySeeder.php
             ├── ImageRoleVocabularySeeder.php
             ├── ImageTypeVocabularySeeder.php
             ├── ImageVariantVocabularySeeder.php

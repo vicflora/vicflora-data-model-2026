@@ -80,7 +80,10 @@ JOIN scientific_names_ext sne ON tn.id = sne.taxon_name_id
 JOIN taxon_names an ON tc.taxon_name_id = an.id
 JOIN taxon_trees tt ON cl.taxon_tree_id = tt.id
 JOIN public.taxon_tree_geographic_scope_map scope ON tt.id = scope.taxon_tree_id
-JOIN profile_area_map pam ON tc.id = pam.profile_id AND scope.scope = pam.locality
+JOIN public.area_codes ac ON scope.scope = ac.code 
+    AND scope.gazetteer_id = ac.gazetteer_id
+JOIN public.profile_area_map pam ON tc.id = pam.profile_id 
+    AND ac.id = pam.area_code_id
 LEFT JOIN controlled_terms occ ON pam.occurrence_status_id = occ.id
 LEFT JOIN controlled_terms est ON pam.establishment_means_id = est.id
 LEFT JOIN controlled_terms deg ON pam.degree_of_establishment_id = deg.id

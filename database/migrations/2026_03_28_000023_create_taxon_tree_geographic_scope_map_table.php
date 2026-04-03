@@ -13,14 +13,35 @@ return new class extends Migration
     {
         Schema::create('taxon_tree_geographic_scope_map', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('taxon_tree_id')->unique();
+            
+            // The link to the Taxon Tree
+            $table->foreignId('taxon_tree_id')
+                ->constrained('taxon_trees')
+                ->onDelete('cascade');
+
+            // The Authority/Standard for the scope (e.g., WGSRPD or ISO)
+            $table->foreignId('gazetteer_id')
+                ->constrained('references')
+                ->onDelete('restrict'); 
+
+            // The specific code (e.g., 'VIC', '78')
             $table->string('scope');
 
-            // Audit
+            // Audit traits
             $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
-            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
+            $table->foreignId('created_by_id')
+                ->nullable()
+                ->constrained('agents')
+                ->onDelete('set null');
+            $table->foreignId('updated_by_id')
+                ->nullable()
+                ->constrained('agents')
+                ->onDelete('set null');
+            
             $table->timestampsTz();
+
+            // Composite index for high-performance lookups and to prevent duplicates
+            $table->unique(['taxon_tree_id', 'gazetteer_id', 'scope'], 'tree_scope_authority_unique');
         });
     }
 

@@ -581,32 +581,59 @@ config:
   layout: elk
 ---
 erDiagram
-    Profile ||--|{ Profile_Area_MAP : "distribution" 
-    Profile_Area_MAP }|--|| Reference : "gazetteer"
-    Profile_Area_MAP }o--|| Reference : "source"
-    Profile_Area_MAP }o--|| ControlledTerm : "occurrenceStatus"
-    Profile_Area_MAP }o--|| ControlledTerm : "establishmentMeans"
-    Profile_Area_MAP }o--|| ControlledTerm : "degreeOfEstablishment"
-    Profile_Area_MAP }o--|| ControlledTerm : "threatStatus"
+  Profile ||--|{ Profile_Area_MAP : "distribution"
+  Profile_Area_MAP }|--o| AreaCode : "areaCode"
+  AreaCode }|--o| Area : area
+  AreaCode }|--|| Gazetteer : "gazetteer"
+  Gazetteer ||--o| Reference : reference
+  Profile_Area_MAP }o--|| Reference : "source"
+  Profile_Area_MAP }o--|| ControlledTerm : "occurrenceStatus"
+  Profile_Area_MAP }o--|| ControlledTerm : "establishmentMeans"
+  Profile_Area_MAP }o--|| ControlledTerm : "degreeOfEstablishment"
+  Profile_Area_MAP }o--|| ControlledTerm : "threatStatus"
 
-    Profile_Area_MAP {
-        int profile_id FK
-        string location_id 
-        int gazetteer_id FK 
-        string locality "Verbatim name of the area"
-        int occurrence_status_id FK "nullable"
-        int establishment_means_id FK "nullable"
-        int degree_of_establishment_id FK "nullable"
-        int threat_status_id FK "nullable"
-        boolean is_endemic "nullable"
-        boolean has_introduced_occurrences "nullable"
-        int source_id FK "nullable - Evidence for this distribution"
-        string event_date "nullable"
-        string occurrence_remarks "nullable"
-    }
+  Profile_Area_MAP {
+    int id PK
+    int profile_id FK
+    int taxon_tree_id FK
+    string area_code_id 
+    string locality "nullable"
+    int occurrence_status_id FK "nullable"
+    int establishment_means_id FK "nullable"
+    int degree_of_establishment_id FK "nullable"
+    int threat_status_id FK "nullable"
+    int threat_status_authority_id FK "nullable"
+    boolean is_endemic "nullable"
+    boolean has_introduced_occurrences "nullable"
+    int source_id FK "nullable"
+    string event_date "nullable"
+    string occurrence_remarks "nullable"
+  }
+
+  AreaCode {
+    int id PK
+    int gazetteer_id FK
+    int area_id FK
+    int parent_id FK
+    string scheme
+    int level "nullable"
+    string code
+    string path    
+  }
+
+  Area {
+    int id PK
+    string name
+    string area_type
+    bool is_accepted
+    int parent_id FK "nullable"
+    int accepted_id FK "nullable"
+    string area_path
+  }
+
 ```
 
-**Resources:** [Profile_Area_MAP](resources.md#profile_area_map)
+**Resources:** [Profile_Area_MAP](resources.md#profile_area_map), [Area](resources.md#area)
 
 ### Layer 8b: Voucher (Extension)
 

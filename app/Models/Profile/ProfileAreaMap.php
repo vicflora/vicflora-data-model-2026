@@ -2,8 +2,10 @@
 
 namespace App\Models\Profile;
 
+use App\Models\Geography\Area;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
+use App\Models\Taxonomy\TaxonTree;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'profile_id',
     'taxon_tree_id',
-    'location_id',
+    'area_id',
     'gazetteer_id',
     'locality',
     'occurrence_status_id',
@@ -47,11 +49,26 @@ class ProfileAreaMap extends Model
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'taxon_concept_id');
     }
-
-    public function gazetteer(): BelongsTo
+    
+    /**
+     * The area the profile is mapped to.
+     *
+     * @return BelongsTo
+     */
+    public function area(): BelongsTo
     {
-        // Links to the Gazetteer View/Reference
-        return $this->belongsTo(Gazetteer::class, 'gazetteer_id');
+        return $this->belongsTo(Area::class, 'gazetteer_id');
+    }
+
+    /**
+     * The taxon tree acts as a namespace for the profile, allowing us to link 
+     * to different trees if needed
+     *
+     * @return BelongsTo
+     */
+    public function taxonTree(): BelongsTo
+    {
+        return $this->belongsTo(TaxonTree::class, 'taxon_tree_id');
     }
 
     public function threatStatusAuthority(): BelongsTo
