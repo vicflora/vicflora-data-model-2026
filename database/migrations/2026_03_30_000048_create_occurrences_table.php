@@ -14,7 +14,6 @@ return new class extends Migration
 
         Schema::create('mapper.occurrences', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->timestamps();
             $table->timestamp('modified')->nullable();
 
             // Core Darwin Core / Identification
@@ -57,6 +56,11 @@ return new class extends Migration
             // Matching Link
             $table->foreignId('parsed_name_id')->nullable()->index();
             $table->string('data_source')->nullable();
+
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
         
         // Add a spatial index for mapping performance

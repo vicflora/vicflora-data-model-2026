@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('references', function (Blueprint $table) {
             $table->id();
-            $table->timestampsTz();
-            $table->unsignedSmallInteger('version')->default(1);
+            $table->unsignedBigInteger('reference_type_id')->constrained('controlled_terms')->nullable()->onDelete('restrict');
             $table->string('title');
             $table->string('full_citation');
             $table->string('author_string')->nullable();
@@ -22,7 +21,9 @@ return new class extends Migration
             $table->string('doi')->nullable();
             $table->string('url')->nullable();
             $table->jsonb('metadata')->nullable();
-            $table->unsignedBigInteger('reference_type_id')->constrained('controlled_terms')->nullable()->onDelete('restrict');
+
+            $table->timestampsTz();
+            $table->unsignedSmallInteger('version')->default(1);
             $table->unsignedBigInteger('created_by_id')->constrained('agents')->nullable()->onDelete('set null');
             $table->unsignedBigInteger('updated_by_id')->constrained('agents')->nullable()->onDelete('set null');
         });

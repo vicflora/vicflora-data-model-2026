@@ -21,8 +21,8 @@ return new class extends Migration
 
             // Audit
             $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
-            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
+            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents');
+            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents');
             $table->timestampsTz();
 
         });

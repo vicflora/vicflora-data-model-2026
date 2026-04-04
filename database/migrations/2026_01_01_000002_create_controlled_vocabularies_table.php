@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('controlled_vocabularies', function (Blueprint $table) {
             $table->id();
-            $table->timestampsTz();
             $table->string('name');
             $table->string('code')->unique();
             $table->text('description')->nullable();
             $table->string('iri')->nullable();
-            $table->unsignedBigInteger('created_by_id')->references('id')->on('agents')->onDelete('restrict')->nullable();
-            $table->unsignedBigInteger('updated_by_id')->references('id')->on('agents')->onDelete('restrict')->nullable();
+
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
     }
 

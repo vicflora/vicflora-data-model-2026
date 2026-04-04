@@ -17,7 +17,6 @@ return new class extends Migration
                 ->constrained('taxon_concepts')
                 ->onDelete('restrict');
 
-            $table->unsignedSmallInteger('version')->default(1);
             
             $table->foreignId('taxon_tree_id')
                 ->index() // Essential for tree-scoped lookups
@@ -31,9 +30,9 @@ return new class extends Migration
                 ->onDelete('no action');
 
             // Blameable
+            $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('created_by_id')->nullable()->constrained('agents')->onDelete('no action');
             $table->foreignId('updated_by_id')->nullable()->constrained('agents')->onDelete('no action');
-            
             $table->timestampsTz();
 
             // Required if you want to use the "Sanity Check" Composite FKs tomorrow

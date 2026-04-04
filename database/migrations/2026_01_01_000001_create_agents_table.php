@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->timestampsTz();
-            $table->unsignedSmallInteger('version')->default(1);
+            $table->unsignedBigInteger('agent_type_id');
             $table->string('name');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
@@ -22,9 +21,16 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('legal_name')->nullable();
             $table->string('orcid')->nullable();
-            $table->unsignedBigInteger('agent_type_id');
-            $table->foreignId('created_by_id')->references('id')->on('agents')->onDelete('restrict')->nullable();
-            $table->foreignId('updated_by_id')->references('id')->on('agents')->onDelete('restrict')->nullable();
+
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('updated_by_id')->nullable();
+            $table->timestampsTz();
+        });
+
+        Schema::table('agents', function (Blueprint $table) {
+            $table->foreign('created_by_id')->references('id')->on('agents');
+            $table->foreign('updated_by_id')->references('id')->on('agents');
         });
     }
 

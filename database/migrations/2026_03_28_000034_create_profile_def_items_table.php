@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('profile_def_items', function (Blueprint $table) {
             $table->id();
-            $table->timestampsTz();
             
             $table->foreignId('taxon_tree_id')
                 ->constrained('taxon_trees')
@@ -27,8 +26,10 @@ return new class extends Migration
             $table->unsignedSmallInteger('sort_order')->default(0);
 
             // Blameable
+            $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('created_by_id')->nullable()->constrained('agents');
             $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
             
             // Ensure a tree doesn't define the same section type twice
             $table->unique(['taxon_tree_id', 'profile_section_type_id'], 'tree_section_unique');        });

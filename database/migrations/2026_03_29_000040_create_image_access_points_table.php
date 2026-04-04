@@ -32,6 +32,9 @@ return new class extends Migration
             // Optional: File size in bytes for frontend optimization
             $table->bigInteger('file_size')->nullable();
 
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
 
             // Ensure we don't have two thumbnails for the same image

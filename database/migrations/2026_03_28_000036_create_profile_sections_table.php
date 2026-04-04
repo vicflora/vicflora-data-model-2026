@@ -30,9 +30,9 @@ return new class extends Migration
             $table->unsignedSmallInteger('sort_order')->nullable();
 
             // Blameable
+            $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('created_by_id')->nullable()->constrained('agents');
             $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            
             $table->timestampsTz();
 
             // The "Golden" Sanity Check: 

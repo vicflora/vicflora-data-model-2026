@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string('external_id')->nullable()->index();
             $table->integer('sort_order')->default(0);
 
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
 
             // Unique constraint to prevent duplicate mapping

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('parsed_names', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             
             // The String Identity
             $table->string('scientific_name')->index(); 
@@ -39,6 +38,11 @@ return new class extends Migration
             $table->string('name_match_type')->nullable();
             
             $table->text('remarks')->nullable();
+
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
     }
 

@@ -29,15 +29,8 @@ return new class extends Migration
 
             // Audit traits
             $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')
-                ->nullable()
-                ->constrained('agents')
-                ->onDelete('set null');
-            $table->foreignId('updated_by_id')
-                ->nullable()
-                ->constrained('agents')
-                ->onDelete('set null');
-            
+            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents');
+            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents');
             $table->timestampsTz();
 
             // Composite index for high-performance lookups and to prevent duplicates
