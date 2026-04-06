@@ -70,7 +70,6 @@
 │   │   │   ├── TaxonTreeGeographicScope.php
 │   │   │   ├── TaxonTreeNode.php
 │   │   │   ├── TaxonTreeRevision.php
-│   │   │   ├── TraditionaKnowledgeLabel.php
 │   │   │   ├── Treatment.php
 │   │   │   ├── TreatmentVersion.php
 │   │   │   └── VernacularName.php
@@ -109,7 +108,6 @@
     │   ├── 2026_03_28_000016_create_taxon_names_table.php
     │   ├── 2026_03_28_000017_create_scientific_names_ext_table.php
     │   ├── 2026_03_28_000018_create_vernacular_names_ext_table.php
-    │   ├── 2026_03_28_000019_create_traditional_knowledge_labels_ext_table.php
     │   ├── 2026_03_28_000020_create_taxon_name_views.php
     │   ├── 2026_03_28_000021_create_name_relations_map_table.php
     │   ├── 2026_03_28_000022_create_taxon_trees_table.php

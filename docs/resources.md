@@ -285,9 +285,8 @@ competing interpretations of the same organism.
 **Layer:** [2a. Core nomenclature](layers.md#layer-2a-core-nomenclature)
 
 A central registry for all nomenclature strings. It serves as a "String Vault"
-for scientific names, vernacular names, and Traditional Knowledge labels,
-ensuring that name strings are reused consistently across the ecosystem without
-duplication.
+for scientific names and vernacular names, ensuring that name strings are reused
+consistently across the ecosystem without duplication.
 
 **Fields**
 
@@ -304,7 +303,6 @@ duplication.
 | Relationship | Type | Related model | Map |
 | --- | --- | --- | --- |
 | scientificName | HasOne | ScientificName (EXT) | |
-| traditionalKnowledgeLabel | HasOne | TraditionalKnowledgeLabel (EXT) | |
 | vernacularName | HasOne | VernacularName (EXT) | |
 | typification | HasMany | NomenclaturalType | |
 | basionym | HasOneThrough | TaxonName | NameRelation_MAP (relation=BASIONYM) |
@@ -677,34 +675,6 @@ legal or scientific source.
 | --- | --- | --- | --- |
 | "reference" | `BelongsTo` | Reference | |
 | "profiles" | `HasManyThrough` | Profile | Profile_Area_MAP |
-
----
-
-### TraditionalKnowledgeLabel_EXT
-
-**Table name:** traditional_knowledge_labels_ext \
-**Layer:** [2a. Core nomenclature](layers.md#layer-2a-core-nomenclature)
-
-A culturally focused extension for managing Indigenous names and labels. it
-stores specific rights statements, cultural protocols, and permissions that
-govern the use and display of Traditional Knowledge.
-
-**Fields**
-
-| Field | Type | Nullable | Description |
-| --- | --- | --- | --- |
-| **taxon_name_id** | `Int` | No | **PK / FK**. Links to the `TaxonName` Entity. |
-| **community_placeholder** | `String` | Yes | **Extension Point**. Name or URI of the community (e.g., "Gunaikurnai"). |
-| **protocol_placeholder** | `String` | Yes | **Extension Point**. URI or label of the protocol (e.g., "TK Biocultural Label"). |
-| **is_restricted** | `Boolean` | No | Operational flag for API access control. |
-| **rights_statement** | `Text` | Yes | Verbatim statement provided by the knowledge holders. |
-| **extension_data** | `JSONB` | Yes | **The "Future-Proof" bucket**. Store any extra metadata here. |
-
-**Relationships**
-
-| Relationship | Type | Related model | Map |
-| --- | --- | --- | --- |
-| **taxonName** | `BelongsTo` | TaxonName | |
 
 ---
 

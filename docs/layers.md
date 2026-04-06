@@ -79,9 +79,8 @@ nomenclatural status.
 ### Layer 2a: Core Nomenclature
 
 The Core Nomenclature sub-layer acts as the central registry for name strings,
-employing specialized extensions for scientific, vernacular, and Traditional
-Knowledge names while tracking syntactic relationships like basionyms through
-**NameRelation_MAP**.
+employing specialized extensions for scientific and vernacular names while
+tracking syntactic relationships like basionyms through **NameRelation_MAP**.
 
 ```mermaid
 ---
@@ -97,7 +96,6 @@ erDiagram
     NomenclaturalType }o--|| TaxonName : "typifiedName / typification"
     TaxonName ||--o| ScientificName_EXT : "scientificName"
     ScientificName_EXT }o--|| Reference : "publishedIn"
-    TaxonName ||--o| TraditionalKnowledgeLabel_EXT : "traditionalKnowledgeLabel"
     TaxonName ||--o| VernacularName_EXT : "vernacularName"
     TaxonName }o--|| ControlledTerm : "rank"
     ScientificName_EXT }o--|| ControlledTerm: "nomenclaturalStatus"
@@ -125,10 +123,6 @@ erDiagram
         int nomenclatural_status_id FK
     }
 
-    TraditionalKnowledgeLabel_EXT {
-        int taxon_name_id FK
-    }
-
     VernacularName_EXT {
         int taxon_name_id FK
     }
@@ -143,7 +137,7 @@ erDiagram
     }
 ```
 
-**Resources:** [TaxonName](resources.md#taxonname), [ScientificName_EXT](resources.md#scientificname_ext), [TraditionalKnowledgeLabel_EXT](resources.md#traditionalknowledgelabel_ext), [NameRelation_MAP](resources.md#namerelation_map)
+**Resources:** [TaxonName](resources.md#taxonname), [ScientificName_EXT](resources.md#scientificname_ext), [NameRelation_MAP](resources.md#namerelation_map)
 
 ### Layer 2b: Usage
 
