@@ -9,6 +9,24 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class NameMatchMap
+ *
+ * Represents a mapping between parsed names from external sources and the 
+ * authoritative taxonomic names in the system. This model is based on the 
+ * 'mapper.name_match_map' materialized view, which captures the results of 
+ * matching parsed names to taxonomic names.
+ *
+ * The model includes relationships to the taxonomic name (TaxonName) and the 
+ * parsed name (ParsedName).
+ * 
+ * @property-read int $id
+ * @property-read string $taxon_name_id
+ * @property-read int $parsed_name_id
+ *
+ * @property-read TaxonName|null $taxonName
+ * @property-read ParsedName|null $parsedName
+ */
 #[Table(name: 'mapper.name_match_map', primaryKey: 'id', incrementing: false)]
 #[WithoutTimestamps]
 class NameMatchMap extends Model

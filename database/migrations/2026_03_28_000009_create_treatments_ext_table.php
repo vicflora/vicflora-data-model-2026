@@ -12,14 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('treatments_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')
-                ->primary()
-                ->constrained('references')
-                ->onDelete('cascade');
-            $table->foreignId('taxonomy_version_id')
-                ->nullable()
-                ->constrained('references')
-                ->onDelete('no action');
+            $table->foreignId('reference_id')->primary()->constrained('references');
+            $table->foreignId('taxonomy_version_id')->nullable()->constrained('references');
         });
     }
 

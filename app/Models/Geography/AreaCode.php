@@ -11,6 +11,35 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class AreaCode
+ *
+ * Represents a code for an area, which is a specific identifier for a geographic area. 
+ * This model is based on the 'area_codes' database table, which captures the various codes 
+ * that can be associated with an area, such as codes from different gazetteers or classification schemes.
+ *
+ * The model includes relationships to the Area it belongs to, its parent code (if any), its child codes, and the gazetteer/reference that defines it.
+ * 
+ * @property int $id
+ * @property int $area_id
+ * @property int|null $gazetteer_id
+ * @property int|null $parent_id
+ * @property string|null $scheme
+ * @property string|null $level
+ * @property string|null $code
+ * @property bool $is_primary
+ * @property string|null $path
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @property-read Area $area
+ * @property-read AreaCode|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection|AreaCode[] $children
+ * @property-read Reference|null $gazetteer
+ */
 #[Table(name: 'area_codes', incrementing: true)]
 #[Fillable([
     'area_id', 

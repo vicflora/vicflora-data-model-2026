@@ -12,13 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('treatment_versions_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')
-                ->primary()
-                ->constrained('references')
-                ->onDelete('cascade');
-            $table->foreignId('treatment_id')
-                ->constrained('references')
-                ->onDelete('no action');
+            $table->foreignId('reference_id')->primary()->constrained('references');
+            $table->foreignId('treatment_id')->constrained('references');
         });
     }
 

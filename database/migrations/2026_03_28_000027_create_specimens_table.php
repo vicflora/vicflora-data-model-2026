@@ -16,20 +16,11 @@ return new class extends Migration
             $table->string('institution_code', 16)->nullable();
             $table->string('collection_code', 16)->nullable();
             $table->string('catalog_number', 64)->nullable();
-            $table->string('recorded_by', 255)->nullable();
-            $table->string('record_number', 255)->nullable();
-            $table->date('event_date')->nullable();
-            $table->string('country', 255)->nullable();
-            $table->string('state_province', 255)->nullable();
-            $table->string('locality', 255)->nullable();
-            $table->decimal('decimal_latitude', 10, 7)->nullable();
-            $table->decimal('decimal_longitude', 10, 7)->nullable();
-            $table->string('habitat', 255)->nullable();
-            $table->string('verbatim_elevation')->nullable();
             $table->string('source_url')->nullable();
             $table->foreignId('external_source_id')
                 ->nullable()
                 ->constrained('references');
+            $table->jsonb('metadata')->nullable();
 
             // Audit
             $table->unsignedSmallInteger('version')->default(1);

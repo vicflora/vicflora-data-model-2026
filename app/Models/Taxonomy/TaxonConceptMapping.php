@@ -2,6 +2,9 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
+use App\Models\Shared\User;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -18,8 +21,37 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * the source reference.
  * 
  * @property int $id
- * @property datetime $created_at
- * @property datetime $updated_at
+ * @property string $guid
+ * @property int $subject_taxon_concept_id
+ * @property int $object_taxon_concept_id
+ * @property int $mapping_relation_id
+ * @property int|null $taxon_concept_component_id
+ * @property int|null $mapping_method_id
+ * @property string|null $remarks
+ * @property int|null $source_id
+ * @property int|null $creator_id
+ * @property \Illuminate\Support\Carbon|null $created
+ * @property int $created_by_id
+ * @property int $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read ControlledTerm $mappingRelation
+ * @property-read TaxonConcept $subjectTaxonConcept
+ * @property-read TaxonConcept $objectTaxonConcept
+ * @property-read ControlledTerm|null $taxonConceptComponent
+ * @property-read ControlledTerm|null $mappingMethod
+ * @property-read Reference|null $source
+ * @property-read User|null $creator
+ * @property-read Collection<int, TaxonConceptMapping> $mappings
+ * @property-read Collection<int, TaxonConcept> $isCongruentWith
+ * @property-read Collection<int, TaxonConcept> $includes
+ * @property-read Collection<int, TaxonConcept> $isIncludedIn
+ * @property-read Collection<int, TaxonConcept> $partiallyOverlaps
+ * @property-read Collection<int, TaxonConcept> $isDisjointWith
+ * @property-read Collection<int, TaxonConcept> $intersects
+ * @property-read \App\Models\Shared\Agent $createdBy
+ * @property-read \App\Models\Shared\Agent $updatedBy
  */
 #[Table(
     name: 'taxon_concept_mappings', 

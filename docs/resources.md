@@ -15,30 +15,33 @@ attribution, ORCIDs, and ownership across all data layers.
 
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
-| **id** | `int` | No | **Primary Key**. |
-| **agent_type_id** | `int` | No | **FK to ControlledTerm** (e.g., Person, Organization). |
-| **name** | `string` | No | Full name of the agent. |
-| **initials** | `string` | No | Initials for short-form attribution. |
-| **orcid** | `string` | Yes | Open Researcher and Contributor ID. |
-| **uri** | `string` | Yes | Persistent URI for the agent. |
+| **id** | `Int` | No | **Primary Key**. |
+| **agent_type_id** | `Int` | No | **FK to ControlledTerm** (e.g., Person, Organization). |
+| **name** | `String` | No | Full name of the agent. |
+| **initials** | `String` | No | Initials for short-form attribution. |
+| **orcid** | `String` | Yes | Open Researcher and Contributor ID. |
+| **uri** | `String` | Yes | Persistent URI for the agent. |
 
 ---
 
 ### Area
 
+**Table name:** areas \
+**Layer:** [8a. Distribution and status extension](layers.md#layer-8a-distribution-and-status-extension)
+
 **Fields**
 
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
-| **id** | `int` | No | **Primary Key**. |
-| **name** | `string` | No |  |
-| **area_type_id** | `string` | No | **FK to Area** |
-| **geography_code** | `string` | Yes | ISO code |
-| **wgs_code** | `string` | Yes | TDWG World Geographic Scheme code |
+| **id** | `Int` | No | **Primary Key**. |
+| **name** | `String` | No |  |
+| **area_type_id** | `String` | No | **FK to Area** |
+| **geography_code** | `String` | Yes | ISO code |
+| **wgs_code** | `String` | Yes | TDWG World Geographic Scheme code |
 | **is_accepted** | `bool` | No | |
-| **parent_id** | `int` | Yes | Self-referenceing **FK to Area** |
-| **accepted_id** | `int` | Yes | Self-referenceing **FK to Area** |
-| **area_path** | `string` | No | |
+| **parent_id** | `Int` | Yes | Self-referenceing **FK to Area** |
+| **accepted_id** | `Int` | Yes | Self-referenceing **FK to Area** |
+| **area_path** | `String` | No | |
 
 **Relationships**
 
@@ -53,6 +56,34 @@ attribution, ORCIDs, and ownership across all data layers.
 | --- | --- | --- |
 | **area_type_id** | `AreaType` | `CONTINENT`, `COUNTRY`, `STATE_PROVINCE`, `COUNTY` |
 
+---
+
+### AreaCode
+
+**Table name:** area_codes \
+**Layer:** [8a. Disttibution and status extension](layers.md#layer-8a-distribution-and-status-extension)
+
+**Fields**
+
+| Field | Type | Nullable | Description |
+| --- | --- | --- | --- |
+| **id** | `Int` | No | **Primary Key**. |
+| **taxon_tree_id** | `Int` | No | **FK to TaxonTree**, acts as namespace. |
+| **area_id** | `Int` | No | **FK to Area**. |
+| **gazetteer_id** | `Int` | No | **FK to Gazetteer/Reference**. |
+| **parent_id** | `Int` | No | **FK to AreaCode**, self-referenceing. |
+| **scheme** | `String` | No | Scheme the Area Code is in, e.g. WGSRPD or ISO 3166. |
+| **level** | `Int` | Yes | The level the area code is at in the scheme. |
+| **code** | `String` | No | The Area Code. |
+| **path** | `String` | Yes | Materialized path of ids. |
+
+**Relationships**
+
+| Relationship | Type | Related model |
+| --- | --- | --- |
+| **taxon_tree_id** | `BelongsTo` | TaxonTree |
+| **gazetteer_id** | `BelongsTo` | Gazetteer |
+| **parent_id** | `BelongsTo` | AreaCode |
 
 ---
 
@@ -124,6 +155,7 @@ A modular narrative unit. These segments hold the actual content of a taxonomic 
 | --- | --- | --- | --- |
 | **id** | `Int` | No | Internal primary key. |
 | **profile_id** | `Int` | No | **FK**. Parent profile. |
+| **taxon_tree_id** | `Int` | No | **FK to TaxonTree**, used as namespace. |
 | **profile_section_type_id** | `Int` | No | **FK to ControlledTerm** (e.g., Diagnosis, Etymology). |
 | **source_id** | `Int` | Yes | **FK to Reference**. The authority for this text. |
 | **body_text** | `Text` | No | The narrative content (Markdown/HTML). |
@@ -184,14 +216,11 @@ A connector entity for physical or digital voucher data. It stores external GUID
 | --- | --- | --- | --- |
 | **id** | `Int` | No | **Primary Key**. |
 | **institution_code** | `String` | Yes | The herbarium or museum code (e.g., "MEL"). |
+| **collection_code** | `String` | Yes | The herbarium or museum code (e.g., "MEL"). |
 | **catalog_number** | `String` | Yes | Barcode or accession number. |
-| **recorded_by** | `String` | Yes | Collector name. |
-| **record_number** | `String` | Yes | Collector's series number. |
-| **event_date** | `Date` | Yes | When the specimen was collected. |
-| **decimal_latitude** | `Double` | Yes | Georeferenced coordinate. |
-| **decimal_longitude** | `Double` | Yes | Georeferenced coordinate. |
 | **source_url** | `String` | Yes | URL to the specimen record in an external source. | 
 | **external_source_id** | `Int` | Yes | **FK to Reference**. The system the record was imported from (e.g., GBIF). |
+| **metadata** | `JSONB` | Yes | Specimen metadata. |
 
 **Relationships**
 
@@ -943,10 +972,10 @@ responsible for the modification.
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
 | **id** | `bigint` | No | **Primary Key**. |
-| **agent_id** | `int` | No | **FK to Agent** who performed the action. |
-| **event_type_id** | `int` | No | **FK to ControlledTerm** (e.g., Created, Updated, Deleted). |
-| **table_name** | `string` | No | Name of the table affected. |
-| **record_id** | `int` | No | The ID of the record that was changed. |
+| **agent_id** | `Int` | No | **FK to Agent** who performed the action. |
+| **event_type_id** | `Int` | No | **FK to ControlledTerm** (e.g., Created, Updated, Deleted). |
+| **table_name** | `String` | No | Name of the table affected. |
+| **record_id** | `Int` | No | The ID of the record that was changed. |
 | **old_values** | `jsonb` | Yes | Snapshot of data before the change. |
 | **new_values** | `jsonb` | Yes | Snapshot of data after the change. |
 | **change_summary** | `text` | Yes | Human-readable explanation of the change. |
@@ -972,12 +1001,12 @@ international biodiversity standards (SKOS, Dublin Core).
 
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
-| **id** | `int` | No | **Primary Key**. |
-| **vocabulary_id** | `int` | No | **FK to ControlledVocabulary**. |
-| **label** | `string` | No | Human-readable term (e.g., "Species"). |
-| **code** | `string` | No | Short code for logic (e.g., "sp"). |
-| **iri** | `string` | No | Term-specific IRI. |
-| **sort_order** | `int` | Yes | Ordering for UI display. |
+| **id** | `Int` | No | **Primary Key**. |
+| **vocabulary_id** | `Int` | No | **FK to ControlledVocabulary**. |
+| **label** | `String` | No | Human-readable term (e.g., "Species"). |
+| **code** | `String` | No | Short code for logic (e.g., "sp"). |
+| **iri** | `String` | No | Term-specific IRI. |
+| **sort_order** | `Int` | Yes | Ordering for UI display. |
 | **is_active** | `boolean` | No | Flag to deprecate terms without deleting data. |
 | **metadata** | `jsonb` | Yes | Additional term-specific attributes. |
 
@@ -1002,22 +1031,22 @@ and API remain consistent.
 
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
-| **id** | `int` | No | **Primary Key**. |
-| **name** | `string` | No | Human-readable name (e.g., "Taxonomic Rank"). |
-| **code** | `string` | No | Machine-readable code. |
+| **id** | `Int` | No | **Primary Key**. |
+| **name** | `String` | No | Human-readable name (e.g., "Taxonomic Rank"). |
+| **code** | `String` | No | Machine-readable code. |
 | **description** | `text` | Yes | Description. |
-| **iri** | `string` | No | Internationalized Resource Identifier for SKOS compliance. |
+| **iri** | `String` | No | Internationalized Resource Identifier for SKOS compliance. |
 
 ---
 
 ### ProfileDefItem
 | Field | Type | Nullable | Description |
 | --- | --- | --- | --- |
-| **id** | `int` | No | **Primary Key** |
-| **taxon_tree_id** | `int` | No | **FK to TaxonTree** |
-| **profile_section_type_id** | `int` | No | **FK to ControlledTerm** |
+| **id** | `Int` | No | **Primary Key** |
+| **taxon_tree_id** | `Int` | No | **FK to TaxonTree** |
+| **profile_section_type_id** | `Int` | No | **FK to ControlledTerm** |
 | **is_required** | `bool` | No | Is the section required in a Profile? |
-| **sort_order** | `int` | No | Sets the order of sections in a Profile |
+| **sort_order** | `Int` | No | Sets the order of sections in a Profile |
 
 **Relationships**
 
@@ -1046,9 +1075,9 @@ the entire data model.
 | --- | --- | --- | --- |
 | **created_at** | `date` | No | Timestamp of record creation. |
 | **updated_at** | `date` | Yes | Timestamp of last modification. |
-| **version** | `int` | No | Incremental version number for the record. |
-| **created_by_id** | `int` | No | **FK to Agent** who created the record. |
-| **updated_by_id** | `int` | Yes | **FK to Agent** who last modified the record. |
+| **version** | `Int` | No | Incremental version number for the record. |
+| **created_by_id** | `Int` | No | **FK to Agent** who created the record. |
+| **updated_by_id** | `Int` | Yes | **FK to Agent** who last modified the record. |
 
 **Relationships**
 

@@ -10,6 +10,29 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class TermImageMap
+ *
+ * Represents the mapping between a Term and an Image in the glossary. This 
+ * model captures the association of an image with a term, including any figure 
+ * information and metadata about the relationship.
+ *
+ * The model includes relationships to the Term it illustrates and the Image it 
+ * references.
+ * 
+ * @property int $id
+ * @property int $term_id
+ * @property int $image_id
+ * @property string|null $figure
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @property-read Term $term
+ * @property-read Image $image
+ */
 #[Table(name: 'term_images', schema: 'glossary', incrementing: true)]
 #[Fillable([
     'term_id',

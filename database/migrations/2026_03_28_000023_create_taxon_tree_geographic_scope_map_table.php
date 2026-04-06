@@ -15,14 +15,10 @@ return new class extends Migration
             $table->id();
             
             // The link to the Taxon Tree
-            $table->foreignId('taxon_tree_id')
-                ->constrained('taxon_trees')
-                ->onDelete('cascade');
+            $table->foreignId('taxon_tree_id')->constrained('taxon_trees');
 
             // The Authority/Standard for the scope (e.g., WGSRPD or ISO)
-            $table->foreignId('gazetteer_id')
-                ->constrained('references')
-                ->onDelete('restrict'); 
+            $table->foreignId('gazetteer_id')->constrained('references'); 
 
             // The specific code (e.g., 'VIC', '78')
             $table->string('scope');

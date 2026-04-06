@@ -25,6 +25,7 @@ erDiagram
 
     TaxonConcept {
         int id PK
+        int taxon_tree_id FK "nullable"
         int taxon_name_id FK 
         int according_to_id FK 
         int rank_id FK "nullable"
@@ -52,17 +53,17 @@ erDiagram
     
 
     TaxonConceptMapping {
-    int id PK
-    int subject_taxon_concept_id FK
-    int object_taxon_concept_id FK
-    int mapping_relation_id FK
-    int taxon_concept_component_id FK "nullable"
-    int mapping_method_id FK "nullable"
-    int source_id FK "nullable"
-    int creator_id FK "nullable"
-    date created "nullable"
-    text remarks "nullable"
-}
+        int id PK
+        int subject_taxon_concept_id FK
+        int object_taxon_concept_id FK
+        int mapping_relation_id FK
+        int taxon_concept_component_id FK "nullable"
+        int mapping_method_id FK "nullable"
+        int source_id FK "nullable"
+        int creator_id FK "nullable"
+        date created "nullable"
+        text remarks "nullable"
+    }
 ```
 
 **Resources:** [TaxonConceptMapping](resources.md#taxonconceptmapping)
@@ -133,6 +134,7 @@ erDiagram
     }
 
     NameRelation_MAP {
+        int id PK
         int from_taxon_name_id FK
         int to_taxon_name_id FK
         int name_relation_type_id FK
@@ -157,6 +159,7 @@ erDiagram
     TaxonNameUsage_MAP }o--|| Reference : "source"
 
     TaxonNameUsage_MAP {
+        int id PK
         int taxon_concept_id FK
         int name_role_id FK
         int taxon_name_id FK
@@ -394,8 +397,8 @@ erDiagram
     ProfileSection }o--|| Reference : "source"
 
     Profile {
-        int id PK
-        int taxon_concept_id FK
+        int taxon_concept_id PK
+        int taxon_tree_id FK
     }
 
     ProfileDefItem {
@@ -410,6 +413,7 @@ erDiagram
     ProfileSection {
         int id PK
         int profile_id FK
+        int taxon_tree_id FK
         int profile_section_type_id FK
         int source_id FK "nullable"
         text body_text
@@ -445,9 +449,10 @@ erDiagram
     }
 
     Entity_Identity_MAP {
-      string entity_type
-      int entity_id
-      int external_identity_id
+        int id PK
+        string entity_type
+        int entity_id
+        int external_identity_id
     }
 ```
 
@@ -653,8 +658,9 @@ erDiagram
     Specimen }o--|{ Specimen_Image_MAP : "specimen"
 
     Profile_Specimen_MAP {
-        int profile_id FK "PK"
-        int specimen_id FK "PK"
+        int id PK
+        int profile_id FK 
+        int specimen_id FK
         int sort_order "nullable"
     }
 
@@ -706,9 +712,10 @@ erDiagram
     ImageAccessPoint }|--o| ControlledTerm : "variant"
 
     Profile_Image_MAP {
-        int profile_id FK "PK"
-        int image_id FK "PK"
-        int profile_section_id FK "Optional"
+        int id PK
+        int profile_id FK
+        int image_id FK
+        int profile_section_id FK "nullable"
         int taxon_tree_id FK
         int image_role_id FK
         int sort_order

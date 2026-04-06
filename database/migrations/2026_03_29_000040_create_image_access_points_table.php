@@ -24,7 +24,7 @@ return new class extends Migration
                 ->constrained('controlled_terms');
 
             // TDWG AC Fields
-            $table->string('access_iri')->comment('The direct URL to the image file');
+            $table->string('access_uri')->comment('The direct URL to the image file');
             $table->string('format')->comment('MIME type, e.g., image/jpeg, image/webp');
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();

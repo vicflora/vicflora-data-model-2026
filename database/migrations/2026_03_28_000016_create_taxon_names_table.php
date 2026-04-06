@@ -13,7 +13,6 @@ return new class extends Migration
             $table->uuid('guid')->unique();
 
             $table->string('name_string');
-            $table->string('language', 10)->nullable();
             $table->unsignedBigInteger('rank_id')->constrained('controlled_terms')->nullable();
 
             // Audit

@@ -20,12 +20,10 @@ return new class extends Migration
                 ->constrained('taxon_names')
                 ->cascadeOnDelete();
             $table->unsignedBigInteger('name_relation_type_id')
-                ->constrained('controlled_terms')
-                ->onDelete('restrict');
+                ->constrained('controlled_terms');
             $table->unsignedBigInteger('reference_id')
                 ->nullable()
-                ->constrained('references')
-                ->onDelete('set null');
+                ->constrained('references');
             $table->text('remarks')->nullable();
 
             // Audit

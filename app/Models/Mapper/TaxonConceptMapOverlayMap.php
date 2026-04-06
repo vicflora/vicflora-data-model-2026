@@ -7,20 +7,35 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Taxonomy\TaxonConcept;
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class TaxonConceptMapOverlayMap
+ * 
+ * @property-read int  $id
+ * @property-read string $taxon_concept_id
+ * @property-read string $taxon_tree_id
+ * @property-read string $layer
+ * @property-read int $map_overlay_id
+ * @property-read string $area_name
+ * @property-read string $occurrence_status
+ * @property-read string $establishment_means
+ * @property-read string $degree_of_establishment
+ * 
+ * @property-read TaxonConcept $taxonConcept
+ * @property-read MapOverlay $mapOverlay
+ * 
+ * @method static \Illuminate\Database\Eloquent\Builder|static layer(string $layer)
+ */
 #[Table(
     name: 'mapper.taxon_concept_map_overlay_map', 
     primaryKey: 'id', 
     incrementing: false
 )]
+#[WithoutTimestamps]
 class TaxonConceptMapOverlayMap extends Model
 {
-    /**
-     * Disable timestamps if you don't need to track 
-     * when each individual intersection was created.
-     */
-    public $timestamps = false;
 
     /**
      * The Taxon Concept this area distribution belongs to.

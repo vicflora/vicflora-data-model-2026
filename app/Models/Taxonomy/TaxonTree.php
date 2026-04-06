@@ -8,6 +8,30 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class TaxonTree
+ *
+ * Represents a taxonomic tree, which is a hierarchical structure of taxonomic 
+ * concepts. This model is based on the 'taxon_trees' database table, which 
+ * captures the organization of taxonomic concepts into trees.
+ *
+ * The model includes a relationship to the taxonomy to which the tree belongs.
+ * 
+ * @property int $id
+ * @property string $guid
+ * @property string $name
+ * @property bool $is_published
+ * @property int $taxonomy_id
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read Taxonomy $taxonomy
+ * @property-read \App\Models\Shared\Agent $createdBy
+ * @property-read \App\Models\Shared\Agent $updatedBy
+ */
 #[Table(
     name: 'taxon_trees', 
     key: 'id', 

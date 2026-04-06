@@ -10,10 +10,7 @@ return new class extends Migration
     {
         Schema::create('scientific_names_ext', function (Blueprint $table) {
             // The Primary Key is the Foreign Key to the base table
-            $table->foreignId('taxon_name_id')
-                ->primary()
-                ->constrained('taxon_names')
-                ->cascadeOnDelete();
+            $table->foreignId('taxon_name_id')->primary()->constrained('taxon_names');
             $table->string('authorship')->nullable();
             $table->string('published_in_string')->nullable();
             $table->string('microreference')->nullable();

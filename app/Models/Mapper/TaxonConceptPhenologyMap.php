@@ -9,6 +9,20 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class TaxonConceptPhenologyMap
+ * 
+ * @property-read int $id
+ * @property-read string $taxon_concept_id
+ * @property-read int $month_numerical
+ * @property-read string $month
+ * @property-read int $total
+ * @property-read int $buds
+ * @property-read int $flowers
+ * @property-read int $fruit
+ * 
+ * @property-read TaxonConcept $taxonConcept
+ */
 #[Table(name: 'mapper.taxon_concept_phenology_map', primaryKey: 'id', incrementing: false)]
 #[WithoutTimestamps]class TaxonConceptPhenologyMap extends Model
 {

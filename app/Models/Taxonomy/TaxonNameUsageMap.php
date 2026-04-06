@@ -2,12 +2,44 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class TaxonNameUsageMap
+ *
+ * Represents a mapping of taxonomic name usages within taxonomic concepts.
+ * This model is based on the 'taxon_name_usages_map' database table, which 
+ * captures the application of taxonomic names to taxonomic concepts, along with
+ * the role of the name usage (e.g., accepted name, synonym).
+ *
+ * The model includes relationships to the TaxonName being used, the TaxonConcept
+ * to which it is applied, and the role of the name usage defined by a 
+ * ControlledTerm from the NAME_USAGE_ROLE vocabulary.
+ * 
+ * @property int $id
+ * @property int $taxon_name_id
+ * @property int $taxon_concept_id
+ * @property int $name_usage_role_id
+ * @property bool $is_preferred_vernacular_name
+ * @property string|null $country_code
+ * @property string|null $remarks
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read TaxonName $taxonName
+ * @property-read TaxonConcept $taxonConcept
+ * @property-read ControlledTerm $nameUsageRole
+ * @property-read \App\Models\Shared\Agent $createdBy
+ * @property-read \App\Models\Shared\Agent $updatedBy
+ */
 #[Table(
     name: 'taxon_name_usages_map', 
     key: 'id',

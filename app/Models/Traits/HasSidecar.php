@@ -6,8 +6,36 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Trait HasSidecar
+ *
+ * Provides functionality for models that have a "sidecar" extension table, allowing for 
+ * seamless creation and updating of both the base record and its associated sidecar data 
+ * within a single transaction. This trait is designed to be used with models that represent 
+ * entities where additional fields are stored in a separate table linked by a foreign key.
+ *
+ * The trait includes methods for:
+ * - Creating a new record in both the base and sidecar tables simultaneously.
+ * - Promoting an existing base record to the sidecar model, with optional sidecar data updates.
+ * - Updating both base and sidecar fields in a single transaction.
+ *
+ * Models using this trait must implement the following abstract methods to specify their 
+ * base table, base model class, extension table, and sidecar fields:
+ * - getBaseTable(): string
+ * - getBaseModelClass(): string
+ * - getExtensionTable(): string
+ * - getSidecarFields(): array
+ *
+ */
 trait HasSidecar
 {
+    /**
+    * Create a new record in the base table and the sidecar extension table within a single transaction.
+    *
+    * @param array $baseData Data for the base table (e.g., 'references').
+    * @param array $extData Data for the extension table (sidecar fields).
+    * @return self
+    */
     public static function createWithSidecar(array $baseData, array $extData = []): self
     {
         return DB::transaction(function () use ($baseData, $extData) {
@@ -36,6 +64,13 @@ trait HasSidecar
         });
     }
 
+    /**
+     * Promote an existing base record to the sidecar model, optionally updating sidecar fields.
+     *
+     * @param Model $baseRecord
+     * @param array $extData
+     * @return self
+     */
     public static function promote(Model $baseRecord, array $extData = []): self
     {
         $instance = new static();
@@ -63,6 +98,12 @@ trait HasSidecar
         return static::find($baseRecord->id);
     }
 
+    /**
+     * Update both base and sidecar fields in a single transaction.
+     *
+     * @param array $data
+     * @return bool
+     */
     public function updateWithSidecar(array $data): bool
     {
         return DB::transaction(function () use ($data) {
@@ -97,11 +138,22 @@ trait HasSidecar
         });
     }
 
-    abstract public function getBaseTable(): string;
+    /**
+     * Abstract methods that must be implemented by the model using this trait to specify
+     * the base table, base model class, extension table, and sidecar fields.
+     */
     abstract public function getBaseModelClass(): string; // e.g. Reference::class
+    abstract public function getBaseTable(): string;
     abstract public function getExtensionTable(): string;
     abstract public function getSidecarFields(): array;
 
+
+    /**
+     * Get the foreign key name used in the sidecar extension table to link back to the base table.
+     * Defaults to 'reference_id' but can be overridden by models if needed (e.g., 'taxon_name_id').
+     *
+     * @return string
+     */
     protected function getSidecarForeignKey(): string
     {
         // Default to reference_id, but can be overridden (e.g. taxon_name_id)

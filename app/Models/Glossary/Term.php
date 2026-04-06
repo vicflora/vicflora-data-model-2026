@@ -12,6 +12,38 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Term
+ *
+ * Represents a term in a glossary, which is a specific word or phrase and its 
+ * associated definition and metadata. This model is based on the 'terms' 
+ * database table, which captures the details of each term in a glossary.
+ *
+ * The model includes relationships to the Glossary it belongs to, its category, 
+ * related terms (thesaurus logic), limitations, and associated images.
+ * 
+ * @property int $id
+ * @property int $glossary_id
+ * @property int|null $category_id
+ * @property string $name
+ * @property string|null $definition
+ * @property string|null $scope
+ * @property bool $is_discouraged
+ * @property string|null $local_id
+ * @property string|null $language
+ * @property string|null $name_addendum
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @property-read Glossary $glossary
+ * @property-read Category|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection|Term[] $relatedTerms
+ * @property-read \Illuminate\Database\Eloquent\Collection|Limitation[] $limitations
+ * @property-read \Illuminate\Database\Eloquent\Collection|Image[] $images
+ */
 #[Table(name: 'terms', schema: 'glossary', incrementing: true)]
 #[Fillable([
     'glossary_id',

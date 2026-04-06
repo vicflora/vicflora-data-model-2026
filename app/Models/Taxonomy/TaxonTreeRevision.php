@@ -2,7 +2,9 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\IncrementsVersion;
 use App\Observers\TaxonTreeRevisionObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -10,6 +12,38 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class TaxonTreeRevision
+ *
+ * Represents a revision of a taxonomic tree, which captures changes made to the 
+ * structure of a taxonomic tree over time. This model is based on the 
+ * 'taxon_tree_revisions' database table, which records the history of changes to 
+ * taxonomic trees.
+ *
+ * The model includes relationships to the taxon tree being revised, the "from" 
+ * and "to" nodes that represent the change, the type of change, and the 
+ * taxonomy version (reference) associated with the revision.
+ * 
+ * @property int $id
+ * @property int $taxon_tree_id
+ * @property int|null $from_node_id
+ * @property int|null $to_node_id
+ * @property int|null $change_type_id
+ * @property int|null $taxonomy_version_id
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read TaxonTree $taxonTree
+ * @property-read TaxonTreeNode|null $fromNode
+ * @property-read TaxonTreeNode|null $toNode
+ * @property-read ControlledTerm|null $changeType
+ * @property-read TaxonomyVersion|null $taxonomyVersion
+ * @property-read \App\Models\Shared\Agent|null $createdBy
+ * @property-read \App\Models\Shared\Agent|null $updatedBy
+ */
 #[Table(
     name: 'taxon_tree_revisions', 
     key: 'id', 
@@ -27,7 +61,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[ObservedBy(TaxonTreeRevisionObserver::class)]
 class TaxonTreeRevision extends Model
 {
-    use Blameable;
+    use Blameable, IncrementsVersion;
 
     /**
      * Get the taxon tree that owns the revision.
@@ -83,4 +117,7 @@ class TaxonTreeRevision extends Model
     {
         return $this->belongsTo(TaxonomyVersion::class, 'taxonomy_version_id');
     }
+
+
+
 }

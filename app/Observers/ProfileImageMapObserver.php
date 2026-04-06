@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\Taxonomy\ProfileImageMap;
-use App\Models\Taxonomy\ControlledTerm;
+use App\Models\Profile\ProfileImageMap;
+use App\Models\Shared\ControlledTerm;
 
 class ProfileImageMapObserver
 {

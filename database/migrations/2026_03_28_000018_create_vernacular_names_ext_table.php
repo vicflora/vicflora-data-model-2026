@@ -12,10 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vernacular_names_ext', function (Blueprint $table) {
-            $table->foreignId('taxon_name_id')
-                ->primary()
-                ->constrained('taxon_names')
-                ->cascadeOnDelete();
+            $table->foreignId('taxon_name_id')->primary()->constrained('taxon_names');
+            $table->string('language', 10)->nullable();
         });
     }
 

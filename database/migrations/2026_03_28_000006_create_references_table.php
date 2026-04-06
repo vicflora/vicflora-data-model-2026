@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('references', function (Blueprint $table) {
             $table->id();
+            $table->uuid('guid');
             $table->unsignedBigInteger('reference_type_id')->constrained('controlled_terms')->nullable()->onDelete('restrict');
             $table->string('title');
             $table->string('full_citation');

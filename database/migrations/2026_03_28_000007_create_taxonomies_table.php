@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('taxonomies_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')
-                ->primary()
-                ->constrained('references')
-                ->onDelete('cascade');
+            $table->foreignId('reference_id')->primary()->constrained('references');
         });
     }
 

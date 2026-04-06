@@ -5,6 +5,8 @@ namespace App\Models\Image;
 use App\Models\Profile\Specimen;
 use App\Models\Profile\SpecimenImageMap;
 use App\Models\Shared\ControlledTerm;
+use App\Models\Traits\Blameable;
+use App\Models\Traits\IncrementsVersion;
 use App\Observers\ImageObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -13,6 +15,33 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * Class Image
+ *
+ * Represents an image associated with a taxon concept or profile, which may include metadata such as the creator, caption, rights holder, and license information. This model is based on the 'images' database table, which captures the core information about images used in the application.
+ *
+ * The model includes relationships to the image type (ControlledTerm), license (ControlledTerm), and specimens that the image represents.
+ * 
+ * @property int $id
+ * @property string $uri
+ * @property int|null $image_type_id
+ * @property string|null $creator
+ * @property string|null $caption
+ * @property string|null $rights_holder
+ * @property int|null $license_id
+ * @property json|null $metadata
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read ControlledTerm|null $imageType
+ * @property-read ControlledTerm|null $license
+ * @property-read \Illuminate\Database\Eloquent\Collection|Specimen[] $specimens
+ * @property-read \App\Models\Shared\Agent|null $createdBy
+ * @property-read \App\Models\Shared\Agent|null $updatedBy
+ */
 #[Table(
     name: 'images', 
     key: 'id', 
@@ -31,6 +60,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[ObservedBy(ImageObserver::class)]
 class Image extends Model
 {
+    use Blameable, IncrementsVersion;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     public function imageType(): BelongsTo {
         return $this->belongsTo(ControlledTerm::class, 'image_type_id');

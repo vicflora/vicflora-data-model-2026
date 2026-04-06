@@ -10,6 +10,32 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class ProfileDefItem
+ *
+ * Represents an item in the definition of a profile, which specifies the sections 
+ * and their order within a profile. This model is based on the 'profile_def_items' 
+ * database table, which captures the structure of profiles.
+ *
+ * The model includes relationships to the TaxonTree to which the item belongs and 
+ * the section type (ControlledTerm) that defines the type of section in the profile.
+ * 
+ * @property int $id
+ * @property int $taxon_tree_id
+ * @property int|null $profile_section_type_id
+ * @property bool $is_required
+ * @property int $sort_order
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read TaxonTree $tree
+ * @property-read ControlledTerm|null $sectionType
+ * @property-read \App\Models\Shared\Agent|null $createdBy
+ * @property-read \App\Models\Shared\Agent|null $updatedBy
+ */
 #[Table(name: 'profile_def_items')]
 #[Fillable([
     'taxon_tree_id',

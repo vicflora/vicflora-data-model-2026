@@ -11,6 +11,46 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class ProfileAreaMap
+ *
+ * Represents the mapping of profiles to geographic areas, capturing the occurrence 
+ * and threat status of taxa in specific regions. This model is based on the 
+ * 'profile_area_map' database table, which captures the association between profiles 
+ * and their geographic distributions.
+ *
+ * The model includes relationships to the Profile, Area, TaxonTree, and various 
+ * controlled terms that define occurrence and threat status.
+ * 
+ * @property int $id
+ * @property int $profile_id
+ * @property int $taxon_tree_id
+ * @property int $area_id
+ * @property int $gazetteer_id
+ * @property string|null $locality
+ * @property int|null $occurrence_status_id
+ * @property int|null $establishment_means_id
+ * @property int|null $degree_of_establishment_id
+ * @property int|null $threat_status_id
+ * @property bool|null $is_endemic
+ * @property bool|null $has_introduced_occurrences
+ * @property int|null $source_id
+ * @property string|null $event_date
+ * @property string|null $occurrence_remarks
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read Profile $profile
+ * @property-read Area $area
+ * @property-read TaxonTree $taxonTree
+ * @property-read ThreatStatusAuthority|null $threatStatusAuthority
+ * @property-read Reference|null $source
+ * @property-read ControlledTerm|null $occurrenceStatus
+ * @property-read ControlledTerm|null $threatStatus
+ */
 #[Table(
     name: 'profile_area_map', 
     key: 'id', 

@@ -10,6 +10,37 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class TermRelationship
+ *
+ * Represents a relationship between two terms in a glossary. This model 
+ * captures the details of how two terms are related, including the type of 
+ * relationship and any limitations or qualifiers on that relationship.
+ *
+ * The model includes relationships to the Glossary it belongs to, the primary 
+ * Term, the related Term, the type of relationship (as a ControlledTerm), and 
+ * any Limitation that applies to the relationship.
+ * 
+ * @property int $id
+ * @property int $glossary_id
+ * @property int $term_id
+ * @property int $related_term_id
+ * @property int $relationship_type_id
+ * @property int|null $limitation_id
+ * @property bool $is_misapplied
+ * @property bool $is_discouraged
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @property-read Glossary $glossary
+ * @property-read Term $term
+ * @property-read Term $relatedTerm
+ * @property-read ControlledTerm $relationshipType
+ * @property-read Limitation|null $limitation
+ */
 #[Table(name: 'term_relationships', schema: 'glossary', incrementing: true)]
 #[Fillable([
     'glossary_id',

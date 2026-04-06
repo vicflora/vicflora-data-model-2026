@@ -2,6 +2,10 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\EntityIdentityMap;
+use App\Models\Shared\ExternalIdentity;
+use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
 use App\Observers\TaxonConceptObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -13,6 +17,36 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+/**
+ * Represents a specific taxonomic concept, which is a combination of a 
+ * TaxonName and an "according to" Reference. This allows us to capture 
+ * different taxonomic opinions about the same name.
+ * 
+ * @property int $id
+ * @property string $guid
+ * @property int $taxon_tree_id
+ * @property int $taxon_name_id
+ * @property int $according_to_id
+ * @property int $rank_id
+ * @property int $version
+ * @property int $created_by_id
+ * @property int $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null     $updated_at
+ * 
+ * @property-read TaxonTree $taxonTree
+ * @property-read TaxonName $taxonName
+ * @property-read Reference $accordingTo
+ * @property-read ControlledTerm $rank
+ * @property-read ScientificName|null $acceptedName
+ * @property-read Collection<int, ScientificName> $synonyms
+ * @property-read Collection<int, VernacularName> $vernacularNames
+ * @property-read VernacularName|null $preferredVernacularName
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ExternalIdentity> $externalIdentities
+ * @property-read \App\Models\Shared\Agent $createdBy
+ * @property-read \App\Models\Shared\Agent $updatedBy
+ * 
+ */
 #[Table(
     name: 'taxon_concepts', 
     key: 'id', 
@@ -33,6 +67,16 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class TaxonConcept extends Model
 {
     use Blameable;
+
+    /**
+     * The TaxonTree this concept belongs to.
+     * 
+     * @return BelongsTo
+     */
+    public function taxonTree(): BelongsTo
+    {
+        return $this->belongsTo(TaxonTree::class, 'taxon_tree_id');
+    }
 
     /**
      * The Name being used in this specific concept.

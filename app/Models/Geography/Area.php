@@ -9,6 +9,35 @@ use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 
+/**
+ * Class Area
+ *
+ * Represents a geographical area, which can be a continent, country, state, etc. 
+ * This model is based on the 'areas' database table in the 'shared' schema, which 
+ * captures the hierarchical structure of geographical areas.
+ *
+ * The model includes relationships to the type of area (ControlledTerm), the parent 
+ * area (for hierarchical relationships), and any child areas. It also has a 
+ * relationship to AreaCode for storing various codes associated with the area.
+ * 
+ * @property int $id
+ * @property string $name
+ * @property int|null $area_type_id
+ * @property bool $is_accepted
+ * @property int|null $parent_id
+ * @property int|null $accepted_id
+ * @property string|null $area_path
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read ControlledTerm|null $type
+ * @property-read Area|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection|Area[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|AreaCode[] $areaCodes
+ */
 #[Table(name: 'areas', schema: 'shared', incrementing: true)]
 #[Fillable([
     'name',

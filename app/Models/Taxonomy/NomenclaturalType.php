@@ -2,12 +2,51 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Profile\Specimen;
+use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class NomenclaturalType
+ *
+ * Represents a nomenclatural type, which is a specific kind of relationship 
+ * between taxonomic names and their types. This model is based on the 
+ * 'nomenclatural_types' database table, which captures the typification of 
+ * taxonomic names.
+ *
+ * The model includes relationships to the typified name (TaxonName), the type 
+ * of type (ControlledTerm), the type name (TaxonName), the type specimen 
+ * (Specimen), the reference in which the name was typified (Reference), and the 
+ * reference in which a specimen was designated as the type (Reference).
+ * 
+ * @property int $id
+ * @property int $typified_name_id
+ * @property int $type_of_type_id
+ * @property int|null $type_name_id
+ * @property int|null $type_specimen_id
+ * @property int|null $type_published_in_id
+ * @property int|null $source_id
+ * @property string|null $remarks
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read TaxonName $typifiedName
+ * @property-read ControlledTerm $typeOfType
+ * @property-read TaxonName|null $typeName
+ * @property-read Specimen|null $typeSpecimen
+ * @property-read Reference|null $typePublishedIn
+ * @property-read Reference|null $source
+ * @property-read \App\Models\Shared\Agent $createdBy
+ * @property-read \App\Models\Shared\Agent $updatedBy
+ */
 #[Table(
     name: 'nomenclatural_types', 
     key: 'id', 

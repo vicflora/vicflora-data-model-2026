@@ -2,6 +2,7 @@
 
 namespace App\Models\Profile;
 
+use App\Models\Image\Image;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TreatmentVersion;
@@ -14,6 +15,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Profile
+ *
+ * Represents a profile for a taxon concept, which is a detailed description of a taxon concept that may include various sections (e.g., descriptions, habitat, distribution) and associated media (e.g., images, specimens). This model is based on the 'profiles' database table, which captures the core information about profiles.
+ *
+ * The model includes relationships to the taxon concept it describes, the treatment version it may be associated with, the sections that make up the profile, and the specimens and images linked to the profile.
+ * 
+ * @property int $taxon_concept_id
+ * @property bool $is_published
+ * @property string|null $content
+ * @property int|null $treatment_version_id
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * 
+ * @property-read TaxonConcept $taxonConcept
+ * @property-read TreatmentVersion|null $treatmentVersion
+ * @property-read \Illuminate\Database\Eloquent\Collection|ProfileSection[] $sections
+ * @property-read \Illuminate\Database\Eloquent\Collection|Specimen[] $specimens
+ * @property-read \Illuminate\Database\Eloquent\Collection|Image[] $images
+ * @property-read \App\Models\Shared\Agent|null $createdBy
+ * @property-read \App\Models\Shared\Agent|null $updatedBy
+ */
 #[Table(
     name: 'profiles', 
     key: 'taxon_concept_id', 
