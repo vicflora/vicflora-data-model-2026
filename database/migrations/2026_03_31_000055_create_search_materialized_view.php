@@ -29,7 +29,7 @@ WITH RECURSIVE classification AS (
     JOIN taxon_names tn ON tc.taxon_name_id = tn.id
     JOIN taxon_tree_def_items ttdi on ttn.taxon_tree_def_item_id = ttdi.id
     JOIN controlled_terms r ON ttdi.rank_id = r.id
-    LEFT JOIN taxon_tree_revisions ttr on ttn.taxon_concept_id = ttr.old_node_id 
+    LEFT JOIN taxon_tree_revisions ttr on ttn.taxon_concept_id = ttr.from_node_id 
     WHERE ttn.parent_id IS NULL
 
     UNION ALL
@@ -50,7 +50,7 @@ WITH RECURSIVE classification AS (
     JOIN taxon_names tn ON tc.taxon_name_id = tn.id
     JOIN taxon_tree_def_items ttdi on ttn.taxon_tree_def_item_id = ttdi.id
     JOIN controlled_terms r ON ttdi.rank_id = r.id
-    LEFT JOIN taxon_tree_revisions ttr on ttn.taxon_concept_id = ttr.old_node_id 
+    LEFT JOIN taxon_tree_revisions ttr on ttn.taxon_concept_id = ttr.from_node_id 
     JOIN classification cl ON ttn.parent_id = cl.taxon_concept_id
 )
 SELECT 

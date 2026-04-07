@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             
             $table->foreignId('taxon_tree_id')->constrained('taxon_trees');
-            $table->foreignId('old_node_id')
+            $table->foreignId('from_node_id')
                 ->nullable()
                 ->constrained('taxon_tree_nodes')
                 ->references('taxon_concept_id');
-            $table->foreignId('new_node_id')
+            $table->foreignId('to_node_id')
                 ->nullable()
                 ->constrained('taxon_tree_nodes')
                 ->references('taxon_concept_id');
