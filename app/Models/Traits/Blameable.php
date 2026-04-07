@@ -2,7 +2,7 @@
 
 namespace App\Models\Traits;
 
-use App\Models\Taxonomy\Agent;
+use App\Models\Shared\Agent;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 

@@ -4,6 +4,7 @@ namespace App\Models\Image;
 
 use App\Models\Profile\Specimen;
 use App\Models\Profile\SpecimenImageMap;
+use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
@@ -11,9 +12,11 @@ use App\Observers\ImageObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Image
@@ -29,18 +32,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string|null $caption
  * @property string|null $rights_holder
  * @property int|null $license_id
- * @property json|null $metadata
+ * @property array|null $metadata
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read ControlledTerm|null $imageType
  * @property-read ControlledTerm|null $license
- * @property-read \Illuminate\Database\Eloquent\Collection|Specimen[] $specimens
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Collection<int, Specimen> $specimens
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'images', 

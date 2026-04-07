@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Reference
  *
- * Represents a reference, which is a bibliographic citation that may be associated with various entities in the application. This model is based on the 'references_view' database view, which aggregates data from multiple tables to provide a comprehensive representation of references and their roles.
+ * Represents a reference, which is a bibliographic citation that may be
+ * associated with various entities in the application. This model is based on
+ * the 'references_view' database view, which aggregates data from multiple
+ * tables to provide a comprehensive representation of references and their
+ * roles.
  *
- * The model includes relationships to the reference type (ControlledTerm) and provides helper methods to check for specific roles and types based on the aggregated data from the view.
- * 
+ * The model includes relationships to the reference type (ControlledTerm) and
+ * provides helper methods to check for specific roles and types based on the
+ * aggregated data from the view.
+ *
  * @property int $id
  * @property int|null $reference_type_id
  * @property string|null $author_string
@@ -27,12 +34,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read ControlledTerm|null $type
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'references_view', 
@@ -54,6 +61,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Reference extends Model
 {
     use Blameable, IncrementsVersion;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     /**
      * Relationship to the Vocabulary Layer (Layer 8)

@@ -2,17 +2,19 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\HasSidecar;
 use App\Models\Traits\HasUsages;
-use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -44,8 +46,8 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
  * @property-read ControlledTerm|null $rank
@@ -55,13 +57,12 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
  * @property-read ScientificName|null $replacedName
  * @property-read ScientificName|null $basedOn
  * @property-read ScientificName|null $laterHomonymOf
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Taxonomy\TaxonNameUsageMap> $usages
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ScientificName>|null $conservedAgainst
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ScientificName>|null $rejectedAgainst
- * @property-read \Illuminate\Database\Eloquent\Collection<int, NomenclaturalType>|null $typification
- * @property-read \App\Models\Shared\Agent $createdBy
- * @property-read \App\Models\Shared\Agent $updatedBy
- * 
+ * @property-read Collection<int, TaxonNameUsageMap> $usages
+ * @property-read Collection<int, ScientificName>|null $conservedAgainst
+ * @property-read Collection<int, ScientificName>|null $rejectedAgainst
+ * @property-read Collection<int, NomenclaturalType>|null $typification
+ * @property-read Agent $createdBy
+ * @property-read Agent $updatedBy
  */
 #[Table(
     name: 'scientific_names', 

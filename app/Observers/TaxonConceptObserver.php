@@ -2,10 +2,10 @@
 
 namespace App\Observers;
 
+use App\Models\Profile\Profile;
+use App\Models\Shared\Reference;
+use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonConcept;
-use App\Models\Taxonomy\Reference;
-use App\Models\Taxonomy\ControlledTerm;
-use App\Models\Taxonomy\Profile;
 
 class TaxonConceptObserver
 {

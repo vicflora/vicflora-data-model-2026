@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class Gazetteer
  *
- * Represents a gazetteer, which is a reference that describes a geographical location. 
- * This model is based on the 'gazetteers' database view, which combines data from the 'references' 
- * table and its related extension for gazetteers.
+ * Represents a gazetteer, which is a reference that describes a geographical
+ * location. This model is based on the 'gazetteers' database view, which
+ * combines data from the 'references' table and its related extension for
+ * gazetteers.
  *
- * The model includes relationships to the base Reference model and any sidecar data.
- * 
+ * The model includes relationships to the base Reference model and any sidecar
+ * data.
+ *
  * @property int $id
  * @property int $reference_type_id
  * @property string $author_string
@@ -26,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
- * 
+ *
  * @property-read Reference $reference
  */
 #[Table(
@@ -47,6 +49,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Gazetteer extends Model
 {
     use HasSidecar;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     /**
      * Get the reference that this gazetteer belongs to.

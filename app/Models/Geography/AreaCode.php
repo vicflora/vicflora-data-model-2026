@@ -2,7 +2,8 @@
 
 namespace App\Models\Geography;
 
-use App\Models\Shared\Reference;
+use App\Models\Shared\Agent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
@@ -10,16 +11,19 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Class AreaCode
  *
- * Represents a code for an area, which is a specific identifier for a geographic area. 
- * This model is based on the 'area_codes' database table, which captures the various codes 
- * that can be associated with an area, such as codes from different gazetteers or classification schemes.
+ * Represents a code for an area, which is a specific identifier for a
+ * geographic area. This model is based on the 'area_codes' database table,
+ * which captures the various codes that can be associated with an area, such as
+ * codes from different gazetteers or classification schemes.
  *
- * The model includes relationships to the Area it belongs to, its parent code (if any), its child codes, and the gazetteer/reference that defines it.
- * 
+ * The model includes relationships to the Area it belongs to, its parent code
+ * (if any), its child codes, and the gazetteer/reference that defines it.
+ *
  * @property int $id
  * @property int $area_id
  * @property int|null $gazetteer_id
@@ -32,13 +36,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Area $area
  * @property-read AreaCode|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection|AreaCode[] $children
- * @property-read Reference|null $gazetteer
+ * @property-read Collection<int, AreaCode> $children
+ * @property-read Gazetteer|null $gazetteer
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'area_codes', incrementing: true)]
 #[Fillable([
@@ -92,6 +98,6 @@ class AreaCode extends Model
      */
     public function gazetteer(): BelongsTo
     {
-        return $this->belongsTo(Reference::class, 'gazetteer_id');
+        return $this->belongsTo(Gazetteer::class);
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Shared\User;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,11 +32,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string|null $remarks
  * @property int|null $source_id
  * @property int|null $creator_id
- * @property \Illuminate\Support\Carbon|null $created
+ * @property Carbon|null $created
  * @property int $created_by_id
  * @property int $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read ControlledTerm $mappingRelation
  * @property-read TaxonConcept $subjectTaxonConcept
@@ -50,8 +52,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read Collection<int, TaxonConcept> $partiallyOverlaps
  * @property-read Collection<int, TaxonConcept> $isDisjointWith
  * @property-read Collection<int, TaxonConcept> $intersects
- * @property-read \App\Models\Shared\Agent $createdBy
- * @property-read \App\Models\Shared\Agent $updatedBy
+ * @property-read Agent $createdBy
+ * @property-read Agent $updatedBy
  */
 #[Table(
     name: 'taxon_concept_mappings', 

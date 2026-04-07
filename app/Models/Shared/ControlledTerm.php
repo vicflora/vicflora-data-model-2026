@@ -9,17 +9,19 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class ControlledTerm
  *
- * Represents a controlled term, which is a specific value within a controlled 
- * vocabulary. This model is based on the 'controlled_terms' database table, 
+ * Represents a controlled term, which is a specific value within a controlled
+ * vocabulary. This model is based on the 'controlled_terms' database table,
  * which captures the individual terms that belong to controlled vocabularies.
  *
- * The model includes fields for the label, code, IRI, description, and sort 
- * order of the term, as well as a relationship to the parent controlled vocabulary.
- * 
+ * The model includes fields for the label, code, IRI, description, and sort
+ * order of the term, as well as a relationship to the parent controlled
+ * vocabulary.
+ *
  * @property int $id
  * @property int $controlled_vocabulary_id
  * @property string $label
@@ -30,12 +32,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read ControlledVocabulary $vocabulary
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'controlled_terms')]
 #[Fillable([

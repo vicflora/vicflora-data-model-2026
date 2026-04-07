@@ -2,24 +2,28 @@
 
 namespace App\Models\Geography;
 
+use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Area
  *
- * Represents a geographical area, which can be a continent, country, state, etc. 
- * This model is based on the 'areas' database table in the 'shared' schema, which 
- * captures the hierarchical structure of geographical areas.
+ * Represents a geographical area, which can be a continent, country, state,
+ * etc. This model is based on the 'areas' database table in the 'shared'
+ * schema, which captures the hierarchical structure of geographical areas.
  *
- * The model includes relationships to the type of area (ControlledTerm), the parent 
- * area (for hierarchical relationships), and any child areas. It also has a 
- * relationship to AreaCode for storing various codes associated with the area.
- * 
+ * The model includes relationships to the type of area (ControlledTerm), the
+ * parent area (for hierarchical relationships), and any child areas. It also
+ * has a relationship to AreaCode for storing various codes associated with the
+ * area.
+ *
  * @property int $id
  * @property string $name
  * @property int|null $area_type_id
@@ -30,13 +34,15 @@ use Illuminate\Database\Eloquent\Attributes\Table;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read ControlledTerm|null $type
  * @property-read Area|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection|Area[] $children
- * @property-read \Illuminate\Database\Eloquent\Collection|AreaCode[] $areaCodes
+ * @property-read Collection<int, Area> $children
+ * @property-read Collection<int, AreaCode> $areaCodes
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'areas', schema: 'shared', incrementing: true)]
 #[Fillable([

@@ -12,13 +12,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class Treatment
  *
- * Represents a treatment, which is a reference that describes the treatment of a taxonomic concept. 
- * This model is based on the 'treatments' database view, which combines data from the 'references' 
- * table and its related extension for treatments.
+ * Represents a treatment, which is a reference that describes the treatment of
+ * a taxonomic concept. This model is based on the 'treatments' database view,
+ * which combines data from the 'references' table and its related extension for
+ * treatments.
  *
- * The model includes relationships to the base Reference model and any sidecar data, as well as a 
- * relationship to the taxonomy version to which the treatment belongs.
- * 
+ * The model includes relationships to the base Reference model and any sidecar
+ * data, as well as a relationship to the taxonomy version to which the
+ * treatment belongs.
+ *
  * @property int $id
  * @property int $reference_type_id
  * @property string $author_string
@@ -27,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
- * 
+ *
  * @property-read Reference $reference
  * @property-read TaxonomyVersion $taxonomyVersion
  */
@@ -48,6 +50,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Treatment extends Model
 {
     use HasSidecar;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     /**
     * Get the reference that this treatment belongs to.

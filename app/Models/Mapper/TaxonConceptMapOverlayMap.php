@@ -4,9 +4,9 @@ namespace App\Models\Mapper;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Taxonomy\TaxonConcept;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Support\Facades\DB;
 
@@ -26,11 +26,11 @@ use Illuminate\Support\Facades\DB;
  * @property-read TaxonConcept $taxonConcept
  * @property-read MapOverlay $mapOverlay
  * 
- * @method static \Illuminate\Database\Eloquent\Builder|static layer(string $layer)
+ * @method static Builder|static layer(string $layer)
  */
 #[Table(
     name: 'mapper.taxon_concept_map_overlay_map', 
-    primaryKey: 'id', 
+    key: 'id', 
     incrementing: false
 )]
 #[WithoutTimestamps]

@@ -8,40 +8,42 @@ use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Class ExternalIdentity
  *
- * Represents an external identity, which is a unique identifier for an entity in an 
- * external system. This model is based on the 'external_identities' database table, 
- * which captures the mapping of internal entities to their corresponding identifiers 
- * in external systems.
+ * Represents an external identity, which is a unique identifier for an entity
+ * in an external system. This model is based on the 'external_identities'
+ * database table, which captures the mapping of internal entities to their
+ * corresponding identifiers in external systems.
  *
- * The model includes a relationship to the ExternalIdentityAuthority, which defines 
- * the authority that manages the external identifiers, and morph-to-many 
- * relationships to TaxonName and TaxonConcept, which represent the taxonomic names 
- * and concepts associated with this external identity.
- * 
+ * The model includes a relationship to the ExternalIdentityAuthority, which
+ * defines the authority that manages the external identifiers, and
+ * morph-to-many relationships to TaxonName and TaxonConcept, which represent
+ * the taxonomic names and concepts associated with this external identity.
+ *
  * @property int $id
  * @property int $external_identity_authority_id
  * @property string $external_id
  * @property string|null $external_url
- * @property \Illuminate\Support\Carbon|null $last_synced_at
+ * @property Carbon|null $last_synced_at
  * @property array|null $metadata
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read ExternalIdentityAuthority $authority
- * @property-read \Illuminate\Database\Eloquent\Collection<int, TaxonName>|null $taxonNames
- * @property-read \Illuminate\Database\Eloquent\Collection<int, TaxonConcept>|null $taxonConcepts
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Collection<int, TaxonName>|null $taxonNames
+ * @property-read Collection<int, TaxonConcept>|null $taxonConcepts
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'external_identities', 
@@ -59,6 +61,10 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class ExternalIdentity extends Model
 {
     use Blameable, IncrementsVersion;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
     
     /**
      * Define the relationship to the ExternalIdentityAuthority model.

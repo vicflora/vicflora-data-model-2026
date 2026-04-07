@@ -2,11 +2,13 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared;
 use App\Models\Shared\Reference;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class TaxonTreeGeographicScopeMap
@@ -25,13 +27,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read TaxonTree $taxonTree
  * @property-read Gazetteer $gazetteer
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'public.taxon_tree_geographic_scope_map', primaryKey: 'id')]
 #[Fillable(['taxon_tree_id', 'scope'])]

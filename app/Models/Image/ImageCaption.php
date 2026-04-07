@@ -2,6 +2,7 @@
 
 namespace App\Models\Image;
 
+use App\Models\Shared\Agent;
 use App\Models\Taxonomy\TaxonTree;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
@@ -11,14 +12,20 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class ImageCaption
  *
- * Represents a caption for an image, which may include metadata such as the creator, rights holder, and license information. This model is based on the 'image_captions' database table, which captures the captions associated with images in the application.
+ * Represents a caption for an image, which may include metadata such as the
+ * creator, rights holder, and license information. This model is based on the
+ * 'image_captions' database table, which captures the captions associated with
+ * images in the application.
  *
- * The model includes relationships to the image (Image) that the caption describes and the taxon tree (TaxonTree) that provides context for the caption.
- * 
+ * The model includes relationships to the image (Image) that the caption
+ * describes and the taxon tree (TaxonTree) that provides context for the
+ * caption.
+ *
  * @property int $id
  * @property int $image_id
  * @property int $profile_id
@@ -30,13 +37,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * 
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read Image|null $image
  * @property-read TaxonTree|null $taxonTree
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'image_captions', 

@@ -9,14 +9,15 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 /**
  * Class Taxon
  *
- * Represents a taxonomic concept (taxon) as defined in the 'mapper.taxa' 
- * Materialized View. This model captures the taxonomic information for occurrences, 
- * including the scientific name, taxonomic hierarchy, and related identifiers.
+ * Represents a taxonomic concept (taxon) as defined in the 'mapper.taxa'
+ * Materialized View. This model captures the taxonomic information for
+ * occurrences, including the scientific name, taxonomic hierarchy, and related
+ * identifiers.
  *
- * The model is read-only and does not allow for saving or updating records, as it 
- * is based on a Materialized View that is refreshed from the underlying taxonomic 
- * data.
- * 
+ * The model is read-only and does not allow for saving or updating records, as
+ * it is based on a Materialized View that is refreshed from the underlying
+ * taxonomic data.
+ *
  * @property-read int $id
  * @property-read string|null $guid
  * @property-read string|null $scientific_name

@@ -2,12 +2,14 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class TaxonNameUsageMap
@@ -31,14 +33,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
  * @property-read TaxonConcept $taxonConcept
  * @property-read ControlledTerm $nameUsageRole
- * @property-read \App\Models\Shared\Agent $createdBy
- * @property-read \App\Models\Shared\Agent $updatedBy
+ * @property-read Agent $createdBy
+ * @property-read Agent $updatedBy
  */
 #[Table(
     name: 'taxon_name_usages_map', 

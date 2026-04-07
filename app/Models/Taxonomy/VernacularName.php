@@ -6,6 +6,7 @@ use App\Models\Traits\HasSidecar;
 use App\Models\Traits\HasUsages;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -28,15 +29,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
  * @property-read ControlledTerm|null $rank
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ExternalIdentity>|null $externalIdentities
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Taxonomy\TaxonNameUsageMap> $usages
- * @property-read \App\Models\Shared\Agent $createdBy
- * @property-read \App\Models\Shared\Agent $updatedBy
+ * @property-read Collection<int, ExternalIdentity>|null $externalIdentities
+ * @property-read Collection<int, TaxonNameUsageMap> $usages
  * 
  */
 #[Table(

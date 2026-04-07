@@ -2,12 +2,15 @@
 
 namespace App\Models\Mapper;
 
+use App\Models\Shared\Agent;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illumimate\Support\Carbon;
 
 /**
  * Class ParsedName
@@ -50,13 +53,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Occurrence> $occurrences
- * @property-read \Illuminate\Database\Eloquent\Collection<int, NameMatchMap> $nameMatches
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Collection<int, Occurrence> $occurrences
+ * @property-read Collection<int, NameMatchMap> $nameMatches
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'parsed_names', primaryKey: 'id')]
 #[Fillable([

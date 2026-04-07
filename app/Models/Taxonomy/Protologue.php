@@ -14,12 +14,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class Protologue
  *
- * Represents a protologue, which is a reference that describes the original publication of a taxonomic name. 
- * This model is based on the 'protologues' database view, which combines data from the 'references' 
- * table and its related extension for protologues.
+ * Represents a protologue, which is a reference that describes the original
+ * publication of a taxonomic name. This model is based on the 'protologues'
+ * database view, which combines data from the 'references' table and its
+ * related extension for protologues.
  *
- * The model includes relationships to the base Reference model and any sidecar data.
- * 
+ * The model includes relationships to the base Reference model and any sidecar
+ * data.
+ *
  * @property int $id
  * @property int $reference_type_id
  * @property string $author_string
@@ -29,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $url
  * @property array|null $metadata
  * @property string|null $microreference
- * 
+ *
  * @property-read Reference $reference
  */
 #[Table(
@@ -50,7 +52,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class Protologue extends Model
 {
-    use IncrementsVersion, HasSidecar;
+    use HasSidecar;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     /**
      * Get the reference that this protologue belongs to.

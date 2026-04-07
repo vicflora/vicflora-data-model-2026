@@ -2,26 +2,29 @@
 
 namespace App\Models\Mapper;
 
+use App\Models\Shared\Agent;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
+use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Clickbar\Magellan\Data\Geometries\Point;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Occurrence
  *
- * Represents a single occurrence record, which captures the details of a specific 
- * observation or collection event. This model is based on the 'mapper.occurrences' 
- * database table, which contains fields for various aspects of the occurrence, such 
- * as the basis of record, location, date, and other relevant information.
+ * Represents a single occurrence record, which captures the details of a
+ * specific observation or collection event. This model is based on the
+ * 'mapper.occurrences' database table, which contains fields for various
+ * aspects of the occurrence, such as the basis of record, location, date, and
+ * other relevant information.
  *
- * The model includes relationships to the ParsedName for taxonomic information and 
- * any Assertions made about this occurrence.
- * 
+ * The model includes relationships to the ParsedName for taxonomic information
+ * and any Assertions made about this occurrence.
+ *
  * @property string $id
  * @property string $basis_of_record
  * @property string $data_resource_uid
@@ -30,7 +33,7 @@ use Clickbar\Magellan\Data\Geometries\Point;
  * @property string|null $scientific_name
  * @property string|null $recorded_by
  * @property string|null $record_number
- * @property \Illuminate\Support\Carbon|null $event_date
+ * @property Carbon|null $event_date
  * @property string|null $country
  * @property string|null $state_province
  * @property string|null $locality
@@ -49,16 +52,16 @@ use Clickbar\Magellan\Data\Geometries\Point;
  * @property bool|null $flowers
  * @property bool|null $fruit
  * @property bool|null $buds
- * @property \Clickbar\Magellan\Data\Geometries\Point|null $geom
+ * @property Point|null $geom
  * @property int|null $parsed_name_id
  * @property string|null $data_source
- * @property \Illuminate\Support\Carbon|null $modified
+ * @property Carbon|null $modified
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
  *
  * @property-read ParsedName|null $parsedName
- * @property-read \App\Models\Shared\Agent|null $createdBy
- * @property-read \App\Models\Shared\Agent|null $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'mapper.occurrences', 

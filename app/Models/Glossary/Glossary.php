@@ -5,7 +5,9 @@ namespace App\Models\Glossary;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Glossary
@@ -23,10 +25,18 @@ use Illuminate\Database\Eloquent\Attributes\Table;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 #[Table(name: 'glossaries', schema: 'glossary', incrementing: true)]
+#[Fillable([
+    'name',
+    'description',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
+])]
 class Glossary extends Model
 {
     use Blameable, IncrementsVersion;

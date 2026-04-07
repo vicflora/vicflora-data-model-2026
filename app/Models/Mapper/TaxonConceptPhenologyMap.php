@@ -23,8 +23,13 @@ use Illuminate\Support\Facades\DB;
  * 
  * @property-read TaxonConcept $taxonConcept
  */
-#[Table(name: 'mapper.taxon_concept_phenology_map', primaryKey: 'id', incrementing: false)]
-#[WithoutTimestamps]class TaxonConceptPhenologyMap extends Model
+#[Table(
+    name: 'mapper.taxon_concept_phenology_map', 
+    key: 'id', 
+    incrementing: false
+)]
+#[WithoutTimestamps]
+class TaxonConceptPhenologyMap extends Model
 {
     protected $casts = [
         'id' => 'integer',

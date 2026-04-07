@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class ThreatStatusAuthority
  *
- * Represents a threat status authority, which is a reference that describes the authority for a threat status. 
- * This model is based on the 'threat_status_authorities' database view, which combines data from the 'references' 
- * table and its related extension for threat status authorities.
+ * Represents a threat status authority, which is a reference that describes the
+ * authority for a threat status. This model is based on the
+ * 'threat_status_authorities' database view, which combines data from the
+ * 'references' table and its related extension for threat status authorities.
  *
- * The model includes relationships to the base Reference model and any sidecar data.
- * 
+ * The model includes relationships to the base Reference model and any sidecar
+ * data.
+ *
  * @property int $id
  * @property int $reference_type_id
  * @property string $author_string
@@ -26,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
- * 
+ *
  * @property-read Reference $reference
  */
 #[Table(
@@ -46,6 +48,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ThreatStatusAuthority extends Model
 {
     use HasSidecar;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
 
     /**
      * Get the reference that this threat status authority belongs to.

@@ -2,12 +2,13 @@
 
 namespace App\Models\Glossary;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Shared\Agent;
+use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
-use App\Models\Shared\ControlledTerm;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -32,14 +33,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Glossary $glossary
  * @property-read Term $term
  * @property-read Term $relatedTerm
  * @property-read ControlledTerm $relationshipType
  * @property-read Limitation|null $limitation
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(name: 'term_relationships', schema: 'glossary', incrementing: true)]
 #[Fillable([

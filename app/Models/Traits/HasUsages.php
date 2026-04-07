@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Trait HasUsages
  *
- * This trait can be used by any model that represents a taxonomic name (e.g., TaxonName, Synonym, etc.)
- * to define a relationship to the TaxonNameUsageMap model, which captures all the instances where 
- * this name has been cited or used in literature.
+ * This trait can be used by any model that represents a taxonomic name (e.g.,
+ * TaxonName, Synonym, etc.) to define a relationship to the TaxonNameUsageMap
+ * model, which captures all the instances where this name has been cited or
+ * used in literature.
  */
 trait HasUsages
 {

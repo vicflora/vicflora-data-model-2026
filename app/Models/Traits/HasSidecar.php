@@ -9,18 +9,21 @@ use Illuminate\Support\Facades\DB;
 /**
  * Trait HasSidecar
  *
- * Provides functionality for models that have a "sidecar" extension table, allowing for 
- * seamless creation and updating of both the base record and its associated sidecar data 
- * within a single transaction. This trait is designed to be used with models that represent 
- * entities where additional fields are stored in a separate table linked by a foreign key.
+ * Provides functionality for models that have a "sidecar" extension table,
+ * allowing for seamless creation and updating of both the base record and its
+ * associated sidecar data within a single transaction. This trait is designed
+ * to be used with models that represent entities where additional fields are
+ * stored in a separate table linked by a foreign key.
  *
  * The trait includes methods for:
  * - Creating a new record in both the base and sidecar tables simultaneously.
- * - Promoting an existing base record to the sidecar model, with optional sidecar data updates.
+ * - Promoting an existing base record to the sidecar model, with optional
+ *   sidecar data updates.
  * - Updating both base and sidecar fields in a single transaction.
  *
- * Models using this trait must implement the following abstract methods to specify their 
- * base table, base model class, extension table, and sidecar fields:
+ * Models using this trait must implement the following abstract methods to
+ * specify their base table, base model class, extension table, and sidecar
+ * fields:
  * - getBaseTable(): string
  * - getBaseModelClass(): string
  * - getExtensionTable(): string
