@@ -2,7 +2,9 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Observers\Taxonomy\TaxonTreeNodeObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,6 +42,7 @@ use Illuminate\Database\Eloquent\Model;
     'parent_id',
     'path',
 ])]
+#[ObservedBy(TaxonTreeNodeObserver::class)]
 class TaxonTreeNode extends Model
 {
     public function taxonTree()

@@ -5,7 +5,9 @@ namespace App\Models\Taxonomy;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
+use App\Observers\TaxonNameUsageMapObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +61,7 @@ use Illuminate\Support\Carbon;
     'created_by_id',
     'updated_by_id',
 ])]
+#[ObservedBy(TaxonNameUsageMapObserver::class)]
 class TaxonNameUsageMap extends Model
 {
     use Blameable;
