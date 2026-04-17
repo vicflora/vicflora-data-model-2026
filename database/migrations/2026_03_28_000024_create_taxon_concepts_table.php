@@ -14,7 +14,7 @@ return new class extends Migration
             
             $table->foreignId('taxon_tree_id')->nullable()->constrained('taxon_trees');
             $table->foreignId('taxon_name_id')->constrained('taxon_names');
-            $table->foreignId('according_to_id')->constrained('references');
+            $table->foreignId('according_to_id')->nullable()->constrained('references');
             
             $table->foreignId('rank_id')->nullable()->constrained('controlled_terms');
            

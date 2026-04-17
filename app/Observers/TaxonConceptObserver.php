@@ -16,12 +16,21 @@ class TaxonConceptObserver
      */
     public function created(TaxonConcept $taxonConcept): void
     {
-        // Only automate if the concept is scoped to a specific tree (Flora)
+        // 1. Flora-specific automation
         if ($taxonConcept->taxon_tree_id) {
             $this->initializeTreatmentAndProfile($taxonConcept);
         }
 
-        $this->syncConceptLabel($taxonConcept);
+        // 2. Strict Governance Check
+        // If for some reason it still doesn't have an according_to_id, 
+        // we should probably throw an exception to prevent 'orphan' concepts.
+        if (!$taxonConcept->according_to_id) {
+            throw new \Exception("TaxonConcept [{$taxonConcept->id}] created without an 'according_to_id'.");
+        }
+
+        // 3. Finalize the Label
+        // Refresh to ensure we have the new according_to relationship loaded
+        $this->syncConceptLabel($taxonConcept->fresh(['accordingTo', 'taxonName']));
     }
 
     /**

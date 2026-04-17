@@ -2,12 +2,15 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Profile\Profile;
 use App\Models\Shared\Reference;
 use App\Models\Traits\HasSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Treatment
@@ -32,6 +35,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property-read Reference $reference
  * @property-read TaxonomyVersion $taxonomyVersion
+ * @property-read TaxonConcept $taxonConcept
+ * @property-read Collection<int, TaxonNameUsage>|null $taxonNameUsages
+ * @property-read Profile|null $profile
  */
 #[Table(
     name: 'treatments', 
@@ -67,12 +73,39 @@ class Treatment extends Model
 
     /**
      * Get the taxonomy version that this treatment belongs to.
-     * 
      * @return BelongsTo
      */
     public function taxonomyVersion(): BelongsTo
     {
         return $this->belongsTo(TaxonomyVersion::class, 'taxonomy_version_id');
+    }
+
+    /**
+     * Link back to the semantic identity.
+     * @return BelongsTo
+     */
+    public function taxonConcept(): BelongsTo
+    {
+        return $this->belongsTo(TaxonConcept::class, 'taxon_concept_id');
+    }
+
+    /**
+     * The Profile (Description, Biology, etc.) 
+     * Since Profile.id matches TaxonConcept.id, we join directly via our extension field.
+     * @return HasOne
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class, 'taxon_concept_id', 'taxon_concept_id');
+    }
+
+    /**
+     * The Nomenclature section (header (accepted name) and citation list (synonyms)) and vernacular names.
+     * @return HasMany
+     */
+    public function taxonNameUsages(): HasMany
+    {
+        return $this->hasMany(TaxonNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
     }
 
     /**
