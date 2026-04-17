@@ -10,14 +10,15 @@ return new class extends Migration
         $sql = <<<SQL
 CREATE MATERIALIZED VIEW mapper.taxon_concept_occurrence_map AS
 WITH occurrence_pivot AS (
-    -- Link to Accepted Name (using GUIDs from mapper.taxa)
+    -- Link to Accepted Name via the name_match_map bridge
     SELECT 
         t.taxon_concept_id, 
         t.taxon_tree_id,
         o.id AS occurrence_id
     FROM mapper.taxa t
-    JOIN public.parsed_names pn ON t.scientific_name_id = pn.vicflora_scientific_name_id
-    JOIN mapper.occurrences o ON pn.id = o.parsed_name_id
+    -- Join on the scientific_name_id (BigInt) to avoid the UUID type mismatch
+    JOIN mapper.name_match_map nmm ON t.scientific_name_id = nmm.taxon_name_id
+    JOIN mapper.occurrences o ON nmm.parsed_name_id = o.parsed_name_id
     
     UNION
     
@@ -27,20 +28,20 @@ WITH occurrence_pivot AS (
         t.taxon_tree_id,
         o.id AS occurrence_id
     FROM mapper.taxa t
-    -- We join back to mapper.taxa to ensure the species_id (GUID) exists in the current tree
     JOIN mapper.taxa ts ON t.species_id = ts.taxon_concept_id 
         AND t.taxon_tree_id = ts.taxon_tree_id
-    JOIN public.parsed_names pn ON t.scientific_name_id = pn.vicflora_scientific_name_id
-    JOIN mapper.occurrences o ON pn.id = o.parsed_name_id
+    -- Again, join using the scientific_name_id (BigInt) from the child taxon
+    JOIN mapper.name_match_map nmm ON t.scientific_name_id = nmm.taxon_name_id
+    JOIN mapper.occurrences o ON nmm.parsed_name_id = o.parsed_name_id
     WHERE t.species_id IS NOT NULL
 )
 SELECT 
-    (ROW_NUMBER() OVER ())::integer AS id, -- Synthetic Primary Key
-    pivot.taxon_concept_id, -- Now a GUID
-    pivot.taxon_tree_id,    -- Now a GUID
-    pivot.occurrence_id,    -- Remaining an integer as it's an internal mapper PK
+    (ROW_NUMBER() OVER ())::integer AS id,
+    pivot.taxon_concept_id, -- Keep as UUID
+    pivot.taxon_tree_id,    -- Keep as UUID
+    pivot.occurrence_id,
 
-    -- THE STATUS WATERFALL (Calculated once, stored as strings)
+    -- THE STATUS WATERFALL
     COALESCE(aocc.asserted_value, t.occurrence_status, 'present') AS occurrence_status,
     
     COALESCE(
@@ -70,7 +71,6 @@ SELECT
 
 FROM occurrence_pivot pivot
 JOIN mapper.occurrences o ON pivot.occurrence_id = o.id
--- Join back to taxa using the GUID to pull the profile-level distribution status
 JOIN mapper.taxa t ON pivot.taxon_concept_id = t.taxon_concept_id 
     AND pivot.taxon_tree_id = t.taxon_tree_id
 LEFT JOIN public.assertions aocc ON o.id = aocc.occurrence_id AND aocc.term = 'occurrenceStatus'
