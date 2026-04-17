@@ -108,6 +108,15 @@ class TaxonConcept extends Model
     }
 
     /**
+     * The specific Concept Label sidecar for this concept.
+     * Provides the "Name sec. Author" string.
+     */
+    public function label(): HasOne
+    {
+        return $this->hasOne(TaxonConceptLabel::class, 'taxon_concept_id');
+    }
+
+    /**
      * The Rank of this concept in the current taxonomic opinion.
      * @return BelongsTo
      */
