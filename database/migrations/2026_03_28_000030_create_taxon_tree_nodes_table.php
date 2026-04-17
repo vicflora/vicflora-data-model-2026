@@ -34,15 +34,14 @@ return new class extends Migration
             // Indexes
             $table->index(['parent_id', 'taxon_tree_id'], 'ttn_hierarchy_idx');
             
-            // Requirement 2: Uniqueness of concept within a tree for current records only
-            // This ensures a concept isn't "active" in the same tree twice.
-            DB::statement('
-                CREATE UNIQUE INDEX ttn_active_concept_unique_idx 
-                ON taxon_tree_nodes (taxon_tree_id, taxon_concept_id) 
-                WHERE end_date IS NULL
-            ');
         });
 
+        DB::statement('
+            CREATE UNIQUE INDEX ttn_active_concept_unique_idx 
+            ON taxon_tree_nodes (taxon_tree_id, taxon_concept_id) 
+            WHERE end_date IS NULL
+        ');
+        
         DB::statement('
             CREATE INDEX ttn_temporal_range_gist_idx 
             ON taxon_tree_nodes 
