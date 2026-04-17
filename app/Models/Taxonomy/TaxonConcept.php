@@ -12,6 +12,7 @@ use App\Observers\TaxonConceptObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,6 +43,8 @@ use Illuminate\Support\Carbon;
  * @property-read TaxonTree $taxonTree
  * @property-read TaxonName $taxonName
  * @property-read Reference $accordingTo
+ * @property-read TaxonConceptLabel $label
+ * @property-read string $title
  * @property-read ControlledTerm $rank
  * @property-read ScientificName|null $acceptedName
  * @property-read Collection<int, ScientificName> $synonyms
@@ -110,10 +113,31 @@ class TaxonConcept extends Model
     /**
      * The specific Concept Label sidecar for this concept.
      * Provides the "Name sec. Author" string.
+     * @return HasOne
      */
     public function label(): HasOne
     {
         return $this->hasOne(TaxonConceptLabel::class, 'taxon_concept_id');
+    }
+
+    /**
+     * Get the concept title (dcterms:title).
+     * * Returns the "sec." label if available, otherwise falls back 
+     * to the nomenclatural full name.
+     * @return Attribute
+     */
+    protected function title(): Attribute
+    {
+        return Attribute::get(function (mixed $value, array $attributes) {
+            // 1. Check if the label relationship is already loaded
+            if ($this->relationLoaded('label') && $this->label) {
+                return $this->label->name_string;
+            }
+
+            // 2. Fallback to the nomenclatural name
+            // Using the relationship ensures we get the formatted name string
+            return $this->taxonName?->name_string ?? 'Unknown Taxon';
+        });
     }
 
     /**
