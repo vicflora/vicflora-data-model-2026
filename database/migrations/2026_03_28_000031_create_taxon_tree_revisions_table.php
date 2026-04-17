@@ -13,19 +13,19 @@ return new class extends Migration
     {
         Schema::create('taxon_tree_revisions', function (Blueprint $table) {
             $table->id();
-            
             $table->foreignId('taxon_tree_id')->constrained('taxon_trees');
-            $table->foreignId('from_node_id')
-                ->nullable()
-                ->constrained('taxon_tree_nodes')
-                ->references('taxon_concept_id');
-            $table->foreignId('to_node_id')
-                ->nullable()
-                ->constrained('taxon_tree_nodes')
-                ->references('taxon_concept_id');
+            
+            $table->foreignId('from_node_id')->nullable()->constrained('taxon_tree_nodes');
+            $table->foreignId('to_node_id')->nullable()->constrained('taxon_tree_nodes');
+            
             $table->foreignId('change_type_id')->constrained('controlled_terms');
+            
+            $table->unsignedBigInteger('taxonomy_version_id')->nullable();
+            $table->foreign('taxonomy_version_id')
+                ->references('reference_id')
+                ->on('taxonomy_versions_ext');
+
             $table->text('remarks')->nullable();
-            $table->foreignId('taxonomy_version_id')->constrained('references');
 
             // Audit
             $table->unsignedSmallInteger('version')->default(1);

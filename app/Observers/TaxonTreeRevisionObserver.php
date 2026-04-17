@@ -4,8 +4,8 @@ namespace App\Observers;
 
 use App\Models\Taxonomy\TaxonTreeRevision;
 use App\Models\Taxonomy\TaxonomyVersion;
-use App\Models\Taxonomy\Reference;
-use App\Models\Taxonomy\ControlledTerm;
+use App\Models\Shared\Reference;
+use App\Models\Shared\ControlledTerm;
 use Illuminate\Support\Carbon;
 
 class TaxonTreeRevisionObserver
@@ -15,38 +15,40 @@ class TaxonTreeRevisionObserver
      */
     public function created(TaxonTreeRevision $revision): void
     {
-        $today = Carbon::today();
+        $today = now()->startOfDay();
 
-        // Check if a TaxonomyVersion already exists for this tree today
-        $exists = TaxonomyVersion::where('taxon_tree_id', $revision->taxon_tree_id)
-            ->whereDate('created_at', $today)
-            ->exists();
+        // 1. Check if a version already exists for this tree today
+        $version = TaxonomyVersion::where('taxon_tree_id', $revision->taxon_tree_id)
+            ->where('created_at', '>=', $today)
+            ->first();
 
-        if (!$exists) {
-            $this->createDailyVersion($revision);
+        // 2. If not, create it using the trait on the TaxonomyVersion model
+        if (!$version) {
+            $version = $this->createDailyVersion($revision);
         }
+
+        // 3. Update the revision to link it to the newly found/created version
+        // Using the primary key of the sidecar table (reference_id)
+        $revision->updateQuietly([
+            'taxonomy_version_id' => $version->reference_id
+        ]);
     }
 
     /**
      * Use the sidecar pattern to create a Reference and TaxonomyVersion.
      */
-    protected function createDailyVersion(TaxonTreeRevision $revision): void
+    protected function createDailyVersion(TaxonTreeRevision $revision): TaxonomyVersion
     {
-        $treeName = $revision->tree->name; // e.g., "VicFlora"
+        $treeName = $revision->taxonTree->name;
         $dateString = now()->format('Y-m-d');
-        
-        // Resolve the Reference Type for a Checklist/Version
         $refTypeId = ControlledTerm::getIdByCode('REFERENCE_TYPE', 'CHECKLIST');
 
-        Reference::createWithSidecar('taxonomyVersion', [
-            // 1. Reference Data (The bibliographic entry)
+        return TaxonomyVersion::createWithSidecar([
             'reference_type_id' => $refTypeId,
             'title' => "{$treeName} - Taxonomy Version ({$dateString})",
             'publication_year' => now()->year,
         ], [
-            // 2. TaxonomyVersion Sidecar Data
             'taxon_tree_id' => $revision->taxon_tree_id,
-            'revision_id'   => $revision->id,
             'version_date'  => now(),
             'label'         => "v{$dateString}",
         ]);

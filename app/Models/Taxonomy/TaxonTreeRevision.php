@@ -83,7 +83,7 @@ class TaxonTreeRevision extends Model
      */
     public function fromNode(): BelongsTo
     {
-        return $this->belongsTo(TaxonTreeNode::class, 'from_node_id', 'taxon_concept_id');
+        return $this->belongsTo(TaxonTreeNode::class, 'from_node_id');
     }
 
     /**
@@ -93,7 +93,7 @@ class TaxonTreeRevision extends Model
      */
     public function toNode(): BelongsTo
     {
-        return $this->belongsTo(TaxonTreeNode::class, 'to_node_id', 'taxon_concept_id');
+        return $this->belongsTo(TaxonTreeNode::class, 'to_node_id');
     }
 
     /**
@@ -119,7 +119,4 @@ class TaxonTreeRevision extends Model
     {
         return $this->belongsTo(TaxonomyVersion::class, 'taxonomy_version_id');
     }
-
-
-
 }

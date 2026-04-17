@@ -7,23 +7,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('taxon_tree_nodes', function (Blueprint $table) {
-            // 1. Define the column and set it as the primary key
-            $table->foreignId('taxon_concept_id')
-                ->primary() // This implicitly creates a unique constraint
-                ->constrained('taxon_concepts')
-                ->onDelete('restrict');
-
+            $table->id(); // New surrogate primary key
+            
             $table->foreignId('taxon_tree_id')->constrained('taxon_trees');
+            $table->foreignId('taxon_concept_id')->constrained('taxon_concepts');
             $table->foreignId('taxon_tree_def_item_id')->constrained('taxon_tree_def_items');
-
-            // 2. Define the column without the constraint first
-            $table->foreignId('parent_id')->nullable();
+            
+            // Reference the node ID, not the concept ID
+            $table->foreignId('parent_id')->nullable()->constrained('taxon_tree_nodes');
 
             $table->string('path');
             $table->unsignedSmallInteger('sort_order')->nullable();
@@ -37,16 +31,16 @@ return new class extends Migration
             $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
 
+            // Indexes
             $table->index(['parent_id', 'taxon_tree_id'], 'ttn_hierarchy_idx');
-            $table->index('taxon_concept_id', 'ttn_current_concepts_idx')
-                  ->whereNull('end_date');
-        });
-
-        // 3. Add the self-referencing constraint AFTER the table structure is defined
-        Schema::table('taxon_tree_nodes', function (Blueprint $table) {
-            $table->foreign('parent_id')
-                ->references('taxon_concept_id')
-                ->on('taxon_tree_nodes');
+            
+            // Requirement 2: Uniqueness of concept within a tree for current records only
+            // This ensures a concept isn't "active" in the same tree twice.
+            DB::statement('
+                CREATE UNIQUE INDEX ttn_active_concept_unique_idx 
+                ON taxon_tree_nodes (taxon_tree_id, taxon_concept_id) 
+                WHERE end_date IS NULL
+            ');
         });
 
         DB::statement('
@@ -56,9 +50,6 @@ return new class extends Migration
         ');
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('taxon_tree_nodes');

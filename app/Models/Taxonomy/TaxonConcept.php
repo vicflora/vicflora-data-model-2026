@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
@@ -200,6 +201,25 @@ class TaxonConcept extends Model
         ->where('is_preferred_vernacular_name', true)
         ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'))
         ->where('name_usage_role_id', $vernacularNameRoleId);
+    }
+
+    /**
+     * Get the full historical audit trail of where this concept 
+     * has been placed across all versions of the taxonomic tree.
+     */
+    public function taxonomicPlacementHistory(): HasMany
+    {
+        // Points to the new non-unique taxon_concept_id in taxon_tree_nodes
+        return $this->hasMany(TaxonTreeNode::class, 'taxon_concept_id');
+    }
+
+    /**
+     * Helper to get the single currently active placement.
+     */
+    public function currentPlacement(): HasOne
+    {
+        return $this->hasOne(TaxonTreeNode::class, 'taxon_concept_id')
+            ->whereNull('end_date');
     }
 
     /**
