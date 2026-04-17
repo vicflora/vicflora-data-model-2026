@@ -24,38 +24,53 @@ use Illumimate\Support\Carbon;
  * parsed string and the taxonomic matches across different trees.
  * 
  * @property int $id
+ * 
+ * * Unprocessed scientific name string from occurrence data
  * @property string $scientific_name
+ * 
+ * * Type of name (from GBIF Name Parser)
  * @property string|null $type
- * @property bool $authors_parsed
- * @property string|null $genus_or_above
- * @property string|null $infrageneric
- * @property string|null $specific_epithet
- * @property string|null $infraspecific_epithet
- * @property string|null $cultivar_epithet
- * @property string|null $strain
- * @property string|null $notho
- * @property string|null $rank_marker
- * @property string|null $authorship
- * @property string|null $bracket_authorship
- * @property string|null $year
- * @property string|null $bracket_year
- * @property string|null $sensu
- * @property bool $parsed
- * @property bool $parsed_partially
- * @property string|null $key
- * @property string|null $nom_status
+ * 
+ * * GBIF Name Parsing API metadata
+ * @property array{
+ *     authorsParsed: bool|null,
+ *     genusOrAbove: string|null,
+ *     infraGeneric: string|null, 
+ *     specificEpithet: string|null, 
+ *     infraspecificEpithet: string|null, 
+ *     cultivarEpithet: string|null, 
+ *     strain: string|null, 
+ *     notho: string|null, 
+ *     rankMarker: string|null, 
+ *     authorship: string|null, 
+ *     bracketAuthorship: string|null, 
+ *     year: string|null, 
+ *     bracketYear: string|null, 
+ *     sensu: string|null, 
+ *     parsed: bool, 
+ *     parsedPartially: bool,
+ *     key: string|null, 
+ *     nomStatus: string|null, 
+ *     remarks: string|null, 
+ * }|null $metadata
+ * 
+ * * Canonical names
  * @property string|null $canonical_name
  * @property string|null $canonical_name_with_marker
  * @property string|null $canonical_name_complete
- * @property string|null $remarks
+ *
+ * * Name matching
  * @property int|null $vicflora_scientific_name_id
  * @property string|null $name_match_type
+ * 
+ * * System metadata
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
+ * * Relationships
  * @property-read Collection<int, Occurrence> $occurrences
  * @property-read Collection<int, NameMatchMap> $nameMatches
  * @property-read Agent|null $createdBy

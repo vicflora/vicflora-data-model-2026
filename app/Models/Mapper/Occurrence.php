@@ -25,40 +25,58 @@ use Illuminate\Support\Carbon;
  * The model includes relationships to the ParsedName for taxonomic information
  * and any Assertions made about this occurrence.
  *
- * @property string $id
- * @property string $basis_of_record
- * @property string $data_resource_uid
- * @property string|null $collection
- * @property string|null $catalog_number
- * @property string|null $scientific_name
- * @property string|null $recorded_by
- * @property string|null $record_number
- * @property Carbon|null $event_date
- * @property string|null $country
- * @property string|null $state_province
- * @property string|null $locality
- * @property string|null $verbatim_locality
- * @property float|null $decimal_latitude
- * @property float|null $decimal_longitude
- * @property string|null $ibra7_region
- * @property string|null $ibra7_subregion
+ * * Identification & linkages
+ * @property string $id (UUID)
+ * @property int|null $parsed_name_id
+ * @property string $scientific_name
+ * @property string $data_source
+ * @property string|null $event_date
+ * 
+ * * Biological status
+ * @property string|null $establishment_means
+ * @property string|null $degree_of_establishment
+ * @property bool $flowers
+ * @property bool $fruit
+ * @property bool $buds
+ * 
+ * * Spatial & geography
+ * @property mixed $geom (PostGIS Point)
  * @property string|null $lga2023
- * @property string|null $capad2022
  * @property string|null $bioregion
  * @property string|null $park_res
  * @property string|null $rap
- * @property string|null $establishment_means
- * @property string|null $degree_of_establishment
- * @property bool|null $flowers
- * @property bool|null $fruit
- * @property bool|null $buds
- * @property Point|null $geom
- * @property int|null $parsed_name_id
- * @property string|null $data_source
+ * 
+ * * Source data
+ * @property array{
+ *     dataResourceUid: string|null,
+ *     collection: string|null,
+ *     catalogNumber: string|null,
+ *     basisOfRecord: string|null,
+ *     recordedBy: string|null,
+ *     recordNumber: string|null,
+ *     country: string|null,
+ *     stateProvince: string|null,
+ *     locality: string|null,
+ *     verbatimLocality: string|null,
+ *     decimalLatitude: float|string|null,
+ *     decimalLongitude: float|string|null,
+ *     reproductiveCondition: string|null,
+ *     establishmentMeans: string|null,
+ *     degreeOfEstablishment: string|null,
+ *     ibra7Region: string|null,
+ *     ibra7Subregion: string|null,
+ *     capad2022: string|null,
+ * }|null $metadata
+ * 
+ * * System metadata
  * @property Carbon|null $modified
+ * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- *
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * 
+ * * Relationships
  * @property-read ParsedName|null $parsedName
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy

@@ -61,38 +61,26 @@ erDiagram
 
     Occurrence {
         uuid id PK
-        datetime created_at
-        datetime updated_at
-        datetime modified
-        string basis_of_record
-        string data_resource_uid
-        string collection
-        string catalog_number
         string scientific_name
-        string recorded_by "nullable"
-        string record_number "nullable"
+        int parsed_name_id FK "nullable"
+        string data_source "nullable"
         string event_date "nullable"
-        string country "nullable"
-        string state_province "nullable"
-        text locality "nullable"
-        text verbatim_locality "nullable"
-        float8 decimal_latitude
-        float8 decimal_longitude
-        string ibra7_region "nullable"
-        string ibra7_subregion "nullable"
-        string lga2023 "nullable"
-        string capad2022 "nullable"
-        string bioregion "nullable"
-        varchar park_res "nullable"
-        string rap "nullable"
+
         string establishment_means "nullable"
         string degree_of_establishment "nullable"
         bool flowers "nullable"
         bool fruit "nullable"
         bool buds "nullable"
+
         point geom "nullable"
-        int parsed_name_id FK "nullable"
-        string data_source "nullable"
+        string lga2023 "nullable"
+        string bioregion "nullable"
+        string park_res "nullable"
+        string rap "nullable"
+
+        jsonb metadata "nullable"
+
+        datetime modified
     }
 
     ParsedName {
@@ -101,30 +89,11 @@ erDiagram
         timestamptz(0) updated_at "nullable"
         string scientific_name 
         string type
-        bool authors_parsed "nullable"
-        string genus_or_above "nullable"
-        string infrageneric "nullable"
-        string specific_epithet "nullable"
-        string infraspecific_epithet "nullable"
-        string cultivar_epithet "nullable"
-        string strain "nullable"
-        string notho "nullable"
-        string rank_marker "nullable"
-        string authorship "nullable"
-        string bracket_authorship "nullable"
-        string year "nullable"
-        string bracket_year "nullable"
-        string sensu "nullable"
-        bool parsed "nullable"
-        bool parsed_partially "nullable"
-        string key "nullable"
-        string nom_status "nullable"
+        jsonb metadata "nullable"
         string canonical_name "nullable"
         string canonical_name_with_marker "nullable"
         string canonical_name_complete "nullable"
-        text remarks "nullable"
         uuid vicflora_scientific_name_id FK "nullable"
-        string name_match_type "nullable"
     }
 
     NameMatch_MAP {

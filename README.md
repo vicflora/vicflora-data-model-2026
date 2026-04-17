@@ -5,8 +5,9 @@
 ```
 /
 ├── app/
+│   ├── Enums/
+│   │   └── AuditLogEvent.php
 │   ├── Models/
-│   │   ├── Geography/
 │   │   │   ├── Area.php
 │   │   │   ├── AreaCode.php
 │   │   │   └── Gazetteer.php
@@ -84,6 +85,8 @@
 │       ├── ProfileImageMapObserver.php
 │       ├── ProfileObserver.php
 │       ├── TaxonConceptObserver.php
+│       ├── TaxonNameUsageMapObserver.php
+│       ├── TaxonTreeNodeObserver.php
 │       └── TaxonTreeRevisionObserver.php
 └── database/
     ├── migrations/
@@ -173,6 +176,7 @@
             ├── NomenclaturalCodeVocabularySeeder.php
             ├── NomenclaturalStatusVocabularySeeder.php
             ├── OccurrenceStatusVocabularySeeder.php
+            ├── ProfileSectionTypeVocabularySeeder.php
             ├── ReferenceTypeVocabularySeeder.php
             ├── TaxonConceptComponentVocabularySeeder.php
             ├── TaxonRankVocabularySeeder.php

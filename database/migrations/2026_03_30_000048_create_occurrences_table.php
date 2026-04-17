@@ -14,52 +14,32 @@ return new class extends Migration
 
         Schema::create('mapper.occurrences', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->timestamp('modified')->nullable();
-
-            // Core Darwin Core / Identification
-            $table->string('basis_of_record')->index();
-            $table->string('data_resource_uid')->index();
-            $table->string('collection')->nullable();
-            $table->string('catalog_number')->nullable();
-            $table->string('scientific_name'); // Raw string
-            $table->string('recorded_by')->nullable();
-            $table->string('record_number')->nullable();
-            $table->string('event_date')->nullable();
-
-            // Geography
-            $table->string('country')->nullable();
-            $table->string('state_province')->nullable();
-            $table->text('locality')->nullable();
-            $table->text('verbatim_locality')->nullable();
-            $table->double('decimal_latitude')->nullable();
-            $table->double('decimal_longitude')->nullable();
             
-            // Pre-sampled Map Overlays
-            $table->string('ibra7_region')->nullable()->index();
-            $table->string('ibra7_subregion')->nullable();
-            $table->string('lga2023')->nullable()->index();
-            $table->string('capad2022')->nullable();
-            $table->string('bioregion')->nullable()->index();
-            $table->string('park_res')->nullable();
-            $table->string('rap')->nullable();
+            // Processed Linkages & Identification
+            $table->foreignId('parsed_name_id')->nullable()->index();
+            $table->string('scientific_name'); // Raw string for matching
+            $table->string('data_source')->index(); // 'VBA' or 'AVH'
+            $table->string('event_date')->nullable()->index();
 
-            // Biological Status
+            // Processed Biological Status (Your Filters)
             $table->string('establishment_means')->nullable();
             $table->string('degree_of_establishment')->nullable();
+            $table->boolean('buds')->default(false);
             $table->boolean('flowers')->default(false);
             $table->boolean('fruit')->default(false);
-            $table->boolean('buds')->default(false);
 
-            // PostGIS Geometry
+            // Processed/Trusted Geography (Your Spatial Filters)
             $table->geometry('geom', subtype: 'point', srid: 4326)->nullable();
+            $table->string('lga2023')->nullable()->index();
+            $table->string('bioregion')->nullable()->index();
+            $table->string('park_res')->nullable()->index();
+            $table->string('rap')->nullable()->index();
 
-            // Matching Link
-            $table->foreignId('parsed_name_id')->nullable()->index();
-            $table->string('data_source')->nullable();
+            // The "Source Truth" Bucket
+            $table->jsonb('metadata')->nullable();
 
+            $table->timestamp('modified')->nullable();
             $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
         });
         

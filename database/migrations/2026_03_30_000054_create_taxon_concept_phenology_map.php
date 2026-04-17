@@ -24,7 +24,7 @@ return new class extends Migration
                 WHERE o.event_date ~ '^\d{4}-\d{2}'
             )
             SELECT 
-                (ROW_NUMBER() OVER (ORDER BY scientific_name, month_str))::integer AS id,
+                (ROW_NUMBER() OVER (ORDER BY taxon_concept_id, month_str))::integer AS id,
                 taxon_concept_id,
                 month_str::integer AS month_numerical,
                 TO_CHAR(TO_DATE(month_str, 'MM'), 'Month') AS month,
