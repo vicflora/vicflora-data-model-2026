@@ -32,7 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('treatment_versions_ext');
         DB::statement("DROP VIEW IF EXISTS treatment_versions");
+        Schema::dropIfExists('treatment_versions_ext');
     }
 };

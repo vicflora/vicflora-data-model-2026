@@ -35,7 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('treatments_ext');
         DB::statement("DROP VIEW IF EXISTS treatments");
+        Schema::dropIfExists('treatments_ext');
     }
 };
