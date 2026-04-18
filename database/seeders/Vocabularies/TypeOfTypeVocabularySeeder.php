@@ -187,13 +187,13 @@ class TypeOfTypeVocabularySeeder extends Seeder
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/plastotype'
             ],
             [
-                'code' => 'SECONDARYTYPE', 
-                'label' => 'Secondarytype', 
+                'code' => 'SECONDARY_TYPE', 
+                'label' => 'Secondary type', 
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/secondarytype'
             ],
             [
-                'code' => 'SUPPLEMENTARYTYPE', 
-                'label' => 'Supplementarytype', 
+                'code' => 'SUPPLEMENTARY_TYPE', 
+                'label' => 'Supplementary type', 
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/supplementarytype'
             ],
             [
@@ -212,13 +212,13 @@ class TypeOfTypeVocabularySeeder extends Seeder
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/type'
             ],
             [
-                'code' => 'TYPESPECIES', 
-                'label' => 'Typespecies', 
+                'code' => 'TYPE_SPECIES', 
+                'label' => 'Type species', 
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/typeSpecies'
             ],
             [
-                'code' => 'TYPEGENUS', 
-                'label' => 'Typegenus', 
+                'code' => 'TYPE_GENUS', 
+                'label' => 'Type genus', 
                 'iri' => 'http://rs.gbif.org/vocabulary/gbif/type_status/typeGenus'
             ]
         ];

@@ -50,7 +50,7 @@ class EstablishmentMeansVocabularySeeder extends Seeder
                 'iri' => 'http://rs.tdwg.org/dwcem/values/e003'
             ],
             [
-                'code' => 'INTRODUCED_ASSISTEDCOLONISATION', 
+                'code' => 'INTRODUCED_ASSISTED_COLONISATION', 
                 'label' => 'Introduced: assisted colonisation', 
                 'description' => "Establishment of a taxon specifically with the intention of creating a self-sustaining wild population in an area that is not part of the taxon's natural range.",
                 'iri' => 'http://rs.tdwg.org/dwcem/values/e004'

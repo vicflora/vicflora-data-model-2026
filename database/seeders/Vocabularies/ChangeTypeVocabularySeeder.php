@@ -42,8 +42,8 @@ class ChangeTypeVocabularySeeder extends Seeder
                 'description' => 'Splitting a taxon into two or more taxa.'
             ],
             [
-                'code' => 'RECLASSIFY', 
-                'label' => 'Reclassify', 
+                'code' => 'TRANSFER', 
+                'label' => 'Transfer', 
                 'description' => 'Changing the classification of a taxon without changing its circumscription.'
             ],
             [

@@ -92,7 +92,7 @@ class DegreeOfEstablishmentVocabularySeeder extends Seeder
                 'iri' => 'http://rs.tdwg.org/dwcdoe/values/d010'
             ],
             [
-                'code' => 'WIDESPREADINVASIVE', 
+                'code' => 'WIDESPREAD_INVASIVE', 
                 'label' => 'Widespread invasive', 
                 'description' => 'Fully invasive species, with individuals dispersing, surviving and reproducing at multiple sites across a spectrum of habitats and geographic range.',
                 'iri' => 'http://rs.tdwg.org/dwcdoe/values/d011'
