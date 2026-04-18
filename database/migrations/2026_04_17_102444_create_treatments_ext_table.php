@@ -22,7 +22,7 @@ return new class extends Migration
             CREATE VIEW treatments AS
             SELECT 
                 r.*,
-                tr.taxonomy_version_id,
+                tr.taxonomy_id,
                 tr.taxon_concept_id
             FROM public.references r
             JOIN treatments_ext tr ON r.id = tr.reference_id

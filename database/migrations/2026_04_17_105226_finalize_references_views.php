@@ -27,10 +27,7 @@ return new class extends Migration
                             CASE WHEN eia.reference_id IS NOT NULL THEN 'EXTERNAL_IDENTITY_AUTHORITY, ' ELSE '' END)
                         ), 
                     ''), 
-                'GENERAL') as reference_roles,
-                tv.taxonomy_id,
-                tr.taxonomy_version_id,
-                trv.treatment_id
+                'GENERAL') as reference_roles
             FROM public.references r
             LEFT JOIN taxonomies_ext t ON r.id = t.reference_id
             LEFT JOIN protologues_ext p ON r.id = p.reference_id
