@@ -35,7 +35,7 @@ class ReferenceFormatter
         return $this->appendDoi($reference, $out);
     }
 
-    public function formatShort(Reference $reference): string
+    public function formatShortCitation(Reference $reference): string
     {
         $agents = $reference->authors_for_citation;
         $count = $agents->count();

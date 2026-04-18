@@ -2,8 +2,6 @@
 
 namespace App\Models\Traits;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -33,133 +31,92 @@ use Illuminate\Support\Facades\DB;
 trait HasSidecar
 {
     /**
-    * Create a new record in the base table and the sidecar extension table within a single transaction.
-    *
-    * @param array $baseData Data for the base table (e.g., 'references').
-    * @param array $extData Data for the extension table (sidecar fields).
-    * @return self
-    */
-    public static function createWithSidecar(array $baseData, array $extData = []): self
+     * The parent base model class (e.g. Reference::class).
+     */
+    abstract public function getBaseModelClass(): string;
+
+    /**
+     * The physical base table name (e.g. 'references_base').
+     */
+    abstract public function getBaseTable(): string;
+
+    /**
+     * The physical extension table name (e.g. 'protologues_ext').
+     */
+    abstract protected function getExtensionTable(): string;
+
+    /**
+     * The columns for the extension table.
+     */
+    abstract protected function getSidecarFields(): array;
+
+    /**
+     * Initial creation for the sidecar extension table.
+     * @param array $attributes
+     * @return self
+     */
+    public function createWithSidecar(array $attributes)
     {
-        return DB::transaction(function () use ($baseData, $extData) {
-            $model = new static();
-            $baseClass = $model->getBaseModelClass();
-            
-            // Resolve Agent for Attribution
-            $agentId = Auth::check() 
-                ? DB::table('agents')->where('user_id', Auth::id())->value('id') 
-                : null;
+        $this->fill($attributes);
 
-            $base = new $baseClass();
-            $base->setTable($model->getBaseTable());
-            
-            // Manually set audit fields since we're using a Base Model instance
-            // but might be bypassing standard save() logic in some implementations
-            $base->fill(array_merge($baseData, [
-                'created_at' => now(),
-                'updated_at' => now(),
-                'created_by_id' => $agentId,
-                'updated_by_id' => $agentId,
-            ]));
-            $base->save();
+        if (method_exists($this, 'runPrePersistLogic')) {
+            $this->runPrePersistLogic();
+        }
 
-            return static::promote($base, $extData);
-        });
+        return DB::table($this->getExtensionTable())->insert(array_merge(
+            ['id' => $this->id],
+            $this->extractExtensionAttributes()
+        ));
     }
 
     /**
      * Promote an existing base record to the sidecar model, optionally updating sidecar fields.
-     *
-     * @param Model $baseRecord
-     * @param array $extData
+     * @param array $attributes
      * @return self
      */
-    public static function promote(Model $baseRecord, array $extData = []): self
+    public function promote(array $attributes = [])
     {
-        $instance = new static();
-        
-        // 1. Perform the Sidecar Insert/Update
-        DB::table($instance->getExtensionTable())->updateOrInsert(
-            [$instance->getSidecarForeignKey() => $baseRecord->id],
-            $extData
-        );
+        return DB::transaction(function () use ($attributes) {
+            $this->fill($attributes);
 
-        // 2. Resolve Agent for Base Table Attribution
-        $agentId = Auth::check() 
-            ? DB::table('agents')->where('user_id', Auth::id())->value('id') 
-            : null;
+            // Ensure the sidecar-specific strings are generated 
+            // before the first-ever insert into the _ext table
+            if (method_exists($this, 'runPrePersistLogic')) {
+                $this->runPrePersistLogic();
+            }
 
-        // 3. Touch the Base Table
-        // This ensures the 'updated_at' and 'updated_by_id' reflect the new Role/Extension
-        DB::table($instance->getBaseTable())
-            ->where('id', $baseRecord->id)
-            ->update([
-                'updated_at' => now(),
-                'updated_by_id' => $agentId,
-            ]);
-
-        return static::find($baseRecord->id);
+            return DB::table($this->getExtensionTable())->insert(array_merge(
+                ['id' => $this->id],
+                $this->extractExtensionAttributes()
+            ));
+        });
     }
 
     /**
      * Update both base and sidecar fields in a single transaction.
      *
-     * @param array $data
+     * @param array $attributes
      * @return bool
      */
-    public function updateWithSidecar(array $data): bool
+    public function updateWithSidecar(array $attributes)
     {
-        return DB::transaction(function () use ($data) {
-            $sidecarFieldsList = $this->getSidecarFields();
+        $this->fill($attributes);
 
-            // 1. Update Extension Table
-            $sidecarFields = array_intersect_key($data, array_flip($sidecarFieldsList));
-            if (!empty($sidecarFields)) {
-                DB::table($this->getExtensionTable())
-                    ->where($this->getSidecarForeignKey(), $this->id)
-                    ->update($sidecarFields);
-            }
+        if (method_exists($this, 'runPrePersistLogic')) {
+            $this->runPrePersistLogic();
+        }
 
-            // 2. Resolve Agent ID (Looking up the Agent owning this User)
-            $agentId = Auth::check() 
-                ? DB::table('agents')->where('user_id', Auth::id())->value('id') 
-                : null;
-
-            // 3. Update Base Table + Attribution
-            $baseFields = array_diff_key($data, array_flip($sidecarFieldsList));
-            
-            $auditFields = [
-                'updated_at' => now(),
-                'updated_by_id' => $agentId, 
-            ];
-
-            DB::table($this->getBaseTable())
-                ->where('id', $this->id)
-                ->update(array_merge($baseFields, $auditFields));
-
-            return true;
-        });
+        return DB::table($this->getExtensionTable())
+            ->where('id', $this->id)
+            ->update($this->extractExtensionAttributes());
     }
 
-    /**
-     * Abstract methods that must be implemented by the model using this trait to specify
-     * the base table, base model class, extension table, and sidecar fields.
-     */
-    abstract public function getBaseModelClass(): string; // e.g. Reference::class
-    abstract public function getBaseTable(): string;
-    abstract public function getExtensionTable(): string;
-    abstract public function getSidecarFields(): array;
-
-
-    /**
-     * Get the foreign key name used in the sidecar extension table to link back to the base table.
-     * Defaults to 'reference_id' but can be overridden by models if needed (e.g., 'taxon_name_id').
-     *
-     * @return string
-     */
-    protected function getSidecarForeignKey(): string
+    protected function extractExtensionAttributes(): array
     {
-        // Default to reference_id, but can be overridden (e.g. taxon_name_id)
-        return 'reference_id'; 
+        // Filters the model's attributes against the allowed extension fields
+        return array_intersect_key(
+            $this->getAttributes(),
+            array_flip($this->getSidecarFields())
+        );
     }
 }

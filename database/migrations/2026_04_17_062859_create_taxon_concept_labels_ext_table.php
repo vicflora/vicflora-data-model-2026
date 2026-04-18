@@ -10,10 +10,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('taxon_concept_labels_ext', function (Blueprint $table) {
-            // The PK is the ID of the TaxonName record we are extending
-            $table->foreignId('taxon_name_id')
-                ->primary()
-                ->constrained('taxon_names')
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')
+                ->references('id')
+                ->on('taxon_names')
                 ->onDelete('cascade');
 
             // The 'Base Name' (The pure nomenclatural TaxonName)
@@ -48,7 +48,7 @@ return new class extends Migration
                 tn.created_at,
                 tn.updated_at
             FROM taxon_names tn
-            JOIN taxon_concept_labels_ext ext ON tn.id = ext.taxon_name_id
+            JOIN taxon_concept_labels_ext ext ON tn.id = ext.id
         ");
     }
 

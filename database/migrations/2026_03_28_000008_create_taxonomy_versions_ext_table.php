@@ -13,17 +13,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('taxonomy_versions_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')->primary()->constrained('references');
-            $table->foreignId('taxonomy_id')->constrained('references');
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')
+                ->references('id')
+                ->on('references')
+                ->onDelete('cascade');
+            $table->foreignId('taxonomy_id')->constrained('taxonomies_ext');
         });
 
         DB::statement("
             CREATE VIEW taxonomy_versions AS
             SELECT 
                 r.*,
-                tv.taxonomy_id
+                ext.taxonomy_id
             FROM public.references r
-            JOIN taxonomy_versions_ext tv ON r.id = tv.reference_id
+            JOIN taxonomy_versions_ext ext ON r.id = ext.id
         ");
 
     }

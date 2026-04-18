@@ -22,7 +22,7 @@ return new class extends Migration
             
             $table->unsignedBigInteger('taxonomy_version_id')->nullable();
             $table->foreign('taxonomy_version_id')
-                ->references('reference_id')
+                ->references('id')
                 ->on('taxonomy_versions_ext');
 
             $table->text('remarks')->nullable();

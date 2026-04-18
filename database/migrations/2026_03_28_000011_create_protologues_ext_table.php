@@ -13,15 +13,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('protologues_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')->primary()->constrained('references');
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')
+                ->references('id')
+                ->on('references')
+                ->onDelete('cascade');
+            $table->string('in_authors')->nullable();
+            $table->text('protologue_string')->nullable();
         });
 
         DB::statement("
             CREATE VIEW protologues AS
             SELECT 
-                r.*
+                r.*,
+                ext.in_authors,
+                ext.protologue_string
             FROM public.references r
-            JOIN protologues_ext p ON r.id = p.reference_id
+            JOIN protologues_ext ext ON r.id = ext.id
         ");
     }
 

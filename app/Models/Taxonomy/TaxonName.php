@@ -6,9 +6,8 @@ use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\EntityIdentityMap;
 use App\Models\Shared\ExternalIdentity;
-use App\Models\Traits\Blameable;
 use App\Models\Traits\HasUsages;
-use App\Models\Traits\IncrementsVersion;
+use App\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $published_in_id
  * @property int|null $nomenclatural_code_id
  * @property int|null $nomenclatural_status_id
+ * @property string|null $name_type
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -72,7 +72,34 @@ use Illuminate\Support\Carbon;
 ])]
 class TaxonName extends Model
 {
-    use Blameable, IncrementsVersion, HasUsages;
+    use ManagesSidecars, HasUsages;
+
+    protected function baseTable(): string
+    {
+        return 'taxon_names';
+    }
+
+    protected function baseTableFields(): array
+    {
+        return [
+            'id', 
+            'guid', 
+            'name_string', 
+            'rank_id'
+        ];
+    }
+
+    public function selectSidecarModel(array $attributes = [])
+    {
+        $role = $attributes['name_type'] ?? $this->name_type ?? 'SCIENTIFIC_NAME';
+
+        return match($role) {
+            'SCIENTIFIC_NAME' => ScientificName::findOrNew($this->id),
+            'VERNACULAR_NAME' => VernacularName::findOrNew($this->id),
+            'TAXON_CONCEPT_LABEL' => TaxonConceptLabel::findOrNew($this->id),
+            default => null,
+        };
+    }
 
     /**
      * Define the relationship to the rank (ControlledTerm).

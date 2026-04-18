@@ -13,7 +13,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('taxonomies_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')->primary()->constrained('references');
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')
+                ->references('id')
+                ->on('references')
+                ->onDelete('cascade');
         });
 
         DB::statement("
@@ -21,7 +25,7 @@ return new class extends Migration
             SELECT 
                 r.*
             FROM public.references r
-            JOIN taxonomies_ext p ON r.id = p.reference_id
+            JOIN taxonomies_ext ext ON r.id = ext.id
         ");
 
     }

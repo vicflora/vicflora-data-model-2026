@@ -13,8 +13,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('treatments_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')->primary()->constrained('references');
-            $table->foreignId('taxonomy_id')->nullable()->constrained('references');
+            $table->unsignedBigInteger('id')->primary();
+            $table->foreign('id')
+                ->references('id')
+                ->on('references')
+                ->onDelete('cascade');
+            $table->foreignId('taxonomy_id')->nullable()->constrained('taxonomies_ext');
             $table->foreignId('taxon_concept_id')->unique()->constrained('taxon_concepts');
         });
 
@@ -22,10 +26,10 @@ return new class extends Migration
             CREATE VIEW treatments AS
             SELECT 
                 r.*,
-                tr.taxonomy_id,
-                tr.taxon_concept_id
+                ext.taxonomy_id,
+                ext.taxon_concept_id
             FROM public.references r
-            JOIN treatments_ext tr ON r.id = tr.reference_id
+            JOIN treatments_ext ext ON r.id = ext.id
         ");
 
     }

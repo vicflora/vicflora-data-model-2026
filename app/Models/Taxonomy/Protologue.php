@@ -3,9 +3,8 @@
 namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
-use App\Models\Traits\Blameable;
 use App\Models\Traits\HasSidecar;
-use App\Models\Traits\IncrementsVersion;
+use App\Services\ProtologueStringFormatter;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -57,6 +56,12 @@ class Protologue extends Model
     protected $casts = [
         'metadata' => 'array',
     ];
+
+    public function runPrePersistLogic()
+    {
+        // Instead of an Observer, we call a Service or Action
+        app(ProtologueStringFormatter::class)->format($this);
+    }
 
     /**
      * Get the reference that this protologue belongs to.

@@ -2,12 +2,18 @@
 
 namespace App\Models\Shared;
 
+use App\Models\Geography\Gazetteer;
+use App\Models\Profile\ThreatStatusAuthority;
+use App\Models\Taxonomy\Protologue;
+use App\Models\Taxonomy\Taxonomy;
+use App\Models\Taxonomy\TaxonomyVersion;
+use App\Models\Taxonomy\Treatment;
+use App\Models\Taxonomy\TreatmentVersion;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
-use App\Observers\ReferenceObserver;
 use App\Services\ReferenceFormatter;
+use App\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,6 +44,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $doi
  * @property string|null $uri
  * @property array|null $metadata
+ * @property string|null $reference_role
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -70,24 +77,52 @@ use Illuminate\Support\Carbon;
     'reference_type_id',
     'author_string',
     'year',
+    'full_reference_string',
+    'short_citation_string',
     'title',
     'doi',
     'uri',
     'metadata',
 ])]
-#[ObservedBy(ReferenceObserver::class)]
 class Reference extends Model
 {
-    use Blameable, IncrementsVersion;
+    use ManagesSidecars;
 
     protected $casts = [
         'metadata' => 'array',
     ];
 
-    /**
-     * Internal cache for the formatted reference string.
-     */
-    private ?string $fullReferenceCache = null;
+
+    protected function baseTable(): string
+    {
+        return 'references';
+    }
+
+    protected function baseTableFields(): array
+    {
+        return [
+            'id', 'title', 'year', 'author_string', 
+            'full_reference_string', 'short_citation_string', 
+            'metadata'
+        ];
+    }
+
+    public function selectSidecarModel(array $attributes = [])
+    {
+        $role = $attributes['reference_role'] ?? $this->reference_role ?? 'GENERAL';
+
+        return match($role) {
+            'PROTOLOGUE' => Protologue::findOrNew($this->id),
+            'TREATMENT' => Treatment::findOrNew($this->id),
+            'TREATMENT_VERSION' => TreatmentVersion::findOrNew($this->id),
+            'TAXONOMY' => Taxonomy::findOrNew($this->id),
+            'TAXONOMY_VERSION' => TaxonomyVersion::findOrNew($this->id),
+            'GAZETTEER' => Gazetteer::findOrNew($this->id),
+            'THREAT_STATUS_AUTHORITY' => ThreatStatusAuthority::findOrNew($this->id),
+            'EXTERNAL_IDENTITY_AUTHORITY' => ExternalIdentityAuthority::findOrNew($this->id),
+            default => null,
+        };
+    }
 
     /**
      * Relationship to the Vocabulary Layer (Layer 8)
@@ -254,7 +289,7 @@ class Reference extends Model
     {
         return Attribute::make(
             get: fn () => $this->short_citation_string 
-                ?? app(ReferenceFormatter::class)->formatShort($this)
+                ?? app(ReferenceFormatter::class)->formatShortCitation($this)
         );
     }
 
@@ -268,5 +303,19 @@ class Reference extends Model
             get: fn () => $this->full_reference_string 
                 ?? app(ReferenceFormatter::class)->format($this)
         );
+    }
+
+    /**
+     * In App\Models\Shared\Reference.php
+     */
+    protected function runPrePersistLogic()
+    {
+        $formatter = app(ReferenceFormatter::class);
+
+        // Generate strings for the 'references_base' table
+        // We access attributes directly on $this because the trait already called fill()
+        $this->author_string = $this->citation_authorship_string;
+        $this->full_reference_string = $formatter->format($this);
+        $this->short_citation_string = $formatter->formatShortCitation($this);
     }
 }

@@ -149,6 +149,6 @@ class Treatment extends Model
      */
     public function getSidecarFields(): array
     {
-        return ['taxonomy_version_id'];
+        return ['id'];
     }
 }

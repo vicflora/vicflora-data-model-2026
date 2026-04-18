@@ -13,17 +13,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('treatment_versions_ext', function (Blueprint $table) {
-            $table->foreignId('reference_id')->primary()->constrained('references');
-            $table->foreignId('treatment_id')->constrained('references');
+            $table->unsignedBigInteger('id')->nullable();
+            $table->foreign('id')
+                ->references('id')
+                ->on('references')
+                ->onDelete('cascade');
+            $table->foreignId('treatment_id')->nullable()->constrained('treatments_ext');
         });
         
         DB::statement("
             CREATE VIEW treatment_versions AS
             SELECT 
                 r.*,
-                trv.treatment_id
+                ext.treatment_id
             FROM public.references r
-            JOIN treatment_versions_ext trv ON r.id = trv.reference_id
+            JOIN treatment_versions_ext ext ON r.id = ext.id
         ");
     }
 
