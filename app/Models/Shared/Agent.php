@@ -4,7 +4,9 @@ namespace App\Models\Shared;
 
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
+use App\Observers\AgentObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -46,14 +48,17 @@ use Illuminate\Support\Carbon;
     incrementing: true
 )]
 #[Fillable([
-    'id',
-    'created_at',
-    'updated_at',
     'user_id',
     'agent_type_id',
-    'name',
+    'name', // Still fillable for Organizations
+    'first_name',
+    'last_name',
+    'initials',
     'email',
+    'legal_name',
+    'orcid',
 ])]
+#[ObservedBy(AgentObserver::class)]
 class Agent extends Model
 {
     use Blameable, IncrementsVersion;
@@ -97,5 +102,32 @@ class Agent extends Model
         return ControlledTerm::inVocabulary('AGENT_TYPE')
             ->orderBy('sort_order')
             ->get();
+    }
+
+    /**
+     * For Short Citations: "Smith" or "RBG Victoria"
+     * Usage: $agent->short_name
+     */
+    protected function shortName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->last_name ?? $this->name,
+        );
+    }
+
+    /**
+     * For Full Bibliographies: "Smith, J. S." or "RBG Victoria"
+     * Usage: $agent->full_bibliographic_name
+     */
+    protected function fullBibliographicName(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->last_name && $this->initials) {
+                    return "{$this->last_name}, {$this->initials}";
+                }
+                return $this->name;
+            }
+        );
     }
 }

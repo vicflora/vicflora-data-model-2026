@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('legal_name')->nullable();
             $table->string('orcid')->nullable();
 
+            $table->foreignId('user_id')->nullable()->constrained('users');
+
             $table->unsignedSmallInteger('version')->default(1);
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('updated_by_id')->nullable();
