@@ -54,6 +54,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[ObservedBy(TaxonTreeNodeObserver::class)]
 class TaxonTreeNode extends Model
 {
+    public function scopeActiveAt($query, $date)
+    {
+        return $query->where('start_date', '<=', $date)
+            ->where(function ($q) use ($date) {
+                $q->whereNull('end_date')->orWhere('end_date', '>', $date);
+            });
+    }
+
     public function taxonTree()
     {
         return $this->belongsTo(TaxonTree::class);
