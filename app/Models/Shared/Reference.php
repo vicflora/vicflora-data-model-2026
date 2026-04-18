@@ -6,8 +6,10 @@ use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -38,6 +40,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  *
  * @property-read ControlledTerm|null $type
+ * @property-read Collection<int, Agent> $contributors
+ * @property-read Collection<int, Agent> $authors
+ * @property-read Collection<int, Agent> $editors
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -98,7 +103,6 @@ class Reference extends Model
             : ['GENERAL'];
     }
 
-
     /**
      * Check if the name has a specific functional extension type.
      * * @param string $type e.g., 'SCIENTIFIC', 'VERNACULAR'
@@ -111,7 +115,32 @@ class Reference extends Model
         return strtoupper($this->name_type) === strtoupper($type);
     }
 
+    /**
+     * All contributors ordered by sequence.
+     */
+    public function contributors(): BelongsToMany
+    {
+        return $this->belongsToMany(Agent::class, 'reference_contributors_map')
+            ->using(ReferenceContributorMap::class)
+            ->withPivot(['contributor_role_id', 'sequence'])
+            ->orderBy('pivot_sequence');
+    }
 
+    /**
+     * Specifically the Authors (used for short citations).
+     */
+    public function authors(): BelongsToMany
+    {
+        return $this->contributors()
+            ->wherePivot('contributor_role_id', ControlledTerm::getIdByCode('CONTRIBUTOR_ROLE', 'AUTHOR'));
+    }
 
-
+    /**
+     * Specifically the Editors (used for "In: Editor (ed.)" formatting).
+     */
+    public function editors(): BelongsToMany
+    {
+        return $this->contributors()
+            ->wherePivot('contributor_role_id', ControlledTerm::getIdByCode('CONTRIBUTOR_ROLE', 'EDITOR'));
+    }
 }

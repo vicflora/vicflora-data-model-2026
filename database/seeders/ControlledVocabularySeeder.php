@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Database\Seeders\Vocabularies\AgentTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\AreaTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\ChangeTypeVocabularySeeder;
+use Database\Seeders\Vocabularies\ContributorRoleVocabularySeeder;
 use Database\Seeders\Vocabularies\DegreeOfEstablishmentVocabularySeeder;
 use Database\Seeders\Vocabularies\EstablishmentMeansVocabularySeeder;
 use Database\Seeders\Vocabularies\GlossaryTermRelationshipTypeVocabularySeeder;
@@ -58,6 +59,7 @@ class ControlledVocabularySeeder extends Seeder
             ImageVariantVocabularySeeder::class,
             GlossaryTermRelationshipTypeVocabularySeeder::class,
             AreaTypeVocabularySeeder::class,
+            ContributorRoleVocabularySeeder::class,
         ]);
     }
 }

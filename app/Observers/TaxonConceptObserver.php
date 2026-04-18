@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Profile\Profile;
 use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\ReferenceContributorMap;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TaxonConceptLabel;
 use App\Models\Taxonomy\TaxonName;
@@ -34,28 +35,48 @@ class TaxonConceptObserver
     {
         $taxonomy = $taxonConcept->taxonTree->taxonomy;
 
-        // 1. Create the Treatment (which creates the underlying Reference)
+        // 1. Create the Treatment (Base Reference + Sidecar)
         $treatment = Treatment::createWithSidecar([
             'reference_type_id' => ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT'),
-            'author_string' => $taxonomy->author_string,
-            'publication_year' => now()->year,
+            'year' => now()->year,
             'title' => "Treatment for " . $taxonConcept->taxonName->full_name,
         ], [
             'taxon_concept_id' => $taxonConcept->id,
             'taxonomy_id' => $taxonomy->id,
         ]);
 
-        // 2. Update the local instance and the database record
-        $taxonConcept->according_to_id = $treatment->id;
-        $taxonConcept->saveQuietly(); // Quietly to avoid any recursive 'updated' loops
+        // 2. Clone/Assign Contributors from Taxonomy to the new Treatment
+        // This populates the ReferenceContributorMap table
+        $this->syncTaxonomyContributorsToReference($taxonomy, $treatment);
 
-        // 3. Create the Profile
+        // 3. Update the local instance and the database record
+        $taxonConcept->according_to_id = $treatment->id;
+        $taxonConcept->saveQuietly(); 
+
+        // 4. Create the Profile
         Profile::create([
             'taxon_concept_id' => $taxonConcept->id,
             'status_id' => ControlledTerm::getIdByCode('PUBLICATION_STATUS', 'DRAFT'),
             'version' => 1,
             'is_published' => false,
         ]);
+    }
+
+    /**
+     * Helper to sync contributors from the Flora project to the specific Reference.
+     */
+    protected function syncTaxonomyContributorsToReference($taxonomy, $treatment): void
+    {
+        // If your Taxonomy has granular contributors, we map them over.
+        // If not, we might need a fallback or a specific Agent representing the Flora project.
+        foreach ($taxonomy->contributors as $contributor) {
+            ReferenceContributorMap::create([
+                'reference_id' => $treatment->id,
+                'agent_id' => $contributor->id,
+                'contributor_role_id' => $contributor->pivot->contributor_role_id,
+                'sequence' => $contributor->pivot->sequence,
+            ]);
+        }
     }
 
     /**
