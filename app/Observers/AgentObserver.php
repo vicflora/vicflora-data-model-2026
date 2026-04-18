@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
+use App\Services\ReferenceFormatter;
 
 class AgentObserver
 {
@@ -24,6 +25,21 @@ class AgentObserver
             // Formats to "Klazenga, Niels" or "Klazenga" if first name is missing
             // This ensures the non-nullable 'name' column is satisfied.
             $agent->name = implode(', ', $parts);
+        }
+    }
+
+    public function updated(Agent $agent): void
+    {
+        if ($agent->wasChanged(['last_name', 'first_name', 'initials', 'organization_name'])) {
+            $agent->references()->chunk(100, function ($references) {
+                foreach ($references as $reference) {
+                    // Manually trigger the string update logic
+                    // This is essentially what touch() + ReferenceObserver would do
+                    $reference->full_reference_string = app(ReferenceFormatter::class)->format($reference);
+                    $reference->short_citation_string = app(ReferenceFormatter::class)->formatShort($reference);
+                    $reference->save();
+                }
+            });
         }
     }
 

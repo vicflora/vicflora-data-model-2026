@@ -106,7 +106,7 @@ SELECT
     
     cl.start_date,
     cl.end_date,
-    ref.full_citation AS according_to
+    ref.full_reference_string AS according_to
 
 FROM taxon_concepts tc
 JOIN taxon_names tn ON tc.taxon_name_id = tn.id

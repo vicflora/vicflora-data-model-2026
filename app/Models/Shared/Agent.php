@@ -8,9 +8,11 @@ use App\Observers\AgentObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -39,6 +41,7 @@ use Illuminate\Support\Carbon;
  *
  * @property-read ControlledTerm|null $agentType
  * @property-read User|null $user
+ * @property-read Collection<int, Reference> $references
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -80,6 +83,16 @@ class Agent extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+
+    /**
+     * The references associated with this agent.
+     */
+    public function references(): BelongsToMany
+    {
+        return $this->belongsToMany(Reference::class, 'reference_contributors_map')
+                    ->withPivot('contributor_role_id', 'sequence');
     }
 
     /**
