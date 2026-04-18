@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,6 +32,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * 
  * @property-read Taxonomy $taxonomy
+ * @property-read Collection<int, TaxonTreeNode> $nodes
+ * @property-read Collection<int, TaxonTreeNode> $currentNodes
  * @property-read Agent $createdBy
  * @property-read Agent $updatedBy
  */
@@ -62,5 +65,23 @@ class TaxonTree extends Model
     public function taxonomy(): BelongsTo
     {
         return $this->belongsTo(Taxonomy::class);
+    }
+
+    /**
+     * All nodes that have ever existed in this tree.
+     * Useful for historical snapshots and audit trails.
+     */
+    public function nodes(): HasMany
+    {
+        return $this->hasMany(TaxonTreeNode::class);
+    }
+
+    /**
+     * A helper for the "HEAD" version.
+     * Returns only the nodes that are currently active.
+     */
+    public function currentNodes(): HasMany
+    {
+        return $this->nodes()->whereNull('end_date');
     }
 }
