@@ -3,55 +3,53 @@
 namespace App\Observers;
 
 use App\Models\Profile\Profile;
-use App\Models\Shared\Reference;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TaxonConceptLabel;
 use App\Models\Taxonomy\TaxonName;
+use App\Models\Taxonomy\Treatment;
 
 class TaxonConceptObserver
 {
-    /**
+/**
      * Handle the TaxonConcept "created" event.
      */
     public function created(TaxonConcept $taxonConcept): void
     {
-        // 1. Flora-specific automation
         if ($taxonConcept->taxon_tree_id) {
             $this->initializeTreatmentAndProfile($taxonConcept);
         }
 
-        // 2. Strict Governance Check
-        // If for some reason it still doesn't have an according_to_id, 
-        // we should probably throw an exception to prevent 'orphan' concepts.
         if (!$taxonConcept->according_to_id) {
             throw new \Exception("TaxonConcept [{$taxonConcept->id}] created without an 'according_to_id'.");
         }
 
-        // 3. Finalize the Label
-        // Refresh to ensure we have the new according_to relationship loaded
         $this->syncConceptLabel($taxonConcept->fresh(['accordingTo', 'taxonName']));
     }
 
     /**
-     * Creates the Reference/Treatment container and the associated Profile.
+     * Creates the Treatment container and the associated Profile.
      */
     protected function initializeTreatmentAndProfile(TaxonConcept $taxonConcept): void
     {
-        // 1. Create the Reference with Treatment Sidecar
-        // Treatment acts as the 'According To' for this specific concept.
-        $reference = Reference::createWithSidecar('treatment', [
+        $taxonomy = $taxonConcept->taxonTree->taxonomy;
+
+        // 1. Create the Treatment (which creates the underlying Reference)
+        $treatment = Treatment::createWithSidecar([
             'reference_type_id' => ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT'),
-            'title' => "Treatment for " . $taxonConcept->taxon_name->scientific_name,
+            'author_string' => $taxonomy->author_string,
+            'publication_year' => now()->year,
+            'title' => "Treatment for " . $taxonConcept->taxonName->full_name,
         ], [
             'taxon_concept_id' => $taxonConcept->id,
+            'taxonomy_id' => $taxonomy->id,
         ]);
 
-        // 2. Attach the new Treatment (Reference) as the 'According To'
-        $taxonConcept->update(['according_to_id' => $reference->id]);
+        // 2. Update the local instance and the database record
+        $taxonConcept->according_to_id = $treatment->id;
+        $taxonConcept->saveQuietly(); // Quietly to avoid any recursive 'updated' loops
 
-        // 3. Create the Profile (The actual workspace)
-        // Note: Status is now on the Profile per your instruction.
+        // 3. Create the Profile
         Profile::create([
             'taxon_concept_id' => $taxonConcept->id,
             'status_id' => ControlledTerm::getIdByCode('PUBLICATION_STATUS', 'DRAFT'),

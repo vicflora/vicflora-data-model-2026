@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('treatments_ext', function (Blueprint $table) {
             $table->foreignId('reference_id')->primary()->constrained('references');
-            $table->foreignId('taxonomy_version_id')->nullable()->constrained('references');
+            $table->foreignId('taxonomy_id')->nullable()->constrained('references');
             $table->foreignId('taxon_concept_id')->unique()->constrained('taxon_concepts');
         });
 

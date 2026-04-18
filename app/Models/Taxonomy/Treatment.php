@@ -34,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property array|null $metadata
  *
  * @property-read Reference $reference
- * @property-read TaxonomyVersion $taxonomyVersion
+ * @property-read Taxonomy $taxonomy
  * @property-read TaxonConcept $taxonConcept
  * @property-read Collection<int, TaxonNameUsage>|null $taxonNameUsages
  * @property-read Profile|null $profile
@@ -75,9 +75,9 @@ class Treatment extends Model
      * Get the taxonomy version that this treatment belongs to.
      * @return BelongsTo
      */
-    public function taxonomyVersion(): BelongsTo
+    public function taxonomy(): BelongsTo
     {
-        return $this->belongsTo(TaxonomyVersion::class, 'taxonomy_version_id');
+        return $this->belongsTo(Taxonomy::class, 'taxonomy_id');
     }
 
     /**
