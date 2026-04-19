@@ -8,6 +8,8 @@ use App\Models\Shared\EntityIdentityMap;
 use App\Models\Shared\ExternalIdentity;
 use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\HasExternalIdentities;
+use App\Models\Traits\IncrementsVersion;
 use App\Observers\TaxonConceptObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -81,7 +83,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(TaxonConceptObserver::class)]
 class TaxonConcept extends Model
 {
-    use Blameable;
+    use Blameable, IncrementsVersion, HasExternalIdentities;
 
     /**
      * The TaxonTree this concept belongs to.

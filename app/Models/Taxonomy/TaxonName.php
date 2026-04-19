@@ -4,8 +4,8 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Shared\EntityIdentityMap;
 use App\Models\Shared\ExternalIdentity;
+use App\Models\Traits\HasExternalIdentities;
 use App\Models\Traits\HasUsages;
 use App\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -77,7 +76,7 @@ use Illuminate\Support\Carbon;
 ])]
 class TaxonName extends Model
 {
-    use ManagesSidecars, HasUsages;
+    use ManagesSidecars, HasUsages, HasExternalIdentities;
 
     protected function baseTable(): string
     {
@@ -152,21 +151,5 @@ class TaxonName extends Model
             ->whereHas('vocabulary', function ($query) {
                 $query->where('code', 'TAXON_RANK');
             });
-    }
-
-    /**
-     * Define the relationship to external identities.
-     *
-     * @return MorphToMany
-     */
-    public function externalIdentities(): MorphToMany
-    {
-        return $this->morphToMany(
-            ExternalIdentity::class, 
-            'entity', 
-            'entity_identity_map'
-        )
-        ->using(EntityIdentityMap::class)
-        ->withTimestamps();
     }
 }

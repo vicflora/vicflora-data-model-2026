@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             
             // The link to the Name or Concept
-            $table->numericMorphs('entity'); 
+            $table->morphs('entity');
             
             // The link to the External Authority ID
             $table->foreignId('external_identity_id')

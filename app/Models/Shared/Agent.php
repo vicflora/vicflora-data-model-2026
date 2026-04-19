@@ -3,6 +3,7 @@
 namespace App\Models\Shared;
 
 use App\Models\Traits\Blameable;
+use App\Models\Traits\HasExternalIdentities;
 use App\Models\Traits\IncrementsVersion;
 use App\Observers\AgentObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -13,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -65,7 +65,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(AgentObserver::class)]
 class Agent extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Blameable, IncrementsVersion, HasExternalIdentities;
 
     /**
      * Relationship: Scoped to the AGENT_TYPE vocabulary.
@@ -94,25 +94,6 @@ class Agent extends Model
     {
         return $this->belongsToMany(Reference::class, 'reference_contributors_map')
                     ->withPivot('contributor_role_id', 'sequence');
-    }
-
-    /**
-     * Polymorphic relationship to External Identity
-     * 
-     * We can use this for IPNI authors and get the standard form
-     *
-     * @return MorphToMany
-     */
-    public function externalIdentities(): MorphToMany
-    {
-        return $this->morphToMany(
-            ExternalIdentity::class, 
-            'entity', 
-            'entity_identity_map'
-        )
-        ->using(EntityIdentityMap::class) // Custom pivot class
-        ->withPivot('metadata')
-        ->withTimestamps();
     }
 
     /**
