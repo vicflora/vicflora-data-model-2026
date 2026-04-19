@@ -94,11 +94,15 @@ erDiagram
     TaxonConcept }o--|{ TaxonName : "vernacularNames"
     TaxonConcept }o--|| TaxonName : "preferredVernacularName"
     NomenclaturalType }o--|| TaxonName : "typifiedName / typification"
-    TaxonName ||--o| ScientificName_EXT : "scientificName"
+    TaxonName |o--|| ScientificName_EXT : "taxonName / scientificName"
     ScientificName_EXT }o--|| Reference : "publishedIn"
-    TaxonName ||--o| VernacularName_EXT : "vernacularName"
+    TaxonName |o--|| VernacularName_EXT : "taxonName / vernacularName"
     TaxonName }o--|| ControlledTerm : "rank"
-    ScientificName_EXT }o--|| ControlledTerm: "nomenclaturalStatus"
+    ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalStatus"
+    ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalCode"
+    TaxonName |o--|| TaxonConceptLabel_EXT : "taxonName / taxonConceptLabel"
+    TaxonConcept |o--|| TaxonConceptLabel_EXT : "label"
+    TaxonConceptLabel_EXT }|--o| TaxonName : baseName
     
     %% The Syntactic Relationships
     TaxonName ||--o{ NameRelation_MAP : "fromName"
@@ -108,23 +112,29 @@ erDiagram
     TaxonName {
         int id PK
         int rank_id FK "nullable"
-        int nomenclatural_status_id FK "nullable"
-        string full_name
-        string language "nullable"
+        string name_string
     }
 
     ScientificName_EXT {
-        int taxon_name_id FK
+        int id PK
         string authorship "nullable"
         int name_published_in_id FK "nullable"
         string name_published_in FK "nullable"
         string micro_reference FK "nullable"
         string year "nullable"
-        int nomenclatural_status_id FK
+        int nomenclatural_code_id FK "nullable"
+        int nomenclatural_status_id FK "nullable"
     }
 
     VernacularName_EXT {
-        int taxon_name_id FK
+        int id PK
+        string language "nullable"
+    }
+
+    TaxonConceptLabel_EXT {
+      int id PK
+      int taxon_concept_id FK
+      int base_name_id FK
     }
 
     NameRelation_MAP {
@@ -282,24 +292,24 @@ config:
     layout: elk
 ---
 erDiagram
-    Protologue_EXT ||--o| Reference : "protologue / reference"
-    ExternalIdentityAuthority_EXT ||--o| Reference : "externalReferenceAuthority / reference"
+    TreatmentVersion_EXT ||--o| Reference : "treatmentVersion / reference"
+    Treatment_EXT ||--o| Reference : "treatment / reference"
     Taxonomy_EXT ||--o| Reference : "taxonomy / reference"
     TaxonomyVersion_EXT ||--o| Reference : "taxonomyVersion / reference"
-    Treatment_EXT ||--o| Reference : "treatment / reference"
-    TreatmentVersion_EXT ||--o| Reference : "treatmentVersion / reference"
+    Protologue_EXT ||--o| Reference : "protologue / reference"
     Gazetteer_EXT ||--o| Reference : "gazetteer / reference"
     ThreatStatusAuthority_EXT ||--o| Reference : "threatStatusAuthority / reference"
-
-    %%TaxonTree }|--o| Taxonomy_EXT : "taxonomy"
-    %%TaxonTreeRevision }|--o| TaxonomyVersion_EXT : "taxonomyVersion"
-    %%TaxonConcept }|--o| TaxonomyVersion_EXT : "accordingTo"
-    %%TaxonConcept }|--o| Treatment_EXT : "accordingTo"
-    %%Profile }|--|| TreatmentVersion_EXT : "treatmentVersion"
+    ExternalIdentityAuthority_EXT ||--o| Reference : "externalReferenceAuthority / reference"
 
     Taxonomy_EXT |o--|{ TaxonomyVersion_EXT : "taxonomy / taxonomyVersions"
-    TaxonomyVersion_EXT |o--|{ Treatment_EXT : "taxonomyVersion / treatments"
+    Taxonomy_EXT |o--|{ Treatment_EXT : "taxonomy / treatments"
     Treatment_EXT |o--|{ TreatmentVersion_EXT : "treatment / treatmentVersions"
+
+    Treatment_EXT ||--o| TaxonConcept : taxonConcept
+    TreatmentVersion_EXT ||--o| TaxonConcept : taxonConcept
+
+    Reference }o--|| Reference : "parent/items"
+ 
 
     Reference }|--|| ControlledTerm : "referenceType"
     Reference ||--o{ TaxonNameUsage_MAP : "source"
@@ -308,10 +318,18 @@ erDiagram
     Reference ||--o{ TaxonName : "publishedIn"
     Reference ||--o{ NomenclaturalType : "typePublishedIn"
     Reference ||--o{ NomenclaturalType : "source"
+
+    Reference |o--|{ ReferenceContributor_MAP : reference
+    ReferenceContributor_MAP }|--o| Agent : agent
+
+    ReferenceContributor_MAP }|--o| ControlledTerm : contributorRole
+    Agent }|--o| ControlledTerm : agentType
+    Agent }o--|| User : user
     
     Reference {
         int id PK
         int reference_type_id FK
+        int parent_id FK "nullable"
         string short_title "e.g., Flora of Victoria"
         string full_citation "The complete bibliographic string"
         string author_string "e.g., Walsh, N.G. & Entwisle, T.J."
@@ -322,40 +340,69 @@ erDiagram
     }
 
     Taxonomy_EXT {
-      int reference_id
+      int id
     }
 
     TaxonomyVersion_EXT {
-      int reference_id PK
+      int id PK
       int taxonomy_id FK
     }
     
     Treatment_EXT {
-      int reference_id PK
-      int taxonomy_version_id FK "nullable"
+      int id PK
+      int taxonomy_id FK
+      int taxon_concept_id FK
     }
 
     TreatmentVersion_EXT {
-      int reference_id PK
+      int id PK
       int treatment_id FK
+      int taxon_concept_id FK
+      int version_number "nullable"
+      string version_label "nullable"
+      jsonb data_snapshot "nullable"
     }
 
     Protologue_EXT {
-      int reference_id PK
+      int id PK
+      string in_authors_string "nullable"
+      string protologue_string "nullable"
     }
 
     Gazetteer_EXT {
-      int reference_id PK
+      int id PK
+      string code "nullable"
     }
 
     ThreatStatusAuthority_EXT {
-      int reference_id PK
+      int id PK
+      string code "nullable"
     }
 
     ExternalIdentityAuthority_EXT {
-      int reference_id PK
+      int id PK
     }
 
+    Agent {
+        int id PK
+        int agent_type_id FK
+        string name
+        string last_name "nullable"
+        string first_name "nullable"
+        string initials "nullable"
+        string email "nullable"
+        string legal_name "nullalel"
+        string orcid "nullable"
+        int user_id "nullable"
+    }
+
+    ReferenceContributor_MAP {
+       int id PK
+       int reference_id FK
+       int agent_id FK
+       int reference_role_id FK
+       int sequence
+    }
 ```
 
 **Resources:** [Reference](resources.md#reference), [Taxonomy_EXT](resources.md#taxonomy_ext), [TaxonomyVersion_EXT](resources.md#taxonomyversion_ext), [Treatment_EXT](resources.md#treatment_ext), [Protologue_EXT](resources.md#protologue_ext), [Gazetteer_EXT](resources.md#gazetteer_ext), [ThreatStatusAuthority_EXT](resources.md#threatstatusauthority_ext), [ExternalIdentityAuthority_EXT](resources.md#externalidentityauthority_ext)
@@ -475,15 +522,6 @@ erDiagram
     Agent }|--|| ControlledTerm : "agentType"
     Agent ||--|{ Any_Entity_MIXIN : "createdBy"
     Agent ||--o{ Any_Entity_MIXIN : "updatedBy"
-
-    Agent {
-        int id PK
-        int agent_type_id FK
-        string name
-        string initials
-        string orcid "nullable"
-        string uri "nullable"
-    }
 
     Any_Entity_MIXIN {
         date created_at 
