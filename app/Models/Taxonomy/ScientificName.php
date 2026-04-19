@@ -61,6 +61,12 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ScientificName>|null $conservedAgainst
  * @property-read Collection<int, ScientificName>|null $rejectedAgainst
  * @property-read Collection<int, NomenclaturalType>|null $typification
+ * 
+ * @property-read Collection<int, ScientificNameAuthorMap> $combinationAuthors
+ * @property-read Collection<int, ScientificNameAuthorMap> $basionymAuthors
+ * @property-read Collection<int, ScientificNameAuthorMap> $combinationAscribedAuthors
+ * @property-read Collection<int, ScientificNameAuthorMap> $basionymAscribedAuthors
+ * 
  * @property-read Agent $createdBy
  * @property-read Agent $updatedBy
  */
@@ -267,6 +273,37 @@ class ScientificName extends Model
     public function typification(): HasMany
     {
         return $this->hasMany(NomenclaturalType::class, 'type_name_id');
+    }
+
+
+    public function authorshipMaps(): HasMany
+    {
+        return $this->hasMany(ScientificNameAuthorMap::class, 'scientific_name_id', 'id')
+            ->orderBy('sequence');
+    }
+
+    public function combinationAuthors(): HasMany
+    {
+        return $this->authorshipMaps()->where('author_role_id', 
+            ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'COMBINATION'));
+    }
+
+    public function combinationAscribedAuthors(): HasMany
+    {
+        return $this->authorshipMaps()->where('author_role_id', 
+            ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'COMBINATION_ASCRIBED'));
+    }
+
+    public function basionymAuthors(): HasMany
+    {
+        return $this->authorshipMaps()->where('author_role_id', 
+            ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'BASIONYM'));
+    }
+
+    public function basionymAscribedAuthors(): HasMany
+    {
+        return $this->authorshipMaps()->where('author_role_id', 
+            ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'BASIONYM_ASCRIBED'));
     }
     
     /**

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -93,6 +94,25 @@ class Agent extends Model
     {
         return $this->belongsToMany(Reference::class, 'reference_contributors_map')
                     ->withPivot('contributor_role_id', 'sequence');
+    }
+
+    /**
+     * Polymorphic relationship to External Identity
+     * 
+     * We can use this for IPNI authors and get the standard form
+     *
+     * @return MorphToMany
+     */
+    public function externalIdentities(): MorphToMany
+    {
+        return $this->morphToMany(
+            ExternalIdentity::class, 
+            'entity', 
+            'entity_identity_map'
+        )
+        ->using(EntityIdentityMap::class) // Custom pivot class
+        ->withPivot('metadata')
+        ->withTimestamps();
     }
 
     /**

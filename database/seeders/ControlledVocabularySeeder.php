@@ -21,6 +21,7 @@ use Database\Seeders\Vocabularies\NomenclaturalStatusVocabularySeeder;
 use Database\Seeders\Vocabularies\OccurrenceStatusVocabularySeeder;
 use Database\Seeders\Vocabularies\ProfileSectionTypeVocabularySeeder;
 use Database\Seeders\Vocabularies\ReferenceTypeVocabularySeeder;
+use Database\Seeders\Vocabularies\ScientificNameAuthorRoleVocabularySeeder;
 use Database\Seeders\Vocabularies\TaxonConceptComponentVocabularySeeder;
 use Database\Seeders\Vocabularies\TaxonRankVocabularySeeder;
 use Database\Seeders\Vocabularies\ThreatStatusVocabularySeeder;
@@ -60,6 +61,7 @@ class ControlledVocabularySeeder extends Seeder
             GlossaryTermRelationshipTypeVocabularySeeder::class,
             AreaTypeVocabularySeeder::class,
             ContributorRoleVocabularySeeder::class,
+            ScientificNameAuthorRoleVocabularySeeder::class,
         ]);
     }
 }

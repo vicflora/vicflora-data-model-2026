@@ -203,6 +203,30 @@ erDiagram
     }
 ```
 
+## Layer 2d: Scientific Name Authorship
+
+This optional sublayer links the authorship of the Scientific Name to the
+Authority layer.
+
+```mermaid
+---
+config:
+    layout: elk
+---
+erDiagram
+  ScientifcName_EXT |o--|{ ScientificName_Author_MAP : scientificName
+  ScientificName_Author_MAP }|--o{ Agent : agent
+  ScientificName_Author_MAP }|--o| ControlledTerm : authorRole
+
+  ScientificName_Author_MAP {
+    int id PK
+    int scientific_name_id FK
+    int agent_id FK
+    int author_role_id FK
+    int sequence 
+  }
+```
+
 **Resources:** [NomenclaturalType](resources.md#nomenclaturaltype)
 
 ## Layer 3: Governance (Classification)
