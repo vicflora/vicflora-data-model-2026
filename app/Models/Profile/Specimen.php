@@ -2,16 +2,15 @@
 
 namespace App\Models\Profile;
 
-use App\Models\Image\Image;
-use App\Models\Shared\Agent;
+use App\Models\Media\Image;
 use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\HasImages;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -64,7 +63,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Specimen extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Blameable, IncrementsVersion, HasImages;
 
     protected $casts = [
         'metadata' => 'array',
@@ -91,17 +90,6 @@ class Specimen extends Model
         return $this->belongsToMany(Profile::class, 'profile_specimen_map', 'specimen_id', 'profile_id')
             ->using(ProfileSpecimenMap::class)
             ->withPivot(['taxon_tree_id', 'voucher_type_id'])
-            ->withTimestamps();
-    }
-
-    /**
-     * Get the images (herbarium sheets) associated with this specimen.
-     */
-    public function images(): BelongsToMany
-    {
-        return $this->belongsToMany(Image::class, 'specimen_image_map')
-            ->using(SpecimenImageMap::class)
-            ->withPivot(['external_id', 'sort_order'])
             ->withTimestamps();
     }
 

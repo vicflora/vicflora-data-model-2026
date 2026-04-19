@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Image;
+namespace App\Models\Media;
 
 use App\Models\Profile\Specimen;
 use App\Models\Profile\SpecimenImageMap;
@@ -102,7 +102,7 @@ class Image extends Model
             ?->access_iri;
     }
 
-    // Inside App\Models\Image\Image.php
+    // Inside App\Models\Media\Image.php
 
     /**
      * Get the specimens this image represents.

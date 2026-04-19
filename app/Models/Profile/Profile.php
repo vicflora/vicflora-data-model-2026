@@ -2,11 +2,14 @@
 
 namespace App\Models\Profile;
 
-use App\Models\Image\Image;
+use App\Models\Media\Image;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TreatmentVersion;
+use App\Models\Traits\Blameable;
+use App\Models\Traits\HasImages;
+use App\Models\Traits\IncrementsVersion;
 use App\Observers\ProfileObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -38,8 +41,8 @@ use Illuminate\Support\Carbon;
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read TaxonConcept $taxonConcept
  * @property-read TreatmentVersion|null $treatmentVersion
@@ -62,6 +65,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(ProfileObserver::class)]
 class Profile extends Model
 {
+    use IncrementsVersion, Blameable, HasImages;
     
     public function taxonConcept(): BelongsTo
     {
@@ -135,23 +139,6 @@ class Profile extends Model
     public function distribution(): HasMany
     {
         return $this->hasMany(ProfileAreaMap::class, 'profile_id', 'taxon_concept_id');
-    }
-
-    /**
-     * Layer 8c: Images
-     * * @return BelongsToMany
-     */
-    public function images(): BelongsToMany
-    {
-        return $this->belongsToMany(Image::class, 'profile_image_map', 'profile_id', 'image_id')
-            ->using(ProfileImageMap::class)
-            ->withPivot([
-                'taxon_tree_id', 
-                'image_role_id', 
-                'profile_section_id', 
-                'sort_order', 
-                'is_published'
-            ]);
     }
 
     /**

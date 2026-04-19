@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Image\ImageCaption;
+use App\Models\Media\ImageCaption;
 
 class ImageCaptionObserver
 {

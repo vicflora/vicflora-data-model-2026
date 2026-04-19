@@ -749,17 +749,16 @@ The Media sub-layer provides a repository for digital assets, managing
 associations to narrative sections.
 
 ```mermaid
+---
+config:
+  layout: elk
+---
 erDiagram
-    Profile ||--o{ Profile_Image_MAP : "profile"
-    ProfileSection ||--o{ Profile_Image_MAP : "profileSection"
-    Profile_Image_MAP ||--|{ Image : "image"
+    Entity_Image_MAP }|--|| Image : "image"
+    Entity_Image_MAP }|--o| ControlledTerm : "imageRole"
 
-    Profile_Image_MAP }|--o| ControlledTerm : "imageRole"
-    Profile_Image_MAP }|--|| ImageCaption : "caption"
     Image |o--|{ ImageCaption : "image"
 
-    Specimen |o--|{ Specimen_Image_MAP : "specimen"
-    Specimen_Image_MAP }|--o| Image : "image"
     
     Image }o--|| ControlledTerm : "imageType"
     Image }o--|| ControlledTerm : "license"
@@ -767,21 +766,13 @@ erDiagram
     Image |o--|{ ImageAccessPoint : "image"
     ImageAccessPoint }|--o| ControlledTerm : "variant"
 
-    Profile_Image_MAP {
+    Entity_Image_MAP {
         int id PK
-        int profile_id FK
+        string entity_type "e.g., profile, specimen, agent"
+        int entity_id
         int image_id FK
-        int profile_section_id FK "nullable"
-        int taxon_tree_id FK
         int image_role_id FK
         int sort_order
-    }
-
-    Specimen_Image_MAP {
-      int specimen_id FK
-      int image_id FK
-      int taxon_tree_id FK
-      int image_role_id FK
     }
 
     Image {

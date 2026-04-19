@@ -2,17 +2,17 @@
 
 namespace App\Models\Glossary;
 
-use App\Models\Image\Image;
+use App\Models\Media\Image;
 use App\Models\Shared\Agent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\HasExternalIdentities;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -66,7 +66,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Term extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Blameable, IncrementsVersion, HasExternalIdentities;
 
 
     /**
@@ -131,12 +131,4 @@ class Term extends Model
             ->withTimestamps();
     }
 
-    /**
-     * Access to the Map entities themselves if you need the full blameable trail.
-     * * @return HasMany
-     */
-    public function termImages(): HasMany
-    {
-        return $this->hasMany(TermImageMap::class, 'term_id');
-    }
 }

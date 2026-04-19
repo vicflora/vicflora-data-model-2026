@@ -2,5 +2,5 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\TaxonomyServiceProvider::class,
+    App\Providers\MorphMapServiceProvider::class,
 ];

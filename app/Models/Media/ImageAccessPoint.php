@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Image;
+namespace App\Models\Media;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
