@@ -55,7 +55,14 @@ use Illuminate\Support\Carbon;
  * @property-read ControlledTerm|null $type
  * @property-read array<string> $roleList
  * 
+ * @property Treatment|null $treatment
  * @property TreatmentVersion|null $treatmentVersion
+ * @property Protologue|null $protologue
+ * @property Taxonomy|null $taxonomy
+ * @property TaxonomyVersion|null $taxonomyVersion
+ * @property Gazetteer|null $gazetteer
+ * @property ThreatStatusAuthority|null $threatStatusAuthority
+ * @property ExternalIdentityAuthority|null $externalIdentityAuthority
  * 
  * @property-read Collection<int, Agent> $contributors
  * @property-read Collection<int, Agent> $authors
@@ -176,11 +183,88 @@ class Reference extends Model
         return strtoupper($this->name_type) === strtoupper($type);
     }
 
-    // Sidecar models
+    /*
+     * Sidecar relationships
+     */
 
+    /**
+     * Treatment sidecar
+     *
+     * @return HasOne
+     */
+    public function treatment(): HasOne
+    {
+        return $this->hasOne(Treatment::class, 'id');
+    }
+
+    /**
+     * Treatment Version sidecar
+     *
+     * @return HasOne
+     */
     public function treatmentVersion(): HasOne
     {
         return $this->hasOne(TreatmentVersion::class, 'id');
+    }
+
+    /**
+     * Protologue sidecar
+     *
+     * @return HasOne
+     */
+    public function protologue(): HasOne
+    {
+        return $this->hasOne(Protologue::class, 'id');
+    }
+
+    /**
+     * Taxonomy sidecar
+     *
+     * @return HasOne
+     */
+    public function taxonomy(): HasOne
+    {
+        return $this->hasOne(Taxonomy::class, 'id');
+    }
+
+    /**
+     * Taxonomy Version sidecar
+     *
+     * @return HasOne
+     */
+    public function taxonomyVersion(): HasOne
+    {
+        return $this->hasOne(TaxonomyVersion::class, 'id');
+    }
+
+    /**
+     * Gazetteer sidecar
+     *
+     * @return HasOne
+     */
+    public function gazetteer(): HasOne
+    {
+        return $this->hasOne(Gazetteer::class, 'id');
+    }
+
+    /**
+     * Threat Status Authority sidecar
+     *
+     * @return HasOne
+     */
+    public function threatStatusAuthority(): HasOne
+    {
+        return $this->hasOne(ThreatStatusAuthority::class, 'id');
+    }
+
+    /**
+     * External Identity Authority sidecar
+     *
+     * @return HasOne
+     */
+    public function externalIdentityAuthority(): HasOne
+    {
+        return $this->hasOne(ExternalIdentityAuthority::class, 'id');
     }
 
     /**

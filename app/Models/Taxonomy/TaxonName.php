@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
 
@@ -46,6 +47,10 @@ use Illuminate\Support\Carbon;
  * @property int|null $updated_by_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * 
+ * @property ScientificName|null $scientificName
+ * @property VernacularName|null $vernacularName
+ * @property TaxonConceptLabel|null $taxonConceptLabel
  * 
  * @property-read ControlledTerm|null $rank
  * @property-read Collection<int, ExternalIdentity>|null $externalIdentities
@@ -99,6 +104,40 @@ class TaxonName extends Model
             'TAXON_CONCEPT_LABEL' => TaxonConceptLabel::findOrNew($this->id),
             default => null,
         };
+    }
+
+    /*
+     * Sidecar relationships
+     */
+
+    /**
+     * Scientific Name sidecar
+     *
+     * @return HasOne
+     */
+    public function scientificName(): HasOne
+    {
+        return $this->hasOne(ScientificName::class, 'id');
+    }
+
+    /**
+     * Vernacular Name sidecar
+     *
+     * @return HasOne
+     */
+    public function vernacularName(): HasOne
+    {
+        return $this->hasOne(VernacularName::class, 'id');
+    }
+
+    /**
+     * Taxon Concept Label sidecar
+     *
+     * @return HasOne
+     */
+    public function taxonConceptLabel(): HasOne
+    {
+        return $this->hasOne(TaxonConceptLabel::class, 'id');
     }
 
     /**
