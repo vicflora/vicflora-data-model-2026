@@ -5,6 +5,7 @@ namespace App\Models\Glossary;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\HasLimitations;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -40,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Term $term
  * @property-read Term $relatedTerm
  * @property-read ControlledTerm $relationshipType
- * @property-read Limitation|null $limitation
+ * @property-read Collection<int, Limitation> $limitations
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -59,7 +60,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class TermRelationship extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Blameable, IncrementsVersion, HasLimitations;
 
     public function glossary(): BelongsTo
     {
@@ -79,10 +80,5 @@ class TermRelationship extends Model
     public function relationshipType(): BelongsTo
     {
         return $this->belongsTo(ControlledTerm::class, 'relationship_type_id');
-    }
-
-    public function limitation(): BelongsTo
-    {
-        return $this->belongsTo(Limitation::class, 'limitation_id');
     }
 }

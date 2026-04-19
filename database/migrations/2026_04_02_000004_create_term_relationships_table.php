@@ -17,9 +17,6 @@ return new class extends Migration
             // Link to Shared ControlledTerm (Synonym, Antonym, Broader, Narrower)
             $table->foreignId('relationship_type_id')->constrained('controlled_terms');
             
-            // Optional limitation (e.g. only a synonym in the context of Orchids)
-            $table->foreignId('limitation_id')->nullable()->constrained('glossary.limitations');
-
             $table->boolean('is_misapplied')->default(false);
             $table->boolean('is_discouraged')->default(false);
 

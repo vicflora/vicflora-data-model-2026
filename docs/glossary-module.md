@@ -30,16 +30,20 @@ erDiagram
     GlossaryTerm }o--o| GlossaryTermCategory : category
     GlossaryTerm |o--|| GlossaryTermCategory : term
 
-    GlossaryTerm |o--|{ GlossaryTerm_Limitation_MAP : glossaryTerm
-    GlossaryTerm_Limitation_MAP }|--o| Limitation : limitation
+    GlossaryTerm |o--|{ GlossaryTerm_Image_MAP : glossaryTerm
+    GlossaryTerm_Image_MAP }|--o| Image : image
 
     GlossaryTerm |o--|{ GlossaryTermRelationship : term
     GlossaryTermRelationship }|--o| GlossaryTerm : relatedTerm
     GlossaryTermRelationship }|--o| ControlledTerm : relationshipType
     GlossaryTermRelationship }o--o| Limitation : limitation
 
-    GlossaryTerm |o--|{ GlossaryTerm_Image_MAP : glossaryTerm
-    GlossaryTerm_Image_MAP }|--o| Image : image
+    %% Polymorphic Targets
+    GlossaryTermRelationship |o--|{ Glossary_Limitation_MAP  : "morphs as 'limitable'"
+    GlossaryTerm |o--|{ Glossary_Limitation_MAP : "morphs as 'limitable'"
+
+    Glossary_Limitation_MAP }|--|| Limitation : "limitation"
+    
 
     Glossary {
       int id PK
@@ -72,7 +76,6 @@ erDiagram
       int term_id FK
       int related_term_id FK
       int relationship_type_id FK
-      int limitation_id FK
       bool is_misaplied
       bool is_discouraged
     }
@@ -82,9 +85,11 @@ erDiagram
       string name 
     }
 
-    GlossaryTerm_Limitation_MAP {
-      int term_id FK
-      int limitation_id FK
+    Glossary_Limitation_MAP {
+        int id PK
+        string limitable_type "e.g., glossary_term, glossary_term_relationship"
+        int limitable_id
+        int limitation_id FK
     }
 
     GlossaryTerm_Image_MAP {
