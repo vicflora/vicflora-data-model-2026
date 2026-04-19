@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -53,6 +54,9 @@ use Illuminate\Support\Carbon;
  *
  * @property-read ControlledTerm|null $type
  * @property-read array<string> $roleList
+ * 
+ * @property TreatmentVersion|null $treatmentVersion
+ * 
  * @property-read Collection<int, Agent> $contributors
  * @property-read Collection<int, Agent> $authors
  * @property-read Collection<int, Agent> $editors
@@ -170,6 +174,13 @@ class Reference extends Model
         // Since the view provides 'name_type', we check it directly.
         // We uppercase both to ensure the check is robust.
         return strtoupper($this->name_type) === strtoupper($type);
+    }
+
+    // Sidecar models
+
+    public function treatmentVersion(): HasOne
+    {
+        return $this->hasOne(TreatmentVersion::class, 'id');
     }
 
     /**

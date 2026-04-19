@@ -18,12 +18,14 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
+            $table->string('code')->nullable();
         });
 
         DB::statement("
             CREATE VIEW threat_status_authorities AS
             SELECT 
-                r.*
+                r.*,
+                ext.code
             FROM public.references r
             JOIN threat_status_authorities_ext ext ON r.id = ext.id
         ");

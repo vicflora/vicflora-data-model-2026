@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
+ * @property string|null $code
  *
  * @property-read Reference $reference
  */

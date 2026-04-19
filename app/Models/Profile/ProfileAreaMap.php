@@ -53,6 +53,8 @@ use Illuminate\Support\Carbon;
  * @property-read ThreatStatusAuthority|null $threatStatusAuthority
  * @property-read Reference|null $source
  * @property-read ControlledTerm|null $occurrenceStatus
+ * @property-read ControlledTerm|null $establishmentMeans
+ * @property-read ControlledTerm|null $degreeOfEstablishment
  * @property-read ControlledTerm|null $threatStatus
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
@@ -105,7 +107,7 @@ class ProfileAreaMap extends Model
      */
     public function area(): BelongsTo
     {
-        return $this->belongsTo(Area::class, 'gazetteer_id');
+        return $this->belongsTo(Area::class, 'area_id');
     }
 
     /**
@@ -135,6 +137,16 @@ class ProfileAreaMap extends Model
     public function occurrenceStatus(): BelongsTo
     {
         return $this->belongsTo(ControlledTerm::class, 'occurrence_status_id');
+    }
+
+    public function establishmentMeans(): BelongsTo
+    {
+        return $this->belongsTo(ControlledTerm::class, 'establishment_means_id');
+    }
+
+    public function degreeOfEstablishment(): BelongsTo
+    {
+        return $this->belongsTo(ControlledTerm::class, 'degree_of_establishment_id');
     }
 
     public function threatStatus(): BelongsTo

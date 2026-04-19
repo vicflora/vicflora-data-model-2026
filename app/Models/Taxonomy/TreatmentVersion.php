@@ -28,6 +28,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
+ * @property int $taxon_concept_id
+ * @property int|null $version_number
+ * @property string|null $version_label
+ * @property arra|null $data_snapshot
  *
  * @property-read Reference $reference
  * @property-read Treatment $treatment
@@ -52,6 +56,7 @@ class TreatmentVersion extends Model
 
     protected $casts = [
         'metadata' => 'array',
+        'data_snapshot' => 'array',
     ];
 
     /**

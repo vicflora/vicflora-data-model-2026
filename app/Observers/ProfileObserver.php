@@ -43,28 +43,55 @@ class ProfileObserver
     {
         $today = Carbon::today();
 
-        // Check if this specific profile already has a version today
-        $exists = TreatmentVersion::where('profile_id', $profile->id)
+        // Look for a Reference of type TREATMENT_VERSION for this profile created today
+        $existingReference = Reference::whereHas('treatmentVersion', function ($query) use ($profile) {
+                $query->where('taxon_concept_id', $profile->taxon_concept_id);
+            })
+            ->where('reference_type_id', ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT_VERSION'))
             ->whereDate('created_at', $today)
-            ->exists();
+            ->first();
 
-        if (!$exists) {
-            $this->createDailyTreatmentVersion($profile);
-        }
+        // We call the method regardless; the method will now handle Update vs Create
+        $this->persistDailyTreatmentVersion($profile, $existingReference);
     }
-
+    
     /**
      * Create a Reference and TreatmentVersion snapshot.
      */
-    protected function createDailyTreatmentVersion(Profile $profile): void
+    protected function persistDailyTreatmentVersion(Profile $profile, ?Reference $existingReference = null): void
     {
         // Use the relationship to get the name (Assumes eager loading or lazy load)
         $taxonName = $profile->taxonConcept->taxonName->name_string;
         $dateString = now()->format('Y-m-d');
+
+        $profile->load([
+            // Load sections with their type code and body text
+            'sections' => function ($query) {
+                $query->select('id', 'profile_id', 'profile_section_type_id', 'body_text', 'sort_order');
+            },
+            'sections.type:id,code',
+
+            // Load distribution with all the descriptive metadata codes
+            'distribution' => function ($query) {
+                // Ensure foreign keys are included so Laravel can match the children
+                $query->select(
+                    'id', 'profile_id', 'area_id', 'gazetteer_id', 
+                    'occurrence_status_id', 'establishment_means_id', 
+                    'degree_of_establishment_id', 'threat_status_authority_id', 
+                    'threat_status_id', 'is_endemic', 'locality'
+                );
+            },
+            'distribution.area:id,name',
+            'distribution.occurrenceStatus:id,code',
+            'distribution.establishmentMeans:id,code',
+            'distribution.degreeOfEstablishment:id,code',
+            'distribution.threatStatusAuthority:id,code',
+            'distribution.threatStatus:id,code'
+        ]);
         
         $refTypeId = ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT_VERSION');
 
-        $reference = new Reference();
+        $reference = $existingReference ?? new Reference();
 
         $reference->persist([
             // Base reference attributes
@@ -78,7 +105,7 @@ class ProfileObserver
             // Treatment version attributes
             'taxon_concept_id' => $profile->taxon_concept_id,
             'version_number' => $profile->version, 
-            'label' => "v{$dateString}",
+            'version_label' => "v{$dateString}",
             'data_snapshot' => $profile->toJson(), 
         ]);
     }

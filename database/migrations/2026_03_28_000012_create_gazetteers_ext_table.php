@@ -18,12 +18,14 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
+            $table->string('code')->nullable();
         });
 
         DB::statement("
             CREATE VIEW gazetteers AS
             SELECT 
-                r.*
+                r.*,
+                ext.code
             FROM public.references r
             JOIN gazetteers_ext ext ON r.id = ext.id
         ");

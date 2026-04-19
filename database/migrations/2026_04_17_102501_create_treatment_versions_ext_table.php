@@ -18,6 +18,10 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
+            $table->foreignId('taxon_concept_id')->constrained('taxon_concepts');
+            $table->unsignedSmallInteger('version_number')->nullable();
+            $table->string('version_label')->nullable();
+            $table->jsonb('data_snapshot')->nullable();
             $table->foreignId('treatment_id')->nullable()->constrained('treatments_ext');
         });
         
@@ -25,7 +29,11 @@ return new class extends Migration
             CREATE VIEW treatment_versions AS
             SELECT 
                 r.*,
-                ext.treatment_id
+                ext.treatment_id,
+                ext.taxon_concept_id,
+                ext.version_number,
+                ext.version_label,
+                ext.data_snapshot
             FROM public.references r
             JOIN treatment_versions_ext ext ON r.id = ext.id
         ");
