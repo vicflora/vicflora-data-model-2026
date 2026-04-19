@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Profile\Profile;
 use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
 use App\Models\Shared\ReferenceContributorMap;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TaxonConceptLabel;
@@ -35,23 +36,29 @@ class TaxonConceptObserver
     {
         $taxonomy = $taxonConcept->taxonTree->taxonomy;
 
-        // 1. Create the Treatment (Base Reference + Sidecar)
-        $treatment = Treatment::createWithSidecar([
+        // Use the Parent model to orchestrate
+        $reference = new Reference();
+        
+        $reference->persist([
+            // Base Reference attributes
             'reference_type_id' => ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT'),
             'year' => now()->year,
             'title' => "Treatment for " . $taxonConcept->taxonName->full_name,
-        ], [
+            
+            // This tells Reference::selectSidecarModel to return a Treatment instance
+            'reference_role' => 'TREATMENT', 
+            
+            // Sidecar Treatment attributes (Will be picked up by Treatment sidecar)
             'taxon_concept_id' => $taxonConcept->id,
             'taxonomy_id' => $taxonomy->id,
         ]);
 
-        // 2. Clone/Assign Contributors from Taxonomy to the new Treatment
-        // This populates the ReferenceContributorMap table
-        $this->syncTaxonomyContributorsToReference($taxonomy, $treatment);
+        // $reference is now a hydrated Reference model. 
+        // We can use its ID for the mapping.
+        $this->syncTaxonomyContributorsToReference($taxonomy, $reference);
 
-        // 3. Update the local instance and the database record
-        $taxonConcept->according_to_id = $treatment->id;
-        $taxonConcept->saveQuietly(); 
+        $taxonConcept->according_to_id = $reference->id;
+        $taxonConcept->saveQuietly();
 
         // 4. Create the Profile
         Profile::create([
@@ -84,24 +91,19 @@ class TaxonConceptObserver
      */
     protected function syncConceptLabel(TaxonConcept $taxonConcept): void
     {
-        // 1. Generate the string: "Base Name sec. Author, Year"
-        $baseName = $taxonConcept->taxonName;
-        $author = $taxonConcept->accordingTo->authorship; // Or your preferred reference string
-        $year = $taxonConcept->accordingTo->publication_year;
-        
-        $labelString = "{$baseName->full_name} sec. {$author} ({$year})";
+        $reference = $taxonConcept->accordingTo;
+        $labelString = "{$taxonConcept->taxonName->full_name} sec. {$reference->short_citation_string})";
 
-        // 2. Create the "Label Name" record in taxon_names
-        // This is the identity of the sidecar
-        $labelName = TaxonName::create([
-            'name_string' => $baseName->name_string,
+        $taxonName = new TaxonName();
+        $taxonName->persist([
+            'name_string' => $taxonConcept->taxonName->name_string,
             'full_name' => $labelString,
-            'rank_id' => $baseName->rank_id,
-            'created_by_id' => $taxonConcept->updated_by_id ?? $taxonConcept->created_by_id,
-        ]);
-
-        // 3. Promote it to a TaxonConceptLabel sidecar
-        TaxonConceptLabel::promote($labelName, [
+            'rank_id' => $taxonConcept->taxonName->rank_id,
+            
+            // This tells TaxonName::selectSidecarModel to return a TaxonConceptLabel instance
+            'name_type' => 'TAXON_CONCEPT_LABEL', 
+            
+            // Sidecar attributes
             'base_name_id' => $taxonConcept->taxon_name_id,
             'taxon_concept_id' => $taxonConcept->id,
         ]);

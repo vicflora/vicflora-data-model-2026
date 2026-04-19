@@ -64,12 +64,19 @@ class ProfileObserver
         
         $refTypeId = ControlledTerm::getIdByCode('REFERENCE_TYPE', 'TREATMENT_VERSION');
 
-        Reference::createWithSidecar('treatmentVersion', [
+        $reference = new Reference();
+
+        $reference->persist([
+            // Base reference attributes
             'reference_type_id' => $refTypeId,
             'title' => "Treatment for {$taxonName} ({$dateString})",
-            'publication_year' => now()->year,
-        ], [
-            'profile_id' => $profile->id,
+            'year' => now()->year,
+
+            // Tell Reference::selectSidecarModel to return a TreatmentVersion instance
+            'reference_role' => 'TREATMENT_VERSION',
+
+            // Treatment version attributes
+            'taxon_concept_id' => $profile->taxon_concept_id,
             'version_number' => $profile->version, 
             'label' => "v{$dateString}",
             'data_snapshot' => $profile->toJson(), 
