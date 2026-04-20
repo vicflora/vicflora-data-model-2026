@@ -23,20 +23,23 @@ Every change within the Glossary Island is governed by two key traits:
 ---
 
 ```mermaid
+---
+config:
+    layout: elk
+---
 erDiagram
     Glossary |o--|{ GlossaryTerm : glossary
 
     Glossary |o--|{ GlossaryTermCategory : glossary
-    GlossaryTerm }o--o| GlossaryTermCategory : category
+    GlossaryTermCategory |o--o{ GlossaryTerm : category
     GlossaryTerm |o--|| GlossaryTermCategory : term
 
-    GlossaryTerm |o--|{ GlossaryTerm_Image_MAP : glossaryTerm
-    GlossaryTerm_Image_MAP }|--o| Image : image
+    GlossaryTerm |o--|{ Entity_Image_MAP : "morps as 'entity'"
+    Entity_Image_MAP }|--o| Image : image
 
     GlossaryTerm |o--|{ GlossaryTermRelationship : term
     GlossaryTermRelationship }|--o| GlossaryTerm : relatedTerm
     GlossaryTermRelationship }|--o| ControlledTerm : relationshipType
-    GlossaryTermRelationship }o--o| Limitation : limitation
 
     %% Polymorphic Targets
     GlossaryTermRelationship |o--|{ Glossary_Limitation_MAP  : "morphs as 'limitable'"
@@ -84,19 +87,4 @@ erDiagram
       int id PK
       string name 
     }
-
-    Glossary_Limitation_MAP {
-        int id PK
-        string limitable_type "e.g., glossary_term, glossary_term_relationship"
-        int limitable_id
-        int limitation_id FK
-    }
-
-    GlossaryTerm_Image_MAP {
-      int id PK
-      int term_id FK
-      int image_id FK
-      string figure "nullable"
-    }
-
 ```

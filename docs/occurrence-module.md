@@ -37,7 +37,7 @@ By using the `taxa` materialized view as the router:
 ```mermaid
 ---
 config:
-    layout: dagre
+    layout: elk
 ---
 erDiagram
     Occurrence }o--o| ParsedName : "parsedName"

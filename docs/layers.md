@@ -16,12 +16,36 @@ it to a primary name string, an evidentiary reference, and a taxonomic rank to
 establish a unique circumscription.
 
 ```mermaid
+---
+config:
+    layout: elk
+---
 erDiagram
-    TaxonConcept }|--|| TaxonName : "taxonName"
     TaxonConcept }|--|| Reference : "accordingTo"
-    TaxonConcept }o--|| ControlledTerm : "rank"
+    TaxonConcept }|--|| Treatment_EXT : "accordingTo"
+    Treatment_EXT ||--o| Reference : "reference / treatment"
+
+    TaxonConcept }|--|| TaxonName : "taxonName"
+    TaxonConcept |o--|{ ScientificName_EXT : "acceptedName"
+    TaxonConcept }o--|{ ScientificName_EXT : "synonyms"
+    ScientificName_EXT ||--o| TaxonName : "taxonName / scientificName"
+    TaxonConcept }o--|{ VernacularName_EXT : "vernacularNames"
+    TaxonConcept |o--|{ VernacularName_EXT : "preferredVernacularName"
+    VernacularName_EXT ||--o| TaxonName : "taxonName / vernacularName"
+    TaxonConcept |o--|| TaxonConceptLabel_EXT : "taxonConcept ? label"
+    TaxonConceptLabel_EXT |o--|| TaxonName : "taxonName / taxonConceptLabel" 
+
     TaxonConcept ||--|{ TaxonConceptMapping : "subjectTaxonConcept"
     TaxonConcept ||--|{ TaxonConceptMapping : "objectTaxonConcept"
+
+    TaxonConcept }o--|| TaxonTree : "taxonTree"
+    TaxonConcept |o--|{ TaxonTreeNode : "taxonConcept"
+    TaxonTreeNode }|--|| TaxonTree : "taxonTree"
+
+    TaxonConcept |o--|| Profile : "taxonConcept / profile"
+
+    TaxonConcept |o--o{ Entity_Identity_MAP : "morphs as 'entity'"
+    Entity_Identity_MAP }|--o| ExternalIdentity : "externalIdentity"
 
     TaxonConcept {
         int id PK
@@ -43,12 +67,16 @@ such as congruency, inclusion, or overlap via standardized mapping relations and
 methods.
 
 ```mermaid
+---
+config:
+    layout: elk
+---
 erDiagram
-    TaxonConcept ||--|{ TaxonConceptMapping : "subjectTaxonConcept"
-    TaxonConcept ||--|{ TaxonConceptMapping : "objectTaxonConcept"
-    TaxonConceptMapping }|--|| ControlledTerm : "mappingRelation"
-    TaxonConceptMapping }o--|| ControlledTerm : "taxonConceptComponent"
-    TaxonConceptMapping }o--|| ControlledTerm : "mappingMethod"
+    TaxonConceptMapping }|--o| TaxonConcept : "subjectTaxonConcept"
+    TaxonConceptMapping }|--o| TaxonConcept : "objectTaxonConcept"
+%%    TaxonConceptMapping }|--|| ControlledTerm : "mappingRelation"
+%%    TaxonConceptMapping }o--|| ControlledTerm : "taxonConceptComponent"
+%%    TaxonConceptMapping }o--|| ControlledTerm : "mappingMethod"
     TaxonConceptMapping }o--|| Reference : "source"
     
 
@@ -88,26 +116,68 @@ config:
     layout: elk
 ---
 erDiagram
-    TaxonConcept }|--|| TaxonName : "taxonName"
-    TaxonConcept }|--|| TaxonName : "acceptedName"
-    TaxonConcept }o--|{ TaxonName : "synonyms"
-    TaxonConcept }o--|{ TaxonName : "vernacularNames"
-    TaxonConcept }o--|| TaxonName : "preferredVernacularName"
-    NomenclaturalType }o--|| TaxonName : "typifiedName / typification"
+
+    %% Sidecars
     TaxonName |o--|| ScientificName_EXT : "taxonName / scientificName"
+
+    %% Typification
+    ScientificName_EXT |o--|{ NomenclaturalType : "typifiedName / typification"
+
+    %% Scientific Name authorship
+    ScientificName_EXT |o--|{ ScientificName_Author_MAP : scientificName
+    ScientificName_Author_MAP }|--o{ Agent : agent
     ScientificName_EXT }o--|| Reference : "publishedIn"
+
     TaxonName |o--|| VernacularName_EXT : "taxonName / vernacularName"
-    TaxonName }o--|| ControlledTerm : "rank"
-    ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalStatus"
-    ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalCode"
-    TaxonName |o--|| TaxonConceptLabel_EXT : "taxonName / taxonConceptLabel"
-    TaxonConcept |o--|| TaxonConceptLabel_EXT : "label"
-    TaxonConceptLabel_EXT }|--o| TaxonName : baseName
-    
+
     %% The Syntactic Relationships
-    TaxonName ||--o{ NameRelation_MAP : "fromName"
-    TaxonName ||--o{ NameRelation_MAP : "toName"
-    NameRelation_MAP }|--|| ControlledTerm : "nameRelationType"
+    ScientificName_EXT |o--|{ NameRelation_MAP : "fromName"
+    ScientificName_EXT |o--|{ NameRelation_MAP : "toName"
+
+    %% Taxon Name <--> Taxon Concept relationships
+    TaxonName |o--|{ TaxonConcept : "taxonName"
+    ScientificName_EXT |o--o{ TaxonConcept : "acceptedName"
+    ScientificName_EXT }|--o| TaxonConcept : "synonyms"
+    VernacularName_EXT }|--o| TaxonConcept : "vernacularNames"
+    VernacularName_EXT }|--o| TaxonConcept : "preferredVernacularName"
+
+    TaxonName |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
+    ScientificName_EXT |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
+    VernacularName_EXT |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
+    TaxonNameUsage_MAP }|--o| TaxonConcept : "taxonConcept / taxonNameUsages"
+    TaxonNameUsage_MAP }o--|| Reference : "source"
+    
+
+    TaxonName |o--|| TaxonConceptLabel_EXT : "taxonName / taxonConceptLabel"
+
+
+
+
+    %% Taxon Concept Label
+    TaxonConceptLabel_EXT ||--o| TaxonConcept : "label"
+    TaxonName |o--|{ TaxonConceptLabel_EXT : baseName
+
+    %% External identifiers
+    TaxonName |o--|{ Entity_Identity_MAP : "morphs as 'entity'"
+    Entity_Identity_MAP }|--o| ExternalIdentity : "externalIdentity"
+
+    %% ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalStatus"
+    %% ScientificName_EXT }o--o| ControlledTerm: "nomenclaturalCode"
+    %% ScientificName_Author_MAP }|--o| ControlledTerm : authorRole
+    %% NameRelation_MAP }|--o| ControlledTerm : "nameRelationType"
+    %% TaxonNameUsage_MAP }|--o| ControlledTerm : "nameRole"
+    %% TaxonName }o--o| ControlledTerm : "rank"
+    
+    TaxonNameUsage_MAP {
+        int id PK
+        int taxon_concept_id FK
+        int name_role_id FK
+        int taxon_name_id FK
+        int source_id FK "nullable"
+        boolean is_preferred_vernacular_name "nullable"
+        string country_code "nullable"
+        string usage_notes "nullable"    
+    }
 
     TaxonName {
         int id PK
@@ -145,36 +215,19 @@ erDiagram
         int reference_id FK "nullable"
         string remarks "nullable"
     }
+
+    ScientificName_Author_MAP {
+      int id PK
+      int scientific_name_id FK
+      int agent_id FK
+      int author_role_id FK
+      int sequence 
+    }
+
 ```
 
 **Resources:** [TaxonName](resources.md#taxonname), [ScientificName_EXT](resources.md#scientificname_ext), [NameRelation_MAP](resources.md#namerelation_map)
 
-### Layer 2b: Usage
-
-The Usage sub-layer uses the **TaxonNameUsage_MAP** to define the functional
-role a name plays within a specific concept—such as an "Accepted Name" or
-"Synonym"—effectively acting as the logic gate between syntax and semantics.
-
-```mermaid
-erDiagram
-    TaxonConcept ||--|{ TaxonNameUsage_MAP : "taxonConcept / taxonNameUsages"
-    TaxonNameUsage_MAP }|--|| TaxonName : "taxonName / taxonNameUsages"
-    TaxonNameUsage_MAP }|--|| ControlledTerm : "nameRole"
-    TaxonNameUsage_MAP }o--|| Reference : "source"
-
-    TaxonNameUsage_MAP {
-        int id PK
-        int taxon_concept_id FK
-        int name_role_id FK
-        int taxon_name_id FK
-        int source_id FK "nullable"
-        boolean is_preferred_vernacular_name "nullable"
-        string country_code "nullable"
-        string usage_notes "nullable"    
-    }
-```
-
-**Resources:** [TaxonNameUsage_MAP](resources.md#taxonnameusage_map)
 
 ### Layer 2c: Typification
 
@@ -183,13 +236,17 @@ evidentiary type (either a specimen or another name), recording the formal
 publication and source of the typification event.
 
 ```mermaid
+---
+config:
+    layout: elk
+---
 erDiagram
-    TaxonName ||--|{ NomenclaturalType : "typifiedName / typification"
-    NomenclaturalType |o--|| TaxonName : "typeName"
-    NomenclaturalType |o--|| Specimen : "typeSpecimen"
-    NomenclaturalType |o--|| ControlledTerm : "typeOfType"
-    NomenclaturalType |o--|| Reference : "publishedIn"
-    NomenclaturalType |o--|| Reference : "source"
+%%    NomenclaturalType }|--o| ControlledTerm : "typeOfType"
+    NomenclaturalType }|--o| ScientificName_EXT : "typifiedName / typification"
+    NomenclaturalType }o--o| ScientificName_EXT : "typeName"
+    NomenclaturalType }o--o| Specimen : "typeSpecimen"
+    NomenclaturalType }o--o| Reference : "publishedIn"
+    NomenclaturalType }o--o| Reference : "source"
 
     NomenclaturalType {
         int id PK
@@ -201,30 +258,6 @@ erDiagram
         int source_id FK "nullable"
         text remarks "nullable"
     }
-```
-
-## Layer 2d: Scientific Name Authorship
-
-This optional sublayer links the authorship of the Scientific Name to the
-Authority layer.
-
-```mermaid
----
-config:
-    layout: elk
----
-erDiagram
-  ScientifcName_EXT |o--|{ ScientificName_Author_MAP : scientificName
-  ScientificName_Author_MAP }|--o{ Agent : agent
-  ScientificName_Author_MAP }|--o| ControlledTerm : authorRole
-
-  ScientificName_Author_MAP {
-    int id PK
-    int scientific_name_id FK
-    int agent_id FK
-    int author_role_id FK
-    int sequence 
-  }
 ```
 
 **Resources:** [NomenclaturalType](resources.md#nomenclaturaltype)
@@ -240,7 +273,7 @@ complete historical log of every taxonomic move, split, or lump.
 ```mermaid
 ---
 config:
-    layout: dagre
+    layout: elk
 ---
 erDiagram
     TaxonTree ||--o{ TaxonTreeDefItem : "taxonTree"
@@ -253,9 +286,13 @@ erDiagram
     TaxonTreeNode ||--o{ TaxonTreeRevision : "newNode"
     TaxonTree ||--o{ TaxonTreeRevision : "taxonTree"
     
-    TaxonTreeNode }|--|| TaxonConcept : "taxonConcept"
+    TaxonTreeNode }|--o| TaxonConcept : "taxonConcept"
     TaxonTreeNode |o--o| TaxonTreeNode : "parent / children"
-    TaxonTreeRevision }o--|| TaxonomyVersion : "taxonomyVersion"
+
+    TaxonTree }o--|| Taxonomy_EXT : "taxonomy"
+    Taxonomy_EXT ||--o| Reference : "reference / taxonomy"
+    TaxonTreeRevision }|--|| TaxonomyVersion_EXT : "taxonomyVersion"
+    TaxonomyVersion_EXT ||--o| Reference : "reference / taxonomyVersion"
     
     TaxonTree {
         int id PK
@@ -316,39 +353,68 @@ config:
     layout: elk
 ---
 erDiagram
-    TreatmentVersion_EXT ||--o| Reference : "treatmentVersion / reference"
-    Treatment_EXT ||--o| Reference : "treatment / reference"
-    Taxonomy_EXT ||--o| Reference : "taxonomy / reference"
-    TaxonomyVersion_EXT ||--o| Reference : "taxonomyVersion / reference"
-    Protologue_EXT ||--o| Reference : "protologue / reference"
-    Gazetteer_EXT ||--o| Reference : "gazetteer / reference"
-    ThreatStatusAuthority_EXT ||--o| Reference : "threatStatusAuthority / reference"
-    ExternalIdentityAuthority_EXT ||--o| Reference : "externalReferenceAuthority / reference"
-
-    Taxonomy_EXT |o--|{ TaxonomyVersion_EXT : "taxonomy / taxonomyVersions"
-    Taxonomy_EXT |o--|{ Treatment_EXT : "taxonomy / treatments"
-    Treatment_EXT |o--|{ TreatmentVersion_EXT : "treatment / treatmentVersions"
-
-    Treatment_EXT ||--o| TaxonConcept : taxonConcept
-    TreatmentVersion_EXT ||--o| TaxonConcept : taxonConcept
-
     Reference }o--|| Reference : "parent/items"
- 
-
-    Reference }|--|| ControlledTerm : "referenceType"
-    Reference ||--o{ TaxonNameUsage_MAP : "source"
-    Reference ||--|{ TaxonConcept : "accordingTo"
-    Reference ||--o{ TaxonConceptMapping : "source"
-    Reference ||--o{ TaxonName : "publishedIn"
-    Reference ||--o{ NomenclaturalType : "typePublishedIn"
-    Reference ||--o{ NomenclaturalType : "source"
-
     Reference |o--|{ ReferenceContributor_MAP : reference
     ReferenceContributor_MAP }|--o| Agent : agent
-
-    ReferenceContributor_MAP }|--o| ControlledTerm : contributorRole
-    Agent }|--o| ControlledTerm : agentType
     Agent }o--|| User : user
+
+    Reference |o--|| Protologue_EXT : "reference / protologue"
+    Protologue_EXT }|--o| ScientificName_EXT : "publishedIn"
+    ScientificName_EXT ||--o| TaxonName : "taxonName / scientificName"
+    TaxonName |o--|| TaxonConcept : "taxonName"
+
+    ScientificName_EXT |o--|{ ScientificName_Author_MAP : "scientificName"
+    ScientificName_Author_MAP }|--o| Agent : "agent"
+
+    Reference |o--o{ NomenclaturalType : "typePublishedIn"
+    Reference |o--o{ NomenclaturalType : "source"
+    NomenclaturalType ||--o| ScientificName_EXT : "typifiedName"
+    NomenclaturalType |o--o| ScientificName_EXT : "typeName"
+
+    Reference |o--|{ TaxonConcept : "accordingTo"
+
+    Reference |o--|| Treatment_EXT : "reference / treatment"
+    Treatment_EXT ||--o{ TaxonConcept : "accordingTo"
+    Reference |o--|| TreatmentVersion_EXT : "reference / treatmentVersion"
+    Treatment_EXT ||--|| Profile : "profile / treatment"
+    TreatmentVersion_EXT }|--|| Profile : "profile / treatmentVersions"
+    Treatment_EXT ||--|{ TreatmentVersion_EXT : "treatment"
+    Profile ||--o| TaxonConcept : "taxonConcept / profile"
+
+    Reference |o--|| Gazetteer_EXT : "reference / gazetteer"
+    Gazetteer_EXT |o--|{ AreaCode : "gazetteer"
+    AreaCode |o--|{ Profile_Area_MAP : "areaCode"
+    Reference |o--|| ThreatStatusAuthority_EXT : "reference / threatStatusAuthority"
+    ThreatStatusAuthority_EXT |o--o{ Profile_Area_MAP : "gazetteer"
+    Profile_Area_MAP }|--o| Profile : "profile"
+    
+
+    Reference |o--o{ TaxonConceptMapping : "source"
+    TaxonConceptMapping }|--o| TaxonConcept : "subjectTaxonConcept"
+    TaxonConceptMapping }|--o| TaxonConcept : "objectTaxonConcept"
+
+    Reference |o--|| Taxonomy_EXT : "reference / taxonomy"
+    Taxonomy_EXT ||--o| TaxonTree : "taxonomy"
+
+    Reference |o--|| TaxonomyVersion_EXT : "reference / taxonomyVersion"
+    TaxonomyVersion_EXT |o--o{ TaxonTreeRevision : "taxonomyVersion"
+    TaxonTreeRevision }|--o| TaxonTreeNode : "fromNode"
+    TaxonTreeRevision }|--o| TaxonTreeNode : "toNode"
+    TaxonTreeNode }|--o| TaxonConcept : "taxonConcept"
+    TaxonTree ||--o{ TaxonTreeNode : "taxonTree"
+    Taxonomy_EXT |o--|{ TaxonomyVersion_EXT : "taxonomy"
+
+    Reference |o--o{ TaxonNameUsage_MAP : "source"
+    TaxonNameUsage_MAP }|--o| TaxonConcept : "taxonConcept"
+    TaxonNameUsage_MAP }|--o| TaxonName : "taxonName"
+
+    Agent |o--|{ ScientificName_Author_MAP : "agent"
+    ScientificName_Author_MAP }|--o{ ScientificName_EXT : "scientificName"
+
+    Reference |o--|{ Specimen : "externalSource"
+
+    Reference |o--|| ExternalIdentityAuthority_EXT : "reference / externalIdentityAuthority"
+    ExternalIdentityAuthority_EXT ||--|{ ExternalIdentity : "externalIdentityAuthority"
     
     Reference {
         int id PK
@@ -445,25 +511,38 @@ config:
     layout: elk
 ---
 erDiagram
-    TaxonTree |o..|{ Profile : "taxonTree"
-    TaxonTree |o..|{ ProfileDefItem : "taxonTree"
-    TaxonTree |o..|{ ProfileSection : "taxonTree"
-    TaxonTree |o..|{ Profile_Specimen_MAP : "taxonTree"
-    TaxonTree |o..|{ Profile_Image_MAP : "taxonTree"
-    TaxonTree |o..|{ Profile_Area_MAP : "taxonTree"
-
     TaxonConcept |o--|| Profile : "taxonConcept / profile"
-    Profile ||--o{ Profile_Area_MAP : "profile"
-    Profile ||--o{ Profile_Image_MAP : "profile"
-    Profile ||--o{ Profile_Specimen_MAP : "profile"
-    ProfileDefItem ||--o{ ProfileSection : "profile"
+
+    %% Vouchers
+    Profile |o--|{ Profile_Specimen_MAP : "profile"
+    Profile_Specimen_MAP }|--o{ Specimen : "specimen"
+
+    %% Media
+    Profile |o--o{ Entity_Image_MAP : "morphs as 'entity'"
+    ProfileSection |o--o{ Entity_Image_MAP : "morphs as 'entity'"
+    Entity_Image_MAP }o--o| Image : "image"
+
+    %% Sections
     Profile |o--|{ ProfileSection : "profile"
-    ProfileSection }|--|| ControlledTerm : "profileSectionType"
+    ProfileSection }|--|| ProfileDefItem : "profileDefItem"
+
+    %% References
+    Profile }o--o| Reference : "source"
     ProfileSection }o--|| Reference : "source"
+    Profile ||--|| Treatment_EXT : "treatment / profile"
+    Treatment_EXT ||--o{ Reference : "reference / treatment" 
+    Profile ||--|{ TreatmentVersion_EXT : "profile / treatmentVersions"
+    TreatmentVersion_EXT ||--o{ Reference : "reference / treatmentVersion"
+
+    %% Distribution
+    Profile |o--|{ Profile_Area_MAP : "profile"
+    Profile_Area_MAP }|--o| AreaCode : "areaCode"
+    AreaCode }|--o| Area : "area"
 
     Profile {
         int taxon_concept_id PK
         int taxon_tree_id FK
+        int source_id FK "nullable"
     }
 
     ProfileDefItem {
@@ -479,7 +558,7 @@ erDiagram
         int id PK
         int profile_id FK
         int taxon_tree_id FK
-        int profile_section_type_id FK
+        int profile_def_item_id FK
         int source_id FK "nullable"
         text body_text
         int sort_order "nullable"
@@ -502,8 +581,12 @@ config:
   layout: elk
 ---
 erDiagram
-    ExternalIdentityAuthority_EXT ||--|{ ExternalIdentity : "externalIdentityAuthority"
+    ExternalIdentity }|--|| ExternalIdentityAuthority_EXT : "externalIdentityAuthority"
     ExternalIdentity ||--|{ Entity_Identity_MAP : "externalIdentity"
+
+    Entity_Identity_MAP }o--o{ TaxonConcept : "morphs as 'entity'"
+    Entity_Identity_MAP }o--o{ TaxonName : "morphs as 'entity'"
+    Entity_Identity_MAP }o--o{ Agent : "morphs as 'entity'"
 
     ExternalIdentity {
         int id PK
@@ -642,11 +725,13 @@ config:
   layout: elk
 ---
 erDiagram
-  Profile ||--|{ Profile_Area_MAP : "distribution"
+  Profile_Area_MAP ||--o| Profile : "distribution"
   Profile_Area_MAP }|--o| AreaCode : "areaCode"
   AreaCode }|--o| Area : area
-  AreaCode }|--|| Gazetteer : "gazetteer"
-  Gazetteer ||--o| Reference : reference
+  AreaCode }|--|| Gazetteer_EXT : "gazetteer"
+  Gazetteer_EXT ||--o| Reference : reference
+  Profile_Area_MAP }o--o| ThreatStatusAuthority_EXT : "threatStatusAuthority"
+  ThreatStatusAuthority_EXT ||--o| Reference : "reference / ThreatStatusAuthority"
   Profile_Area_MAP }o--|| Reference : "source"
   Profile_Area_MAP }o--|| ControlledTerm : "occurrenceStatus"
   Profile_Area_MAP }o--|| ControlledTerm : "establishmentMeans"
@@ -664,8 +749,6 @@ erDiagram
     int degree_of_establishment_id FK "nullable"
     int threat_status_id FK "nullable"
     int threat_status_authority_id FK "nullable"
-    boolean is_endemic "nullable"
-    boolean has_introduced_occurrences "nullable"
     int source_id FK "nullable"
     string event_date "nullable"
     string occurrence_remarks "nullable"
@@ -708,10 +791,11 @@ config:
   layout: elk
 ---
 erDiagram
-    Profile ||--o{ Profile_Specimen_MAP : "profile"
+    Profile_Specimen_MAP }|--o| Profile : "profile"
     Profile_Specimen_MAP }o--|| Specimen : "specimen"
     Specimen }o--|| Reference : "externalSource"
-    Specimen }o--|{ Specimen_Image_MAP : "specimen"
+    Specimen }o--|{ Entity_Image_MAP : "morphs as 'entity'"
+    Entity_Image_MAP }|--|| Image : "image"
 
     Profile_Specimen_MAP {
         int id PK
@@ -754,8 +838,13 @@ config:
   layout: elk
 ---
 erDiagram
-    Entity_Image_MAP }|--|| Image : "image"
+    Image |o--|{ Entity_Image_MAP : "image"
     Entity_Image_MAP }|--o| ControlledTerm : "imageRole"
+
+    Entity_Image_MAP }o--|| Profile : "morphs as 'entity'"
+    Entity_Image_MAP }o--|| ProfileSection : "morphs as 'entity'"
+    Entity_Image_MAP }o--|| Specimen : "morphs as 'entity'"
+    Entity_Image_MAP }o--|| GlossaryTerm : "morphs as 'entity'"
 
     Image |o--|{ ImageCaption : "image"
 
