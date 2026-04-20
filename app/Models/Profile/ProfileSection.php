@@ -69,6 +69,6 @@ class ProfileSection extends Model
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(ControlledTerm::class, 'profile_section_type_id');
+        return $this->belongsTo(ProfileDefItem::class, 'profile_def_item_id');
     }
 }

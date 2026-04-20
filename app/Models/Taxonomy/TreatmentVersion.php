@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property-read Reference $reference
  * @property-read Treatment $treatment
+ * @property-read TaxonConcept $taxonConcept
  */
 #[Table(
     name: 'treatment_versions', 

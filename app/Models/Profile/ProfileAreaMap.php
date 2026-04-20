@@ -3,6 +3,7 @@
 namespace App\Models\Profile;
 
 use App\Models\Geography\Area;
+use App\Models\Geography\AreaCode;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
@@ -48,7 +49,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  *
  * @property-read Profile $profile
- * @property-read Area $area
+ * @property-read AreaCode $areaCode
  * @property-read TaxonTree $taxonTree
  * @property-read ThreatStatusAuthority|null $threatStatusAuthority
  * @property-read Reference|null $source
@@ -105,9 +106,9 @@ class ProfileAreaMap extends Model
      *
      * @return BelongsTo
      */
-    public function area(): BelongsTo
+    public function areaCode(): BelongsTo
     {
-        return $this->belongsTo(Area::class, 'area_id');
+        return $this->belongsTo(AreaCode::class, 'area_code_id');
     }
 
     /**

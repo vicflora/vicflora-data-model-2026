@@ -23,9 +23,9 @@ return new class extends Migration
                 ->constrained('taxon_trees')
                 ->onDelete('no action');
 
-            $table->foreignId('treatment_version_id')
+            $table->foreignId('source_id')
                 ->nullable()
-                ->index() // Essential for version lookups
+                ->index()
                 ->constrained('references')
                 ->onDelete('no action');
 

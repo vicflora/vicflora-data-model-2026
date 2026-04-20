@@ -5,6 +5,7 @@ namespace App\Models\Profile;
 use App\Models\Media\Image;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TreatmentVersion;
 use App\Models\Traits\Blameable;
@@ -85,9 +86,19 @@ class Profile extends Model
      *
      * @return BelongsTo
      */
-    public function treatmentVersion(): BelongsTo
+    public function treatmentVersions(): HasMany
     {
-        return $this->belongsTo(TreatmentVersion::class, 'treatment_version_id');
+        return $this->hasMany(TreatmentVersion::class, 'taxon_concept_id');
+    }
+    
+    /**
+     * Source of the profile
+     *
+     * @return BelongsTo
+     */
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(Reference::class, 'source_id');
     }
 
     /**
