@@ -33,9 +33,6 @@ return new class extends Migration
             $table->text('remarks')->nullable();
 
             // Provenance
-            $table->foreignId('source_id')
-                ->nullable()
-                ->constrained('references');
             $table->foreignId('creator_id')
                 ->nullable()
                 ->constrained('agents');

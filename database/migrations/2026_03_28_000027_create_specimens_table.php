@@ -17,9 +17,6 @@ return new class extends Migration
             $table->string('collection_code', 16)->nullable();
             $table->string('catalog_number', 64)->nullable();
             $table->string('source_url')->nullable();
-            $table->foreignId('external_source_id')
-                ->nullable()
-                ->constrained('references');
             $table->jsonb('metadata')->nullable();
 
             // Audit

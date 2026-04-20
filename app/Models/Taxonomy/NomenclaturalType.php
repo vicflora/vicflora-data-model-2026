@@ -7,6 +7,8 @@ use App\Models\Profile\Specimen;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -70,7 +72,7 @@ use Illuminate\Support\Carbon;
 ])]
 class NomenclaturalType extends Model
 {
-    use Blameable;
+    use Blameable, IncrementsVersion, Sourceable;
 
     /**
      * Define the relationship to the typified name (TaxonName).
@@ -131,14 +133,4 @@ class NomenclaturalType extends Model
         return $this->belongsTo(Reference::class, 'type_published_in_id');
     }
 
-     /**
-     * The Reference in which a specimen was designated the type of the typified 
-     * name.
-     * 
-     * @return BelongsTo
-     */
-    public function source(): BelongsTo
-    {
-        return $this->belongsTo(Reference::class, 'source_id');
-    }
 }

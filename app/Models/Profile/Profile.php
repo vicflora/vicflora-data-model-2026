@@ -11,6 +11,7 @@ use App\Models\Taxonomy\TreatmentVersion;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\HasImages;
 use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Sourceable;
 use App\Observers\ProfileObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -66,7 +67,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(ProfileObserver::class)]
 class Profile extends Model
 {
-    use IncrementsVersion, Blameable, HasImages;
+    use IncrementsVersion, Blameable, HasImages, Sourceable;
     
     public function taxonConcept(): BelongsTo
     {
@@ -91,16 +92,6 @@ class Profile extends Model
         return $this->hasMany(TreatmentVersion::class, 'taxon_concept_id');
     }
     
-    /**
-     * Source of the profile
-     *
-     * @return BelongsTo
-     */
-    public function source(): BelongsTo
-    {
-        return $this->belongsTo(Reference::class, 'source_id');
-    }
-
     /**
      * Layer 6: Specimen Vouchers
      * 

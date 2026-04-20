@@ -23,12 +23,6 @@ return new class extends Migration
                 ->constrained('taxon_trees')
                 ->onDelete('no action');
 
-            $table->foreignId('source_id')
-                ->nullable()
-                ->index()
-                ->constrained('references')
-                ->onDelete('no action');
-
             // Blameable
             $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('created_by_id')->nullable()->constrained('agents')->onDelete('no action');

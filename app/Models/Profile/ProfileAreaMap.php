@@ -10,6 +10,7 @@ use App\Models\Shared\Reference;
 use App\Models\Taxonomy\TaxonTree;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -39,7 +40,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $threat_status_id
  * @property bool|null $is_endemic
  * @property bool|null $has_introduced_occurrences
- * @property int|null $source_id
  * @property string|null $event_date
  * @property string|null $occurrence_remarks
  * @property int $version
@@ -85,7 +85,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ProfileAreaMap extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Blameable, IncrementsVersion, Sourceable;
 
     protected $casts = [
         'is_endemic' => 'boolean',
@@ -126,12 +126,6 @@ class ProfileAreaMap extends Model
     {
         // The reference that provides the authority for the threat status
         return $this->belongsTo(ThreatStatusAuthority::class, 'threat_status_authority_id');
-    }
-
-    public function source(): BelongsTo
-    {
-        // The specific reference/evidence for this record
-        return $this->belongsTo(Reference::class, 'source_id');
     }
 
     // Controlled Term lookups using your new ID-by-Code logic

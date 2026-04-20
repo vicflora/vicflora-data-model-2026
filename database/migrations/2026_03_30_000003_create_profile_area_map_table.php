@@ -37,7 +37,6 @@ return new class extends Migration
             // The 'Flags' & Evidence
             $table->boolean('is_endemic')->nullable();
             $table->boolean('has_introduced_occurrences')->nullable();
-            $table->foreignId('source_id')->nullable()->constrained('references');
             $table->string('event_date')->nullable();
             $table->text('occurrence_remarks')->nullable();
 
