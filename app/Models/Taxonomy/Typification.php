@@ -4,23 +4,21 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
 use App\Models\Traits\HasSidecar;
-use App\Services\ProtologueStringFormatter;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class Protologue
+ * Class Typification
  *
- * Represents a protologue, which is a reference that describes the original
- * publication of a taxonomic name. This model is based on the 'protologues'
- * database view, which combines data from the 'references' table and its
- * related extension for protologues.
+ * Represents a typification that is separate from the publication, e.g.,
+ * lectotypification or conserved type. This model is based on the
+ * 'typifications' view, which combines data from the 'references' table with
+ * extension data (which is nothing for typifications at the moment).
  *
- * The model includes relationships to the base Reference model and any sidecar
+ * The model includes relationships to the ase Reference model and any sidecar
  * data.
- *
+ * 
  * @property int $id
  * @property int $reference_type_id
  * @property string $author_string
@@ -29,13 +27,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $doi
  * @property string|null $url
  * @property array|null $metadata
- * @property string|null $in_authors
- * @property string|null $protologueString
  *
  * @property-read Reference $reference
  */
 #[Table(
-    name: 'protologues', 
+    name: 'typification', 
     key: 'id', 
     incrementing: false
 )]
@@ -47,32 +43,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'title',
     'doi',
     'url',
-    'metadata',
-    'microreference',
 ])]
-class Protologue extends Model
+class Typification extends Model
 {
     use HasSidecar;
 
     protected $casts = [
         'metadata' => 'array',
     ];
-
-    public function runPrePersistLogic()
-    {
-        // Instead of an Observer, we call a Service or Action
-        app(ProtologueStringFormatter::class)->format($this);
-    }
-
-    /**
-     * Get the reference that this protologue belongs to.
-     * 
-     * @return BelongsTo
-     */
-    public function reference(): BelongsTo
-    {
-        return $this->belongsTo(Reference::class);
-    }
 
     /**
      * Get the name of the base table that this model extends.
@@ -101,7 +79,7 @@ class Protologue extends Model
      */
     public function getExtensionTable(): string
     {
-        return 'protologues_ext';
+        return 'typifications_ext';
     }
 
     /**
@@ -111,6 +89,7 @@ class Protologue extends Model
      */
     public function getSidecarFields(): array
     {
-        return ['in_authors', 'protologue_string'];
+        return [];
     }
+
 }
