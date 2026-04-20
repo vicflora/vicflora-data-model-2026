@@ -32,12 +32,6 @@ return new class extends Migration
             // Additional Metadata
             $table->text('remarks')->nullable();
 
-            // Provenance
-            $table->foreignId('creator_id')
-                ->nullable()
-                ->constrained('agents');
-            $table->dateTime('created')->nullable();
-            
             // Audit
             $table->unsignedSmallInteger('version')->default(1);
             $table->foreignId('created_by_id')->nullable()->constrained('agents');

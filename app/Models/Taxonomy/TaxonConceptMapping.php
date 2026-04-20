@@ -7,6 +7,7 @@ use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Shared\User;
 use App\Models\Traits\Blameable;
+use App\Models\Traits\Createable;
 use App\Models\Traits\IncrementsVersion;
 use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -78,7 +79,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 ])]
 class TaxonConceptMapping extends Model
 {
-    use Blameable, IncrementsVersion, Sourceable;
+    use Blameable, IncrementsVersion, Sourceable, Createable;
 
     /**
      * The type of relationship between the subject and object concepts, 
@@ -139,16 +140,6 @@ class TaxonConceptMapping extends Model
             ->whereHas('vocabulary', function ($query) {
                 $query->where('code', 'MAPPING_METHOD');
             });
-    }
-
-    /**
-     * The Agent who created the mapping.
-     * 
-     * @return BelongsTo
-     */
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'creator_id');
     }
 
     /**
