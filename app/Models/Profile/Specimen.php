@@ -7,6 +7,7 @@ use App\Models\Shared\Reference;
 use App\Models\Traits\Blameable;
 use App\Models\Traits\HasImages;
 use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,7 +32,6 @@ use Illuminate\Support\Carbon;
  * @property string|null $collection_code
  * @property string|null $catalog_number
  * @property string|null $source_url
- * @property int|null $external_source_id
  * @property array|null $metadata
  * @property int $version
  * @property int|null $created_by_id
@@ -63,21 +63,11 @@ use Illuminate\Support\Carbon;
 ])]
 class Specimen extends Model
 {
-    use Blameable, IncrementsVersion, HasImages;
+    use Blameable, IncrementsVersion, HasImages, Sourceable;
 
     protected $casts = [
         'metadata' => 'array',
     ];
-
-    /**
-     * Define the relationship to the external source reference.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function externalSource()
-    {
-        return $this->belongsTo(Reference::class, 'external_source_id');
-    }
 
     /**
      * Define the many-to-many relationship to profiles through the profile_specimen_map pivot table.
