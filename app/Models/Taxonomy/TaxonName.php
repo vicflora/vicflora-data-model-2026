@@ -126,6 +126,7 @@ class TaxonName extends Model
             'VERNACULAR_NAME' => VernacularName::findOrNew($this->id),
             'TAXON_CONCEPT_LABEL' => TaxonConceptLabel::findOrNew($this->id),
             'HYBRID_FORMULA' => HybridFormula::findOrNew($this->id),
+            'HORTICULTURAL_GROUP_NAME' => HorticulturalGroupName::findOrNew($this->id),
             default => null,
         };
     }
@@ -172,6 +173,16 @@ class TaxonName extends Model
     public function hybridFormula(): HasOne
     {
         return $this->hasOne(HybridFormula::class, 'id');
+    }
+
+    /**
+     * Horticultural Group Name sidecar
+     *
+     * @return HasOne
+     */
+    public function horticulturalGroupName(): HasOne
+    {
+        return $this->hasOne(HorticulturalGroupName::class, 'id');
     }
 
     /**
