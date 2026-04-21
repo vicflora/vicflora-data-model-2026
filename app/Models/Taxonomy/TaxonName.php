@@ -125,6 +125,7 @@ class TaxonName extends Model
             'SCIENTIFIC_NAME' => ScientificName::findOrNew($this->id),
             'VERNACULAR_NAME' => VernacularName::findOrNew($this->id),
             'TAXON_CONCEPT_LABEL' => TaxonConceptLabel::findOrNew($this->id),
+            'HYBRID_FORMULA' => HybridFormula::findOrNew($this->id),
             default => null,
         };
     }
@@ -161,6 +162,16 @@ class TaxonName extends Model
     public function taxonConceptLabel(): HasOne
     {
         return $this->hasOne(TaxonConceptLabel::class, 'id');
+    }
+
+    /**
+     * Hybrid Formula sidecar
+     *
+     * @return HasOne
+     */
+    public function hybridFormula(): HasOne
+    {
+        return $this->hasOne(HybridFormula::class, 'id');
     }
 
     /**
