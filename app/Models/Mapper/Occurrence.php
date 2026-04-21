@@ -3,8 +3,7 @@
 namespace App\Models\Mapper;
 
 use App\Models\Shared\Agent;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -98,7 +97,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Occurrence extends Model
 {
-    use HasUuids, Blameable, IncrementsVersion;
+    use HasUuids, Auditable;
 
     protected $casts = [
         'flowers' => 'boolean',

@@ -2,8 +2,7 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +49,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ControlledTerm extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * Array to hold cached Controlled Term IDs.

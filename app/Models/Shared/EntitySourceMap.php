@@ -2,13 +2,12 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
-use App\Models\Traits\IncrementsVersion;
 
 class EntitySourceMap extends MorphPivot
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     protected $table = 'entity_source_map';
     public $incrementing = true;

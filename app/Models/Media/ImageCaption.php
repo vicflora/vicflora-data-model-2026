@@ -4,8 +4,7 @@ namespace App\Models\Media;
 
 use App\Models\Shared\Agent;
 use App\Models\Taxonomy\TaxonTree;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use App\Observers\ImageCaptionObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -62,7 +61,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(ImageCaptionObserver::class)]
 class ImageCaption extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * Image the caption belongs to

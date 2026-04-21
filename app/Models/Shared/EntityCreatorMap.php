@@ -2,13 +2,14 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
-use App\Models\Traits\IncrementsVersion;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class EntityCreatorMap extends MorphPivot
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     protected $table = 'entity_creator_map';
 
@@ -20,8 +21,10 @@ class EntityCreatorMap extends MorphPivot
 
     /**
      * The Agent who is the creator.
+     * 
+     * @return BelongsTo
      */
-    public function agent()
+    public function agent(): BelongsTo
     {
         return $this->belongsTo(Agent::class);
     }
@@ -29,7 +32,7 @@ class EntityCreatorMap extends MorphPivot
     /**
      * The model that was created (Specimen, Reference, etc.).
      */
-    public function createable()
+    public function createable(): MorphTo
     {
         return $this->morphTo();
     }

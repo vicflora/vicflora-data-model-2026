@@ -2,8 +2,7 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -43,7 +42,7 @@ use Illuminate\Support\Carbon;
 ])]
 class EntityIdentityMap extends MorphPivot
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * Link back to the metadata of the external ID.

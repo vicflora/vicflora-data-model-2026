@@ -4,8 +4,7 @@ namespace App\Models\Shared;
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -42,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class ReferenceContributorMap extends Pivot
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * Relationship to the Contributor Role term.

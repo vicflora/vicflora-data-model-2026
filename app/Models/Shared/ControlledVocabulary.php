@@ -2,8 +2,7 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -52,7 +51,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ControlledVocabulary extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * Get the terms belonging to this vocabulary.

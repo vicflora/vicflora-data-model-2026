@@ -4,8 +4,7 @@ namespace App\Models\Shared;
 
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TaxonName;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -60,7 +59,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ExternalIdentity extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     protected $casts = [
         'metadata' => 'array',

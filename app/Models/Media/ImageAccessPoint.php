@@ -4,8 +4,7 @@ namespace App\Models\Media;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -55,7 +54,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ImageAccessPoint extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * The parent Image metadata record.

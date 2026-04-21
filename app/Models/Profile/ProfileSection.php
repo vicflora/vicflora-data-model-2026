@@ -4,9 +4,8 @@ namespace App\Models\Profile;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasImages;
-use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,7 +54,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ProfileSection extends Model
 {
-    use IncrementsVersion, Blameable, HasImages;
+    use Auditable, HasImages;
 
     /**
      * Relationships to update when this model is updated.

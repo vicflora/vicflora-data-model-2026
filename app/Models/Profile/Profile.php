@@ -8,9 +8,8 @@ use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Taxonomy\TaxonConcept;
 use App\Models\Taxonomy\TreatmentVersion;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasImages;
-use App\Models\Traits\IncrementsVersion;
 use App\Models\Traits\Sourceable;
 use App\Observers\ProfileObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -67,7 +66,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(ProfileObserver::class)]
 class Profile extends Model
 {
-    use IncrementsVersion, Blameable, HasImages, Sourceable;
+    use Auditable, HasImages, Sourceable;
     
     public function taxonConcept(): BelongsTo
     {

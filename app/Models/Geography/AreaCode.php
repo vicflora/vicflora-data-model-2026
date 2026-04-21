@@ -5,8 +5,7 @@ namespace App\Models\Geography;
 use App\Models\Shared\Agent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,7 +58,7 @@ use Illuminate\Support\Carbon;
 ])]
 class AreaCode extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * The physical Area entity.

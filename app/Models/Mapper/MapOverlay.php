@@ -3,8 +3,7 @@
 namespace App\Models\Mapper;
 
 use App\Models\Shared\Agent;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Clickbar\Magellan\Data\Geometries\MultiPolygon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -51,7 +50,7 @@ use Illuminate\Support\Carbon;
 ])]
 class MapOverlay extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     protected $casts = [
         'area_fid' => 'integer',

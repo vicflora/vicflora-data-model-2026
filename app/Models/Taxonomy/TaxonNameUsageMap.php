@@ -4,7 +4,7 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Observers\TaxonNameUsageMapObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -64,7 +64,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(TaxonNameUsageMapObserver::class)]
 class TaxonNameUsageMap extends Model
 {
-    use Blameable;
+    use Auditable;
 
     /**
      * The Name being used.

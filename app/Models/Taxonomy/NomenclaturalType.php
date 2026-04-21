@@ -6,9 +6,8 @@ use App\Models\Shared\Agent;
 use App\Models\Profile\Specimen;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\Createable;
-use App\Models\Traits\IncrementsVersion;
 use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -73,7 +72,7 @@ use Illuminate\Support\Carbon;
 ])]
 class NomenclaturalType extends Model
 {
-    use Blameable, IncrementsVersion, Sourceable, Createable;
+    use Auditable, Sourceable, Createable;
 
     /**
      * Define the relationship to the typified name (TaxonName).

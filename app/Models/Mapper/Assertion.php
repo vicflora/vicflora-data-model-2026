@@ -3,8 +3,7 @@
 namespace App\Models\Mapper;
 
 use App\Models\Shared\Agent;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -49,7 +48,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Assertion extends Model
 {
-    use HasUuids, Blameable, IncrementsVersion;
+    use HasUuids, Auditable;
 
     /**
      * Specify the UUID column name.

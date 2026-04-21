@@ -4,7 +4,7 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -58,7 +58,7 @@ use Illuminate\Support\Carbon;
 ])]
 class TaxonTreeDefItem extends Model
 {
-    use Blameable;
+    use Auditable;
 
     /**
      * Define the relationship to the TaxonTree.

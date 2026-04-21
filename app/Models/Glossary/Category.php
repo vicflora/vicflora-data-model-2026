@@ -3,8 +3,7 @@
 namespace App\Models\Glossary;
 
 use App\Models\Shared\Agent;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,7 +49,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Category extends Model
 {
-    use Blameable, IncrementsVersion;
+    use Auditable;
 
     /**
      * The Glossary this category belongs to.

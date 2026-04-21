@@ -5,7 +5,7 @@ namespace App\Models\Profile;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Taxonomy\TaxonTree;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -47,7 +47,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ProfileDefItem extends Model
 {
-    use Blameable;
+    use Auditable;
 
     public function tree(): BelongsTo
     {

@@ -6,9 +6,8 @@ use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Shared\User;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\Createable;
-use App\Models\Traits\IncrementsVersion;
 use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -79,7 +78,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 ])]
 class TaxonConceptMapping extends Model
 {
-    use Blameable, IncrementsVersion, Sourceable, Createable;
+    use Auditable, Sourceable, Createable;
 
     /**
      * The type of relationship between the subject and object concepts, 

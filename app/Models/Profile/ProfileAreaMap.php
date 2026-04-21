@@ -8,8 +8,7 @@ use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Taxonomy\TaxonTree;
-use App\Models\Traits\Blameable;
-use App\Models\Traits\IncrementsVersion;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -83,7 +82,7 @@ use Illuminate\Support\Carbon;
 ])]
 class ProfileAreaMap extends Model
 {
-    use Blameable, IncrementsVersion, Sourceable;
+    use Auditable, Sourceable;
 
     protected $casts = [
         'is_endemic' => 'boolean',

@@ -6,10 +6,9 @@ use App\Models\Media\Image;
 use App\Models\Shared\Agent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Traits\Blameable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasImages;
 use App\Models\Traits\HasLimitations;
-use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,7 +66,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Term extends Model
 {
-    use Blameable, IncrementsVersion, HasLimitations, HasImages;
+    use Auditable, HasLimitations, HasImages;
 
 
     /**
