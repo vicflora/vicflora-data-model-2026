@@ -61,6 +61,12 @@ class NameRelationTypeVocabularySeeder extends Seeder
                 'description' => 'Name(s) against which this name is conserved.', 
                 'iri' => 'http://rs.tdwg.org/tcs/terms/conservedAgainst'
             ],
+            [
+                'code' => 'ORTHOGRAPHIC_VARIANT_OF', 
+                'label' => 'Orthographic Variant of', 
+                'description' => 'Invalid name with different spelling but same nomenclatural type as valid name.',
+                'iri' => null
+            ]
         ];
 
         // 3. Insert the terms

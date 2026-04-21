@@ -151,19 +151,7 @@ class ScientificName extends Model
      */
     public function basionym(): HasOneThrough
     {
-        return $this->hasOneThrough(
-            TaxonName::class,        // The target is the base name
-            NameRelationMap::class,
-            'from_taxon_name_id',    // FK on Map pointing to this name
-            'id',                    // PK on TaxonName
-            'id',                    // Local key on this sidecar
-            'to_taxon_name_id'       // Local key on Map pointing to target
-        )
-        ->where('name_type', 'SCIENTIFIC')
-        ->whereHas('relationType', function ($query) {
-            $query->where('code', 'BASIONYM')
-                ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
-        });
+        return $this->hasSingleNameRelation('BASIONYM');
     }
 
     /**
@@ -174,19 +162,7 @@ class ScientificName extends Model
      */
     public function replacedName(): HasOneThrough
     {
-        return $this->hasOneThrough(
-            TaxonName::class,
-            NameRelationMap::class,
-            'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
-            'id',                       // FK on TaxonName (the target)
-            'id',                       // Local key on "this" name
-            'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
-        )
-        ->where('name_type', 'SCIENTIFIC')
-        ->whereHas('relationType', function ($query) {
-            $query->where('code', 'REPLACED_NAME')
-                ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
-        });
+        return $this->hasSingleNameRelation('REPLACED_NAME');
     }
 
     /**
@@ -197,19 +173,7 @@ class ScientificName extends Model
      */
     public function basedOn(): HasOneThrough
     {
-        return $this->hasOneThrough(
-            ScientificName::class,
-            NameRelationMap::class,
-            'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
-            'id',                       // FK on TaxonName (the target)
-            'id',                       // Local key on "this" name
-            'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
-        )
-        ->where('name_type', 'SCIENTIFIC')
-        ->whereHas('relationType', function ($query) {
-            $query->where('code', 'BASED_ON')
-                ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
-        });
+        return $this->hasSingleNameRelation('BASED_ON');
     }
 
     /**
@@ -220,17 +184,36 @@ class ScientificName extends Model
      */
     public function laterHomonymOf(): HasOneThrough
     {
+        return $this->hasSingleNameRelation('LATER_HOMONYM_OF');
+    }
+
+    /**
+     * Get the name this name is an orthographic variant of.
+     * * We go: TaxonName -> NameRelation -> TaxonName
+     * 
+     * @return HasOneThrough
+     */
+    public function orthographicVariantOf(): HasOneThrough
+    {
+        return $this->hasSingleNameRelation('ORTHOGRAPHIC_VARIANT_OF');
+    }
+
+    /**
+     * Helper to build a singular relationship to another scientific identity.
+     */
+    protected function hasSingleNameRelation(string $relationCode): HasOneThrough
+    {
         return $this->hasOneThrough(
             TaxonName::class,
             NameRelationMap::class,
-            'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
-            'id',                       // FK on TaxonName (the target)
-            'id',                       // Local key on "this" name
-            'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
+            'from_taxon_name_id',
+            'id',
+            'id',
+            'to_taxon_name_id'
         )
         ->where('name_type', 'SCIENTIFIC')
-        ->whereHas('relationType', function ($query) {
-            $query->where('code', 'LATER_HOMONYM_OF')
+        ->whereHas('relationType', function ($query) use ($relationCode) {
+            $query->where('code', $relationCode)
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
         });
     }
