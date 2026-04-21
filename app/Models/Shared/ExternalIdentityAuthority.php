@@ -2,10 +2,11 @@
 
 namespace App\Models\Shared;
 
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class ExternalIdentityAuthority
@@ -20,54 +21,46 @@ use Illuminate\Database\Eloquent\Model;
  * data.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
+ * @property string|null $code
+ * 
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * 
+ * @property-read Reference $reference
  */
 #[Table(
-    name: 'external_identity_authorities', 
+    name: 'external_identity_authorities_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
     'id',
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
+    'code',
 ])]
 class ExternalIdentityAuthority extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
-
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    public function getExtensionTable(): string
-    {
-        return 'external_identity_authorities_ext';
-    }
-
+    /**
+     * Get sidecar fields
+     *
+     * @return array
+     */
     public function getSidecarFields(): array
     {
         return [];
+    }
+
+    /**
+     * Get the reference that this external identity authority belongs to.
+     * 
+     * @return BelongsTo
+     */
+    public function reference(): BelongsTo
+    {
+        return $this->belongsTo(Reference::class, 'id');
     }
 }

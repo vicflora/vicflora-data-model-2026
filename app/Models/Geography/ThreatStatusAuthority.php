@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Profile;
+namespace App\Models\Geography;
 
 use App\Models\Shared\Reference;
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -21,34 +21,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * data.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
  * @property string|null $code
+ * 
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Reference $reference
  */
 #[Table(
-    name: 'threat_status_authorities', 
+    name: 'threat_status_authorities_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
+    'id',
+    'code',
 ])]
 class ThreatStatusAuthority extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
     protected $casts = [
         'metadata' => 'array',
@@ -61,26 +55,11 @@ class ThreatStatusAuthority extends Model
      */
     public function reference(): BelongsTo
     {
-        return $this->belongsTo(Reference::class, 'reference_id', 'id');
-    }
-
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    public function getExtensionTable(): string
-    {
-        return 'threat_status_authorities_ext';
+        return $this->belongsTo(Reference::class, 'id');
     }
 
     public function getSidecarFields(): array
     {
-        return [];
+        return ['code'];
     }
 }

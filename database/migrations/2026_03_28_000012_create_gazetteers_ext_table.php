@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,17 +18,13 @@ return new class extends Migration
                 ->on('references')
                 ->onDelete('cascade');
             $table->string('code')->nullable();
+
+            // Auditing fields
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
-
-        DB::statement("
-            CREATE VIEW gazetteers AS
-            SELECT 
-                r.*,
-                ext.code
-            FROM public.references r
-            JOIN gazetteers_ext ext ON r.id = ext.id
-        ");
-
     }
 
     /**
@@ -37,7 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS gazetteers');
         Schema::dropIfExists('gazetteers_ext');
     }
 };

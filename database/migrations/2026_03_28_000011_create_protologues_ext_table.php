@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,17 +19,14 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('in_authors')->nullable();
             $table->text('protologue_string')->nullable();
-        });
 
-        DB::statement("
-            CREATE VIEW protologues AS
-            SELECT 
-                r.*,
-                ext.in_authors,
-                ext.protologue_string
-            FROM public.references r
-            JOIN protologues_ext ext ON r.id = ext.id
-        ");
+            // Auditing fields
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
+
+        });
     }
 
     /**
@@ -38,7 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS protologues');
         Schema::dropIfExists('protologues_ext');
     }
 };

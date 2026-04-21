@@ -348,9 +348,20 @@ erDiagram
     ReferenceContributor_MAP }|--o| Agent : agent
     Agent }o--|| User : user
 
-    Reference |o--o| ScientificName_EXT : "publishedIn"
+    Reference |o--|{ Entity_Source_MAP : "source"
+    Entity_Source_MAP }o--o| NomenclaturalType : "morphs as 'sourceable'"
+    Entity_Source_MAP }o--o{ TaxonConceptMapping : "morphs as 'sourceable'"
+    Entity_Source_MAP }o--o{ TaxonNameUsage_MAP : "morphs as 'sourceable'"
+    Entity_Source_MAP }o--o{ Profile : "morphs as 'sourceable'"
+    Entity_Source_MAP }o--o{ Profile_Area_MAP : "morphs as 'sourceable'"
+    Entity_Source_MAP }o--o{ Specimen : "morphs as 'sourceable'"
+    
+    Reference |o--|| ExternalIdentityAuthority_EXT : "reference / externalIdentityAuthority"
+    ExternalIdentityAuthority_EXT ||--|{ ExternalIdentity : "externalIdentityAuthority"
+
     Reference |o--|| Protologue_EXT : "reference / protologue"
     Protologue_EXT }|--o| ScientificName_EXT : "publishedIn"
+    Reference |o--o| ScientificName_EXT : "publishedIn"
     ScientificName_EXT ||--o| TaxonName : "taxonName / scientificName"
     TaxonName |o--|| TaxonConcept : "taxonName"
 
@@ -363,8 +374,6 @@ erDiagram
     NomenclaturalType ||--o| ScientificName_EXT : "typifiedName"
     NomenclaturalType |o--o| ScientificName_EXT : "typeName"
 
-    Reference |o--|{ TaxonConcept : "accordingTo"
-
     Reference |o--|| Treatment_EXT : "reference / treatment"
     Treatment_EXT ||--o{ TaxonConcept : "accordingTo"
     Reference |o--|| TreatmentVersion_EXT : "reference / treatmentVersion"
@@ -373,11 +382,12 @@ erDiagram
     Treatment_EXT ||--|{ TreatmentVersion_EXT : "treatment"
     Profile ||--o| TaxonConcept : "taxonConcept / profile"
 
+    Reference |o--|| ThreatStatusAuthority_EXT : "reference / threatStatusAuthority"
     Reference |o--|| Gazetteer_EXT : "reference / gazetteer"
     Gazetteer_EXT |o--|{ AreaCode : "gazetteer"
     AreaCode |o--|{ Profile_Area_MAP : "areaCode"
-    Reference |o--|| ThreatStatusAuthority_EXT : "reference / threatStatusAuthority"
-    ThreatStatusAuthority_EXT |o--o{ Profile_Area_MAP : "gazetteer"
+    Area |o--|{ AreaCode : "area"
+    ThreatStatusAuthority_EXT |o--o{ Area : "threatStatusAuthority"
     Profile_Area_MAP }|--o| Profile : "profile"
     
     TaxonConceptMapping }|--o| TaxonConcept : "subjectTaxonConcept"
@@ -400,24 +410,12 @@ erDiagram
     Agent |o--|{ ScientificName_Author_MAP : "agent"
     ScientificName_Author_MAP }|--o{ ScientificName_EXT : "scientificName"
 
-    Reference |o--|{ Specimen : "externalSource"
-
-    Reference |o--|| ExternalIdentityAuthority_EXT : "reference / externalIdentityAuthority"
-    ExternalIdentityAuthority_EXT ||--|{ ExternalIdentity : "externalIdentityAuthority"
-
-    Reference |o--|{ Entity_Source_MAP : "source"
-    Entity_Source_MAP }o--o| NomenclaturalType : "morphs as 'sourceable'"
-    Entity_Source_MAP }o--o{ TaxonConceptMapping : "morphs as 'sourceable'"
-    Entity_Source_MAP }o--o{ TaxonNameUsage_MAP : "morphs as 'sourceable'"
-    Entity_Source_MAP }o--o{ Profile : "morphs as 'sourceable'"
-    Entity_Source_MAP }o--o{ Profile_Area_MAP : "morphs as 'sourceable'"
-    Entity_Source_MAP }o--o{ Specimen : "morphs as 'sourceable'"
 
     Agent |o--|{ Entity_Creator_MAP : "creator"
     Entity_Creator_MAP }o--o| TaxonConceptMapping : "morphs as 'createable'"
     Entity_Creator_MAP }o--o| NomenclaturalType : "morphs as 'createable'"
 
-
+    Reference |o--|{ TaxonConcept : "accordingTo"
     
     Reference {
         int id PK
@@ -736,7 +734,7 @@ erDiagram
   AreaCode }|--o| Area : area
   AreaCode }|--|| Gazetteer_EXT : "gazetteer"
   Gazetteer_EXT ||--o| Reference : reference
-  Profile_Area_MAP }o--o| ThreatStatusAuthority_EXT : "threatStatusAuthority"
+  Area |o--|| ThreatStatusAuthority_EXT : "threatStatusAuthority"
   ThreatStatusAuthority_EXT ||--o| Reference : "reference / ThreatStatusAuthority"
 
   Profile_Area_MAP }o--o| Entity_Source_MAP : "morphs as 'sourceable'"
@@ -752,7 +750,6 @@ erDiagram
     int establishment_means_id FK "nullable"
     int degree_of_establishment_id FK "nullable"
     int threat_status_id FK "nullable"
-    int threat_status_authority_id FK "nullable"
     string event_date "nullable"
     string occurrence_remarks "nullable"
   }
@@ -776,6 +773,7 @@ erDiagram
     int parent_id FK "nullable"
     int accepted_id FK "nullable"
     string area_path
+    int threat_status_authority_id FK "nullable"
   }
 
 ```
@@ -841,7 +839,6 @@ config:
 ---
 erDiagram
     Image |o--|{ Entity_Image_MAP : "image"
-    Entity_Image_MAP }|--o| ControlledTerm : "imageRole"
 
     Entity_Image_MAP }o--|| Profile : "morphs as 'entity'"
     Entity_Image_MAP }o--|| ProfileSection : "morphs as 'entity'"
@@ -850,12 +847,7 @@ erDiagram
 
     Image |o--|{ ImageCaption : "image"
 
-    
-    Image }o--|| ControlledTerm : "imageType"
-    Image }o--|| ControlledTerm : "license"
-
     Image |o--|{ ImageAccessPoint : "image"
-    ImageAccessPoint }|--o| ControlledTerm : "variant"
 
     Entity_Image_MAP {
         int id PK

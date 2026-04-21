@@ -4,6 +4,7 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
 use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -21,44 +22,59 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * data.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
+ * @property int $taxonomy_id
  * @property int $taxon_concept_id
  * @property int|null $version_number
  * @property string|null $version_label
  * @property arra|null $data_snapshot
  *
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
  * @property-read Reference $reference
  * @property-read Treatment $treatment
+ * @property-read Taxonomy $taxonomy
  * @property-read TaxonConcept $taxonConcept
  */
 #[Table(
-    name: 'treatment_versions', 
+    name: 'treatment_versions_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
+    'id',
+    'treatment_id',
+    'taxonomy_id',
+    'taxon_concept_id',
+    'version_number',
+    'version_label',
+    'data_snapshot',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class TreatmentVersion extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
     protected $casts = [
-        'metadata' => 'array',
         'data_snapshot' => 'array',
     ];
+
+    /**
+     * Get the list of fields that are stored in the sidecar extension table.
+     * This is used by the HasSidecar trait to know which fields to read/write
+     * from the sidecar table.
+     * @return array
+     */
+    public function getSidecarFields(): array
+    {
+        return ['treatment_id'];
+    }
 
     /**
      * Get the reference that this taxonomy version belongs to.
@@ -66,7 +82,7 @@ class TreatmentVersion extends Model
      */
     public function reference(): BelongsTo
     {
-        return $this->belongsTo(Reference::class);
+        return $this->belongsTo(Reference::class, 'id');
     }
 
     /**
@@ -79,46 +95,20 @@ class TreatmentVersion extends Model
     }
 
     /**
-     * Get the class name of the base model that this model extends. This is
-     * used by the HasSidecar trait to know which model to use for the base
-     * data.
-     * @return string
+     * Get the taxonomy that this version belongs to.
+     * @return BelongsTo
      */
-    public function getBaseModelClass(): string
+    public function taxonomy(): BelongsTo
     {
-        return Reference::class;
-    }
-    
-    /**
-     * Get the name of the table that the base model is based on. This is used
-     * by the HasSidecar trait to know which table to join to for the base
-     * fields.
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'references';
+        return $this->belongsTo(Taxonomy::class, 'taxonomy_id');    
     }
 
     /**
-     * Get the name of the table that contains the sidecar fields for this
-     * model. This is used by the HasSidecar trait to know which table to
-     * read/write the sidecar fields from/to.
-     * @return string
+     * Get the taxon concept that this version belongs to.
+     * @return BelongsTo
      */
-    public function getExtensionTable(): string
+    public function taxonConcept(): BelongsTo
     {
-        return 'treatment_versions_ext';
-    }
-
-    /**
-     * Get the list of fields that are stored in the sidecar extension table.
-     * This is used by the HasSidecar trait to know which fields to read/write
-     * from the sidecar table.
-     * @return array
-     */
-    public function getSidecarFields(): array
-    {
-        return ['treatment_id'];
+        return $this->belongsTo(TaxonConcept::class, 'taxon_concept_id');
     }
 }

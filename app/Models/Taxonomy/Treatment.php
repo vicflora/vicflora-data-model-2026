@@ -4,7 +4,7 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Profile\Profile;
 use App\Models\Shared\Reference;
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -25,41 +25,47 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * treatment belongs.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
+ *
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Reference $reference
  * @property-read Taxonomy $taxonomy
  * @property-read TaxonConcept $taxonConcept
- * @property-read Collection<int, TaxonNameUsage>|null $taxonNameUsages
  * @property-read Profile|null $profile
+ * @property-read TaxonNameUsageMap $taxonNameUsages
  */
 #[Table(
-    name: 'treatments', 
+    name: 'treatments_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
+    'id',
+    'taxonomy_id',
+    'taxon_concept_id',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class Treatment extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
+    /**
+     * Get the list of fields that are stored in the sidecar extension table.
+     * This is used by the HasSidecar trait to know which fields to read/write from the sidecar table.
+     * 
+     * @return array
+     */
+    public function getSidecarFields(): array
+    {
+        return ['taxonomy_id', 'taxon_concept_id'];
+    }
 
     /**
     * Get the reference that this treatment belongs to.
@@ -68,7 +74,7 @@ class Treatment extends Model
     */
     public function reference(): BelongsTo
     {
-        return $this->belongsTo(Reference::class);
+        return $this->belongsTo(Reference::class, 'id');
     }
 
     /**
@@ -96,7 +102,7 @@ class Treatment extends Model
      */
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class, 'taxon_concept_id', 'taxon_concept_id');
+        return $this->hasOne(Profile::class, 'taxon_concept_id');
     }
 
     /**
@@ -106,49 +112,5 @@ class Treatment extends Model
     public function taxonNameUsages(): HasMany
     {
         return $this->hasMany(TaxonNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
-    }
-
-    /**
-     * Get the class name of the base model that this model extends.
-     * This is used by the HasSidecar trait to know which model to use for the base data.
-     * 
-     * @return string
-     */
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    /**
-     * Get the name of the table that the base model is based on.
-     * This is used by the HasSidecar trait to know which table to join to for the base fields.
-     * 
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    /**
-     * Get the name of the sidecar extension table that holds additional fields for this model.
-     * This is used by the HasSidecar trait to know which table to join to for the sidecar fields.
-     * 
-     * @return string
-     */
-    public function getExtensionTable(): string
-    {
-        return 'treatments_ext';
-    }
-
-    /**
-     * Get the list of fields that are stored in the sidecar extension table.
-     * This is used by the HasSidecar trait to know which fields to read/write from the sidecar table.
-     * 
-     * @return array
-     */
-    public function getSidecarFields(): array
-    {
-        return ['id'];
     }
 }

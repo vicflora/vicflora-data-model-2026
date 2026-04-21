@@ -4,8 +4,9 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasUsages;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,10 +33,6 @@ use Illuminate\Support\Carbon;
  * name is the typified name.
  * 
  * @property int $id
- * @property string $guid
- * @property string $name_string
- * @property string|null $language
- * @property int|null $rank_id
  * @property string|null $authorship
  * @property string|null $published_in_string
  * @property string|null $microreference
@@ -50,14 +47,12 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
- * @property-read ControlledTerm|null $rank
  * @property-read ControlledTerm|null $nomenclaturalCode
  * @property-read ControlledTerm|null $nomenclaturalStatus
  * @property-read ScientificName|null $basionym
  * @property-read ScientificName|null $replacedName
  * @property-read ScientificName|null $basedOn
  * @property-read ScientificName|null $laterHomonymOf
- * @property-read Collection<int, TaxonNameUsageMap> $usages
  * @property-read Collection<int, ScientificName>|null $conservedAgainst
  * @property-read Collection<int, ScientificName>|null $rejectedAgainst
  * @property-read Collection<int, NomenclaturalType>|null $typification
@@ -67,24 +62,16 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ScientificNameAuthorMap> $combinationAscribedAuthors
  * @property-read Collection<int, ScientificNameAuthorMap> $basionymAscribedAuthors
  * 
- * @property-read Agent $createdBy
- * @property-read Agent $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
-    name: 'scientific_names', 
+    name: 'scientific_names_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
     'id',
-    'created_at',
-    'updated_at',
-    'guid',
-    'name_string',
-    'language',
-    'rank_id',
-    'created_by_id',
-    'updated_by_id',
     'authorship',
     'published_in_string',
     'microreference',
@@ -92,10 +79,32 @@ use Illuminate\Support\Carbon;
     'published_in_id',
     'nomenclatural_code_id',
     'nomenclatural_status_id',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class ScientificName extends Model
 {
-    use HasSidecar, HasUsages;
+    use Auditable, IsSidecar;
+
+        /**
+     * Get the list of fields that are stored in the sidecar extension table.
+     *
+     * @return array
+     */
+    public function getSidecarFields(): array
+    {
+        return [
+            'authorship',
+            'published_in_string',
+            'microreference',
+            'year',
+            'published_in_id',
+            'nomenclatural_code_id',
+            'nomenclatural_status_id',
+        ];
+    }
 
     /**
     * Define the relationship to the base TaxonName.
@@ -136,20 +145,21 @@ class ScientificName extends Model
 
     /**
      * Get the Basionym.
-     * * We go: ScientificName -> NameRelation -> ScientificName (as Basionym)
+     * * We go: TaxonName -> NameRelation -> TaxonName (as Basionym)
      * 
      * @return HasOneThrough
      */
     public function basionym(): HasOneThrough
     {
         return $this->hasOneThrough(
-            ScientificName::class,
+            TaxonName::class,        // The target is the base name
             NameRelationMap::class,
-            'from_taxon_name_id',  // FK on NameRelationMap pointing to "this" name
-            'id',                  // FK on TaxonName (the target)
-            'id',                  // Local key on "this" name
-            'to_taxon_name_id'     // Local key on NameRelationMap pointing to the Basionym
+            'from_taxon_name_id',    // FK on Map pointing to this name
+            'id',                    // PK on TaxonName
+            'id',                    // Local key on this sidecar
+            'to_taxon_name_id'       // Local key on Map pointing to target
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'BASIONYM')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -158,20 +168,21 @@ class ScientificName extends Model
 
     /**
      * Get the synonym for which this name is the replacement name.
-     * * We go: ScientificName -> NameRelation -> ScientificName
+     * * We go: TaxonName -> NameRelation -> TaxonName (as Replaced Name)
      * 
      * @return HasOneThrough
      */
     public function replacedName(): HasOneThrough
     {
         return $this->hasOneThrough(
-            ScientificName::class,
+            TaxonName::class,
             NameRelationMap::class,
             'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
             'id',                       // FK on TaxonName (the target)
             'id',                       // Local key on "this" name
             'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'REPLACED_NAME')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -180,7 +191,7 @@ class ScientificName extends Model
 
     /**
      * Get the name this name is based on.
-     * * We go: ScientificName -> NameRelation -> ScientificName
+     * * We go: TaxonName -> NameRelation -> TaxonName
      * 
      * @return HasOneThrough
      */
@@ -194,6 +205,7 @@ class ScientificName extends Model
             'id',                       // Local key on "this" name
             'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'BASED_ON')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -202,20 +214,21 @@ class ScientificName extends Model
 
     /**
      * Get the earlier name this name is a later homonym of.
-     * * We go: ScientificName -> NameRelation -> ScientificName
+     * * We go: TaxonName -> NameRelation -> TaxonName
      * 
      * @return HasOneThrough
      */
     public function laterHomonymOf(): HasOneThrough
     {
         return $this->hasOneThrough(
-            ScientificName::class,
+            TaxonName::class,
             NameRelationMap::class,
             'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
             'id',                       // FK on TaxonName (the target)
             'id',                       // Local key on "this" name
             'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'LATER_HOMONYM_OF')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -224,20 +237,21 @@ class ScientificName extends Model
 
     /**
      * Get the names this name is conserved against.
-     * * We go: ScientificName -> NameRelation -> ScientificName
+     * * We go: TaxonName -> NameRelation -> TaxonName
      * 
      * @return HasManyThrough
      */
     public function conservedAgainst(): HasManyThrough
     {
         return $this->hasManyThrough(
-            ScientificName::class,
+            TaxonName::class,
             NameRelationMap::class,
             'from_taxon_name_id',       // FK on NameRelationMap pointing to "this" name
             'id',                       // FK on TaxonName (the target)
             'id',                       // Local key on "this" name
             'to_taxon_name_id'          // Local key on NameRelationMap pointing to the Basionym
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'CONSERVED_AGAINST')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -252,13 +266,14 @@ class ScientificName extends Model
     public function rejectedAgainst(): HasManyThrough
     {
         return $this->hasManyThrough(
-            ScientificName::class,
+            TaxonName::class,
             NameRelationMap::class,
             'to_taxon_name_id',         // FK on NameRelationMap pointing to "this" name
             'id',                       // FK on TaxonName (the target)
             'id',                       // Local key on "this" name
             'from_taxon_name_id'        // Local key on NameRelationMap pointing to the related name
         )
+        ->where('name_type', 'SCIENTIFIC')
         ->whereHas('relationType', function ($query) {
             $query->where('code', 'CONSERVED_AGAINST')
                 ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_RELATION_TYPE'));
@@ -304,67 +319,5 @@ class ScientificName extends Model
     {
         return $this->authorshipMaps()->where('author_role_id', 
             ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'BASIONYM_ASCRIBED'));
-    }
-    
-    /**
-     * Get the name of the base table that this model is based on.
-     * This is used by the HasSidecar trait to know which table to join to for the sidecar fields.
-     *
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'taxon_names';
-    }
-
-    /**
-     * Get the class name of the base model that this model extends.
-     * This is used by the HasSidecar trait to know which model to use for the base data.
-     *
-     * @return string
-     */
-    public function getBaseModelClass(): string
-    {
-        return TaxonName::class;
-    }
-
-    /**
-     * Get the name of the sidecar extension table that holds additional fields for this model.
-     *
-     * @return string
-     */
-    public function getExtensionTable(): string
-    {
-        return 'scientific_names_ext';
-    }
-
-    /**
-     * Get the list of fields that are stored in the sidecar extension table.
-     *
-     * @return array
-     */
-    public function getSidecarFields(): array
-    {
-        return [
-            'authorship',
-            'published_in_string',
-            'microreference',
-            'year',
-            'published_in_id',
-            'nomenclatural_code_id',
-            'nomenclatural_status_id',
-        ];
-    }
-
-    /**
-     * Override the default foreign key for the sidecar relationship, since in this case
-     * the scientific_names_ext table uses 'taxon_name_id' to link back to the taxon_names table.
-     *
-     * @return string
-     */
-    #[\Override]
-    protected function getSidecarForeignKey(): string
-    {
-        return 'taxon_name_id';
     }
 }

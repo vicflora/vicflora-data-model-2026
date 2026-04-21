@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -24,35 +23,16 @@ return new class extends Migration
             $table->foreignId('nomenclatural_code_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('nomenclatural_status_id')->nullable()->constrained('controlled_terms');
 
+            // Audit fields for the sidecar itself
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
-
-        DB::statement("
-            CREATE OR REPLACE VIEW scientific_names AS
-            SELECT
-                tn.id,
-                tn.guid,
-                tn.name_string,
-                tn.rank_id,
-                ext.authorship,
-                ext.published_in_string,
-                ext.microreference,
-                ext.year,
-                ext.published_in_id,
-                ext.nomenclatural_code_id,
-                ext.nomenclatural_status_id,
-                tn.version,
-                tn.created_by_id,
-                tn.updated_by_id,
-                tn.created_at,
-                tn.updated_at
-            FROM taxon_names tn
-            JOIN scientific_names_ext ext ON tn.id = ext.id
-        ");
     }
 
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS scientific_names');
         Schema::dropIfExists('scientific_names_ext');
     }
 };

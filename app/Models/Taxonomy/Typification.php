@@ -3,10 +3,11 @@
 namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Typification
@@ -20,67 +21,24 @@ use Illuminate\Database\Eloquent\Model;
  * data.
  * 
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
  *
  * @property-read Reference $reference
  */
 #[Table(
-    name: 'typification', 
+    name: 'typification_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
     'id',
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class Typification extends Model
 {
-    use HasSidecar;
-
-    protected $casts = [
-        'metadata' => 'array',
-    ];
-
-    /**
-     * Get the name of the base table that this model extends.
-     *
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    /**
-     * Get the class name of the base model that this model extends.
-     *
-     * @return string
-     */
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    /**
-     * Get the name of the sidecar extension table that holds additional fields for this model.
-     *
-     * @return string
-     */
-    public function getExtensionTable(): string
-    {
-        return 'typifications_ext';
-    }
+    use IsSidecar;
 
     /**
      * Get the list of fields that are stored in the sidecar extension table.
@@ -90,6 +48,16 @@ class Typification extends Model
     public function getSidecarFields(): array
     {
         return [];
+    }
+
+    /**
+     * Define the relationship to the Reference model.
+     *
+     * @return BelongsTo
+     */
+    public function reference(): BelongsTo
+    {
+        return $this->belongsTo(Reference::class, 'id', 'id');
     }
 
 }

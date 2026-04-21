@@ -2,13 +2,16 @@
 
 namespace App\Models\Taxonomy;
 
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasSidecar;
 use App\Models\Traits\HasUsages;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Class VernacularName
@@ -22,19 +25,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * identities.
  * 
  * @property int $id
- * @property string $guid
- * @property string $name_string
  * @property string|null $language
- * @property int|null $rank_id
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
- * @property-read ControlledTerm|null $rank
- * @property-read Collection<int, ExternalIdentity>|null $externalIdentities
- * @property-read Collection<int, TaxonNameUsageMap> $usages
  * 
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  */
 #[Table(
     name: 'vernacular_names', 
@@ -54,7 +55,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class VernacularName extends Model
 {
-    use HasSidecar, HasUsages;
+    use Auditable, IsSidecar;
 
     /**
      * Define the relationship to the taxon name.

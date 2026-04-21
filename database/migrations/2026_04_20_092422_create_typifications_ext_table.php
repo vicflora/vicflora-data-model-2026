@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,14 +18,6 @@ return new class extends Migration
                 ->on('references')
                 ->onDelete('cascade');
         });
-
-        DB::statement("
-            CREATE VIEW typifications AS
-            SELECT r.*
-            FROM public.references r
-            JOIN typifications_ext ext ON r.id = ext.id
-        ");
-
     }
 
     /**

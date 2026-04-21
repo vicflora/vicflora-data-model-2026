@@ -4,6 +4,7 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
 use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -21,38 +22,43 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * data.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
+ * @property int $taxonomy_id
+ *
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Reference $reference
  * @property-read Taxonomy $taxonomy
  */
 #[Table(
-    name: 'taxonomy_versions',
+    name: 'taxonomy_versions_ext',
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
+    'id',
+    'taxonomy_id',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class TaxonomyVersion extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
+    /**
+     * Get the list of fields that are stored in the sidecar extension table.
+     *
+     * @return array
+     */
+    public function getSidecarFields(): array
+    {
+        return ['taxonomy_id'];
+    }
 
     /**
      * Get the reference that this taxonomy version belongs to.
@@ -61,7 +67,7 @@ class TaxonomyVersion extends Model
      */
     public function reference(): BelongsTo
     {
-        return $this->belongsTo(Reference::class);
+        return $this->belongsTo(Reference::class, 'id');
     }
 
     /**
@@ -72,47 +78,5 @@ class TaxonomyVersion extends Model
     public function taxonomy(): BelongsTo
     {
         return $this->belongsTo(Taxonomy::class, 'taxonomy_id');
-    }
-
-    /**
-     * Get the class name of the base model that this model extends.
-     * This is used by the HasSidecar trait to know which model to use for the base data.
-     *
-     * @return string
-     */
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    /**
-     * Get the name of the table that the base model is based on.
-     * This is used by the HasSidecar trait to know which table to join to for the base fields.
-     *
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    /**
-     * Get the name of the sidecar extension table that holds additional fields for this model.
-     *
-     * @return string
-     */
-    public function getExtensionTable(): string
-    {
-        return 'taxonomy_versions_ext';
-    }
-
-    /**
-     * Get the list of fields that are stored in the sidecar extension table.
-     *
-     * @return array
-     */
-    public function getSidecarFields(): array
-    {
-        return ['taxonomy_id'];
     }
 }

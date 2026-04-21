@@ -3,12 +3,13 @@
 namespace App\Models\Shared;
 
 use App\Models\Geography\Gazetteer;
-use App\Models\Profile\ThreatStatusAuthority;
+use App\Models\Geography\ThreatStatusAuthority;
 use App\Models\Taxonomy\Protologue;
 use App\Models\Taxonomy\Taxonomy;
 use App\Models\Taxonomy\TaxonomyVersion;
 use App\Models\Taxonomy\Treatment;
 use App\Models\Taxonomy\TreatmentVersion;
+use App\Models\Taxonomy\Typification;
 use App\Models\Traits\Auditable;
 use App\Services\ReferenceFormatter;
 use App\Traits\ManagesSidecars;
@@ -76,14 +77,14 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null $updatedBy
  */
 #[Table(
-    name: 'references_view', 
+    name: 'references', 
     key: 'id', 
     incrementing: true
 )]
 #[Fillable([
     'id',
-    'created_at',
-    'updated_at',
+    'guid',
+    'reference_role',
     'reference_type_id',
     'author_string',
     'year',
@@ -93,16 +94,37 @@ use Illuminate\Support\Carbon;
     'doi',
     'uri',
     'metadata',
+    'created_at',
+    'updated_at',
 ])]
 class Reference extends Model
 {
-    use ManagesSidecars;
+    use Auditable, ManagesSidecars;
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'metadata' => 'array',
     ];
 
+    /**
+     * Default attributes for the model.
+     * 
+     * @return array
+     */
+    protected $attributes = [
+        'reference_role' => 'GENERAL',
+    ];
 
+    /**
+     * Get the base table name for the sidecars.
+     * This is used by the ManagesSidecars trait to know which table to write to for the main reference data.
+     * 
+     * @return string
+     */
     protected function baseTable(): string
     {
         return 'references';
@@ -111,18 +133,35 @@ class Reference extends Model
     protected function baseTableFields(): array
     {
         return [
-            'id', 'title', 'year', 'author_string', 
-            'full_reference_string', 'short_citation_string', 
+            'id', 
+            'guid', 
+            'reference_role', 
+            'reference_type_id',
+            'parent_id',
+            'title', 
+            'year', 
+            'author_string', 
+            'full_reference_string', 
+            'short_citation_string', 
             'metadata'
         ];
     }
 
+    /**
+     * Select sidecar model based on the reference_role attribute.
+     * 
+     * This is used by the ManagesSidecars trait.
+     *
+     * @param array $attributes
+     * @return void
+     */
     public function selectSidecarModel(array $attributes = [])
     {
         $role = $attributes['reference_role'] ?? $this->reference_role ?? 'GENERAL';
 
         return match($role) {
             'PROTOLOGUE' => Protologue::findOrNew($this->id),
+            'TYPIFICATION' => Typification::findOrNew($this->id),
             'TREATMENT' => Treatment::findOrNew($this->id),
             'TREATMENT_VERSION' => TreatmentVersion::findOrNew($this->id),
             'TAXONOMY' => Taxonomy::findOrNew($this->id),
@@ -140,46 +179,6 @@ class Reference extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(ControlledTerm::class, 'reference_type_id');
-    }
-
-    /**
-     * Helper: Check if the reference has a specific role.
-     * This parses the aggregated string from the CASE/COALESCE logic in the view.
-     */
-    public function hasRole(string $role): bool
-    {
-        if (!$this->reference_roles) {
-            return false;
-        }
-
-        $roles = explode(', ', $this->reference_roles);
-        return in_array(strtoupper($role), $roles);
-    }
-
-    /**
-     * Accessor: Get roles as a clean array for the React/Inertia frontend.
-     * Usage in PHP: $reference->role_list
-     * Usage in JS/JSON: reference.role_list
-     */
-    protected function roleList(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->reference_roles 
-                ? explode(', ', $this->reference_roles) 
-                : ['GENERAL'],
-        );
-    }
-
-    /**
-     * Check if the name has a specific functional extension type.
-     * * @param string $type e.g., 'SCIENTIFIC', 'VERNACULAR'
-     * @return bool
-     */
-    public function hasType(string $type): bool
-    {
-        // Since the view provides 'name_type', we check it directly.
-        // We uppercase both to ensure the check is robust.
-        return strtoupper($this->name_type) === strtoupper($type);
     }
 
     /*
@@ -214,6 +213,16 @@ class Reference extends Model
     public function protologue(): HasOne
     {
         return $this->hasOne(Protologue::class, 'id');
+    }
+
+    /**
+     * Typification sidecar
+     *
+     * @return HasOne
+     */
+    public function typification(): HasOne
+    {
+        return $this->hasOne(Typification::class, 'id');
     }
 
     /**

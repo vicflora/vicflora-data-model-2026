@@ -3,7 +3,7 @@
 namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Reference;
-use App\Models\Traits\HasSidecar;
+use App\Models\Traits\IsSidecar;
 use App\Services\ProtologueStringFormatter;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -22,41 +22,44 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * data.
  *
  * @property int $id
- * @property int $reference_type_id
- * @property string $author_string
- * @property int|null $year
- * @property string|null $title
- * @property string|null $doi
- * @property string|null $url
- * @property array|null $metadata
  * @property string|null $in_authors
  * @property string|null $protologueString
+ * 
+ * @property int $version
+ * @property int|null $created_by_id
+ * @property int|null $updated_by_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @property-read Reference $reference
  */
 #[Table(
-    name: 'protologues', 
+    name: 'protologues_ext', 
     key: 'id', 
     incrementing: false
 )]
 #[Fillable([
     'id',
-    'reference_type_id',
-    'author_string',
-    'year',
-    'title',
-    'doi',
-    'url',
-    'metadata',
-    'microreference',
+    'in_authors',
+    'protologue_string',
+    'created_by_id',
+    'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class Protologue extends Model
 {
-    use HasSidecar;
+    use IsSidecar;
 
-    protected $casts = [
-        'metadata' => 'array',
-    ];
+    /**
+     * Get the list of fields that are stored in the sidecar extension table.
+     *
+     * @return array
+     */
+    public function getSidecarFields(): array
+    {
+        return ['in_authors', 'protologue_string'];
+    }
 
     public function runPrePersistLogic()
     {
@@ -71,46 +74,6 @@ class Protologue extends Model
      */
     public function reference(): BelongsTo
     {
-        return $this->belongsTo(Reference::class);
-    }
-
-    /**
-     * Get the name of the base table that this model extends.
-     *
-     * @return string
-     */
-    public function getBaseTable(): string
-    {
-        return 'references';
-    }
-
-    /**
-     * Get the class name of the base model that this model extends.
-     *
-     * @return string
-     */
-    public function getBaseModelClass(): string
-    {
-        return Reference::class;
-    }
-    
-    /**
-     * Get the name of the sidecar extension table that holds additional fields for this model.
-     *
-     * @return string
-     */
-    public function getExtensionTable(): string
-    {
-        return 'protologues_ext';
-    }
-
-    /**
-     * Get the list of fields that are stored in the sidecar extension table.
-     *
-     * @return array
-     */
-    public function getSidecarFields(): array
-    {
-        return ['in_authors', 'protologue_string'];
+        return $this->belongsTo(Reference::class, 'id');
     }
 }

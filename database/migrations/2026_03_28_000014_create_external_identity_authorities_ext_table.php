@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,15 +17,14 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
-        });
+            $table->string('code')->nullable();
 
-        DB::statement("
-            CREATE VIEW external_identity_authorities AS
-            SELECT 
-                r.*
-            FROM public.references r
-            JOIN external_identity_authorities_ext ext ON r.id = ext.id
-        ");
+            // Auditing fields
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
+        });
     }
 
     /**
@@ -34,7 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS external_identity_authorities');
         Schema::dropIfExists('external_identity_authorities_ext');
     }
 };

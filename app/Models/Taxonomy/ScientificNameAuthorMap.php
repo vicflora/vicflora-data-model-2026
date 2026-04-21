@@ -51,7 +51,8 @@ class ScientificNameAuthorMap extends Model
      */
     public function scientificName(): BelongsTo
     {
-        return $this->belongsTo(ScientificName::class, 'scientific_name_id');
+        return $this->belongsTo(TaxonName::class, 'scientific_name_id')
+            ->where('name_type', 'SCIENTIFIC');
     }
 
     /**

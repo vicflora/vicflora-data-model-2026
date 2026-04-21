@@ -5,6 +5,7 @@ namespace App\Models\Taxonomy;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\ExternalIdentity;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalIdentities;
 use App\Models\Traits\HasUsages;
 use App\Traits\ManagesSidecars;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
@@ -30,17 +32,9 @@ use Illuminate\Support\Carbon;
  * 
  * @property int $id
  * @property string $guid
+ * @property string $name_type
  * @property string $name_string
- * @property string|null $language
  * @property int|null $rank_id
- * @property string|null $authorship
- * @property string|null $published_in_string
- * @property string|null $microreference
- * @property string|null $year
- * @property int|null $published_in_id
- * @property int|null $nomenclatural_code_id
- * @property int|null $nomenclatural_status_id
- * @property string|null $name_type
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -54,45 +48,75 @@ use Illuminate\Support\Carbon;
  * @property-read ControlledTerm|null $rank
  * @property-read Collection<int, ExternalIdentity>|null $externalIdentities
  * @property-read Collection<int, TaxonNameUsageMap> $usages
- * @property-read Agent $createdBy
- * @property-read Agent $updatedBy
+ * @property-read Agent|null $createdBy
+ * @property-read Agent|null $updatedBy
  * 
  */
 #[Table(
-    name: 'taxon_names_view', 
+    name: 'taxon_names', 
     key: 'id', 
     incrementing: true
 )]
 #[Fillable([
     'id',
-    'created_at',
-    'updated_at',
     'guid',
+    'name_type',
     'name_string',
-    'language',
     'rank_id',
     'created_by_id',
     'updated_by_id',
+    'created_at',
+    'updated_at',
 ])]
 class TaxonName extends Model
 {
-    use ManagesSidecars, HasUsages, HasExternalIdentities;
+    use Auditable, ManagesSidecars, HasExternalIdentities;
 
+    /**
+     * Set default attributes
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'name_type' => 'SCIENTIFIC_NAME',
+    ];
+
+    /**
+     * Set base table for sidecars
+     * This property is used by the ManageSidecars trait
+     *
+     * @return string
+     */
     protected function baseTable(): string
     {
         return 'taxon_names';
     }
 
+    /**
+     * Set base table fields for sidecars
+     * This property is used by the ManageSidecars trait
+     *
+     * @return array
+     */
     protected function baseTableFields(): array
     {
         return [
             'id', 
-            'guid', 
+            'guid',
+            'name_type',
             'name_string', 
             'rank_id'
         ];
     }
 
+    /**
+     * Select sidecar model based on the name_type attribute
+     * 
+     * This property is used by the ManagesSidecar trait
+     *
+     * @param array $attributes
+     * @return void
+     */
     public function selectSidecarModel(array $attributes = [])
     {
         $role = $attributes['name_type'] ?? $this->name_type ?? 'SCIENTIFIC_NAME';
@@ -152,4 +176,18 @@ class TaxonName extends Model
                 $query->where('code', 'TAXON_RANK');
             });
     }
+
+    /**
+     * Get all instances where this name (in any of its roles) 
+     * has been cited or used in literature.
+     * 
+     * @return HasMany
+     */
+    public function usages(): HasMany
+    {
+        // Since all your name view-models share the base 'id' 
+        // from the taxon_names table, this relationship remains consistent.
+        return $this->hasMany(TaxonNameUsageMap::class, 'taxon_name_id');
+    }
+
 }

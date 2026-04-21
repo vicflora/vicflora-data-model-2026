@@ -32,24 +32,6 @@ return new class extends Migration
             $table->foreignId('updated_by_id')->nullable()->constrained('agents');
             $table->timestampsTz();
         });
-
-        DB::statement("
-            CREATE OR REPLACE VIEW taxon_concept_labels AS
-            SELECT
-                tn.id,
-                tn.guid,
-                tn.name_string,
-                tn.rank_id,
-                ext.base_name_id,
-                ext.taxon_concept_id,
-                tn.version,
-                tn.created_by_id,
-                tn.updated_by_id,
-                tn.created_at,
-                tn.updated_at
-            FROM taxon_names tn
-            JOIN taxon_concept_labels_ext ext ON tn.id = ext.id
-        ");
     }
 
     public function down(): void

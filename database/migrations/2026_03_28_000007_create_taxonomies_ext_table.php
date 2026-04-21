@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,16 +17,13 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
+
+            // Auditing fields
+            $table->unsignedSmallInteger('version')->default(1);
+            $table->foreignId('created_by_id')->nullable()->constrained('agents');
+            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
+            $table->timestampsTz();
         });
-
-        DB::statement("
-            CREATE VIEW taxonomies AS
-            SELECT 
-                r.*
-            FROM public.references r
-            JOIN taxonomies_ext ext ON r.id = ext.id
-        ");
-
     }
 
     /**
@@ -35,7 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS taxonomies');
         Schema::dropIfExists('taxonomies_ext');
     }
 };
