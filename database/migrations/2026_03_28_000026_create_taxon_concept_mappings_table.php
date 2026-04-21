@@ -21,8 +21,7 @@ return new class extends Migration
             $table->foreignId('mapping_relation_id')->constrained('controlled_terms');
 
             // Additional Metadata
-            $table->foreignId('taxon_concept_component_id')->nullable()->constrained('controlled_terms');
-            $table->foreignId('mapping_method_id')->nullable()->constrained('controlled_terms');
+            $table->jsonb('metadata')->nullable();
             $table->text('remarks')->nullable();
 
             $table->auditable();

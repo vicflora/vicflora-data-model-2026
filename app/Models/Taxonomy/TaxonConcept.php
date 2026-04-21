@@ -257,9 +257,10 @@ class TaxonConcept extends Model
     }
 
     /**
-     * Taxon concept mappings for which this concept is the subject. Reverse
-     * mappings will be materialized, so we do not need subject and object
-     * mappings.
+     * All mappings where this concept is the subject. Inverse mappings will be 
+     * materialized as separate records with the subject and object reversed, so 
+     * this relationship captures all mappings originating from this concept.
+     * 
      * @return HasMany
      */
     public function mappings(): HasMany
@@ -268,137 +269,84 @@ class TaxonConcept extends Model
     }
 
     /**
-     * Taxon concepts that are considered congruent with this concept.
+     * RCC-5 Mappings: Congruent (==)
+     * 
      * @return HasManyThrough
      */
     public function isCongruentWith(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'IS_CONGRUENT_WITH');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('IS_CONGRUENT_WITH');
     }
 
     /**
-     * Taxon concepts that included in this concept.
+     * RCC-5 Mappings: Includes (>)
+     * 
      * @return HasManyThrough
      */
     public function includes(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'INCLUDES');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('INCLUDES');
     }
 
     /**
-     * Taxon concepts that include this concept.
+     * RCC-5 Mappings: Is Included In (<)
+     * 
      * @return HasManyThrough
      */
     public function isIncludedIn(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'IS_INCLUDED_IN');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('IS_INCLUDED_IN');
     }
 
     /**
-     * Taxon concepts with which this concept verlaps.
+     * RCC-5 Mappings: Overlaps (><)
+     * 
      * @return HasManyThrough
      */
     public function partiallyOverlaps(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'PARTIALLY_OVERLAPS');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('PARTIALLY_OVERLAPS');
     }
-    
+
     /**
-     * Taxon concepts that are disjoint from this concept.
+     * RCC-5 Mappings: Disjoint (!|)
+     * 
      * @return HasManyThrough
      */
-    public function isDisjointFrom(): HasManyThrough
+    public function isDisjointWith(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'IS_DISJOINT_FROM');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('IS_DISJOINT_WITH');
     }
-    
+
     /**
-     * Taxon concepts that intersect with this concept.
+     * Extra mapping relation in TCS: subject and object intersect if they 
+     * have at least one member in common.
+     * 
      * @return HasManyThrough
      */
     public function intersects(): HasManyThrough
     {
-        // High-performance ID lookup from the MAPPING_RELATION vocabulary
-        $congruentId = ControlledTerm::getIdByCode('MAPPING_RELATION', 'INTERSECTS');
-
-        return $this->hasManyThrough(
-            TaxonConcept::class,          // The Target Model
-            TaxonConceptMapping::class,   // The Pivot Model
-            'from_taxon_concept_id',      // Foreign key on the pivot (pointing to "this" concept)
-            'id',                         // Foreign key on the target (TaxonConcept.id)
-            'id',                         // Local key on "this" concept
-            'to_taxon_concept_id'         // Local key on the pivot (pointing to the target concept)
-        )
-        ->where('mapping_relation_id', $congruentId);
+        return $this->createMappingRelationship('INTERSECTS');
     }
 
     /**
-     * Define the relationship to external identities.
-     * @return MorphToMany
+     * Helper to build the HasManyThrough bridge for RCC-5 Mappings.
+     * 
+     * @param string $mappingCode The code of the mapping relation (e.g. 'IS_CONGRUENT_WITH').
+     * @return HasManyThrough
      */
-    public function externalIdentities(): MorphToMany
+    protected function createMappingRelationship(string $mappingCode): HasManyThrough
     {
-        return $this->morphToMany(
-            ExternalIdentity::class, 
-            'entity', 
-            'entity_identity_map'
-        )
-        ->using(EntityIdentityMap::class)
-        ->withTimestamps();
+        return $this->hasManyThrough(
+            TaxonConcept::class,
+            TaxonConceptMapping::class,
+            'subject_taxon_concept_id', // Foreign key on Mapping table
+            'id',                 // Foreign key on target Concept
+            'id',                 // Local key on this Concept
+            'object_concept_id'   // Local key on Mapping table
+        )->whereHas('mappingRelation', function ($query) use ($mappingCode) {
+            $query->where('code', $mappingCode)
+                  ->whereHas('vocabulary', fn($v) => $v->where('code', 'MAPPING_RELATION'));
+        });
     }
 }
