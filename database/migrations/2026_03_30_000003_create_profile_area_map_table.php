@@ -32,8 +32,7 @@ return new class extends Migration
             $table->foreignId('establishment_means_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('degree_of_establishment_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('threat_status_id')->nullable()->constrained('controlled_terms');
-            $table->foreignId('threat_status_authority_id')->nullable()->constrained('references');
-
+            
             // The 'Flags' & Evidence
             $table->boolean('is_endemic')->nullable();
             $table->boolean('has_introduced_occurrences')->nullable();

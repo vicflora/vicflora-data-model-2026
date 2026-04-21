@@ -2,6 +2,7 @@
 
 namespace App\Models\Geography;
 
+use App\Models\Profile\ThreatStatusAuthority;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use Illuminate\Database\Eloquent\Collection;
@@ -10,6 +11,7 @@ use App\Models\Traits\Blameable;
 use App\Models\Traits\IncrementsVersion;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -30,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_accepted
  * @property int|null $parent_id
  * @property int|null $accepted_id
+ * @property int|null $threat_status_authority_id
  * @property string|null $area_path
  * @property int $version
  * @property int|null $created_by_id
@@ -41,6 +44,7 @@ use Illuminate\Support\Carbon;
  * @property-read Area|null $parent
  * @property-read Collection<int, Area> $children
  * @property-read Collection<int, AreaCode> $areaCodes
+ * @property-read ThreatStatusAuthority|null $threatStatusAuthority
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -99,5 +103,16 @@ class Area extends Model
     public function areaCodes() 
     { 
         return $this->hasMany(AreaCode::class); 
+    }
+
+
+    /**
+     * Threat Status Authority for this jurisdiction
+     *
+     * @return BelongsTo
+     */
+    public function threatStatusAuthority(): BelongsTo
+    {
+        return $this->belongsTo(ThreatStatusAuthority::class, 'threat_status_authority_id');
     }
 }

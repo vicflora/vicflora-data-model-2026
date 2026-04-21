@@ -31,8 +31,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $profile_id
  * @property int $taxon_tree_id
- * @property int $area_id
- * @property int $gazetteer_id
+ * @property int $area_code_id
  * @property string|null $locality
  * @property int|null $occurrence_status_id
  * @property int|null $establishment_means_id
@@ -51,7 +50,6 @@ use Illuminate\Support\Carbon;
  * @property-read Profile $profile
  * @property-read AreaCode $areaCode
  * @property-read TaxonTree $taxonTree
- * @property-read ThreatStatusAuthority|null $threatStatusAuthority
  * @property-read Reference|null $source
  * @property-read ControlledTerm|null $occurrenceStatus
  * @property-read ControlledTerm|null $establishmentMeans
@@ -120,12 +118,6 @@ class ProfileAreaMap extends Model
     public function taxonTree(): BelongsTo
     {
         return $this->belongsTo(TaxonTree::class, 'taxon_tree_id');
-    }
-
-    public function threatStatusAuthority(): BelongsTo
-    {
-        // The reference that provides the authority for the threat status
-        return $this->belongsTo(ThreatStatusAuthority::class, 'threat_status_authority_id');
     }
 
     // Controlled Term lookups using your new ID-by-Code logic
