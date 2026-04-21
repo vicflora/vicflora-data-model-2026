@@ -25,11 +25,7 @@ return new class extends Migration
             $table->foreignId('mapping_method_id')->nullable()->constrained('controlled_terms');
             $table->text('remarks')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
-            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents')->nullOnDelete();
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

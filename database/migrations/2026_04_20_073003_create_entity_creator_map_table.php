@@ -24,11 +24,7 @@ return new class extends Migration
             
             $table->jsonb('metadata')->nullable();
             
-            // Blameable (who entered this creator link into the system)
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Integrity Lock: One entity, one historical creator.
             $table->unique([

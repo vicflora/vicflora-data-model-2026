@@ -19,11 +19,7 @@ return new class extends Migration
             
             $table->integer('sort_order')->default(0);
 
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             $table->unique([
                 'entity_type', 

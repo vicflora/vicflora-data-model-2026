@@ -16,11 +16,7 @@ return new class extends Migration
             $table->foreignId('limitation_id')->constrained('glossary.limitations');
             $table->morphs('limitable');
 
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             $table->unique([
                 'limitable_type', 

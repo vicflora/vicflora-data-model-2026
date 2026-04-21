@@ -19,11 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->foreignId('taxonomy_id')->constrained('taxonomies_ext');
 
-            // Auditing fields
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
         });
     }

@@ -23,10 +23,7 @@ return new class extends Migration
             $table->string('iri')->nullable();
             $table->text('description')->nullable();
             
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             $table->unique(['controlled_vocabulary_id', 'code']);
         });

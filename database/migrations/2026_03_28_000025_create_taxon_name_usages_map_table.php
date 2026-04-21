@@ -21,11 +21,7 @@ return new class extends Migration
             $table->string('country_code', 10)->nullable();
             $table->text('remarks')->nullable();
             
-            // Audit (Agents)
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestamps();
+            $table->auditable();
 
             // Indexing for quick lookups of a name's history
             $table->index(['taxon_name_id', 'taxon_concept_id']);

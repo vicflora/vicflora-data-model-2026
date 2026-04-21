@@ -17,6 +17,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('references')
                 ->onDelete('cascade');
+
+            $table->auditable();
         });
     }
 

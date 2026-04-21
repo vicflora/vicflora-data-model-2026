@@ -29,11 +29,7 @@ return new class extends Migration
             $table->text('body_text');
             $table->unsignedSmallInteger('sort_order')->nullable();
 
-            // Blameable
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // The "Golden" Sanity Check: 
             // A concept should only have one of each Definition Item type

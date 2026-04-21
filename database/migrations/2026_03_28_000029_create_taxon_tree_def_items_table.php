@@ -13,18 +13,12 @@ return new class extends Migration
     {
         Schema::create('taxon_tree_def_items', function (Blueprint $table) {
             $table->id();
-            
             $table->foreignId('taxon_tree_id')->constrained('taxon_trees');
             $table->foreignId('rank_id')->nullable()->constrained('controlled_terms');
             $table->string('name');
             $table->unsignedSmallInteger('rank_order')->nullable();
             $table->boolean('is_required')->default(false);
-
-            // Audit
-            $table->timestampsTz();
-            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents');
-            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents');
-            $table->unsignedSmallInteger('version')->default(1);
+            $table->auditable();
         });
     }
 

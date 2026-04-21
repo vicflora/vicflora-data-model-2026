@@ -25,11 +25,7 @@ return new class extends Migration
             // For fast tree traversal (e.g., '1/5/12')
             $table->string('area_path')->nullable()->index();
 
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
 
         // Add self-referential constraints after the table exists

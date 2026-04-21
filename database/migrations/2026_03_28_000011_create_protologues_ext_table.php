@@ -20,11 +20,7 @@ return new class extends Migration
             $table->string('in_authors')->nullable();
             $table->text('protologue_string')->nullable();
 
-            // Auditing fields
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
         });
     }

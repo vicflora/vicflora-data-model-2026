@@ -20,11 +20,7 @@ return new class extends Migration
             $table->boolean('is_misapplied')->default(false);
             $table->boolean('is_discouraged')->default(false);
 
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

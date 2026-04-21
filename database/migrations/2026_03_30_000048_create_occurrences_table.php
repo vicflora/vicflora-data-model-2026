@@ -39,8 +39,8 @@ return new class extends Migration
             $table->jsonb('metadata')->nullable();
 
             $table->timestamp('modified')->nullable();
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->timestampsTz();
+            
+            $table->auditable();
         });
         
         // Add a spatial index for mapping performance

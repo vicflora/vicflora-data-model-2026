@@ -25,11 +25,7 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->unsignedSmallInteger('sort_order')->default(0);
 
-            // Blameable
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
             
             // Ensure a tree doesn't define the same section type twice
             $table->unique(['taxon_tree_id', 'profile_section_type_id'], 'tree_section_unique');        });

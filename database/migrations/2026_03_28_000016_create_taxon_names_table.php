@@ -17,12 +17,7 @@ return new class extends Migration
             $table->string('name_string')->index();
             $table->unsignedBigInteger('rank_id')->constrained('controlled_terms')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
-
+            $table->auditable();
         });
     }
 

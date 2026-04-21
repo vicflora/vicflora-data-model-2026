@@ -25,11 +25,7 @@ return new class extends Migration
             $table->foreignId('agent_id')->constrained('public.agents');
             $table->timestampTz('asserted_at')->useCurrent();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('public.agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('public.agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

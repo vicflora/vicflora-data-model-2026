@@ -24,11 +24,7 @@ return new class extends Migration
             $table->string('language')->default('en');
             $table->string('name_addendum')->nullable();
             
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             $table->index(['glossary_id', 'name']);
         });

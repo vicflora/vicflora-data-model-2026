@@ -23,16 +23,10 @@ return new class extends Migration
             $table->string('orcid')->nullable();
 
             $table->foreignId('user_id')->nullable()->constrained('users');
-
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->unsignedBigInteger('created_by_id')->nullable();
-            $table->unsignedBigInteger('updated_by_id')->nullable();
-            $table->timestampsTz();
         });
 
         Schema::table('agents', function (Blueprint $table) {
-            $table->foreign('created_by_id')->references('id')->on('agents');
-            $table->foreign('updated_by_id')->references('id')->on('agents');
+            $table->auditable();
         });
     }
 

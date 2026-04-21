@@ -23,11 +23,7 @@ return new class extends Migration
             // The specific code (e.g., 'VIC', '78')
             $table->string('scope');
 
-            // Audit traits
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->references('id')->on('agents');
-            $table->foreignId('updated_by_id')->nullable()->references('id')->on('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Composite index for high-performance lookups and to prevent duplicates
             $table->unique(['taxon_tree_id', 'gazetteer_id', 'scope'], 'tree_scope_authority_unique');

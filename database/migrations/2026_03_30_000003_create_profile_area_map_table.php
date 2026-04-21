@@ -39,11 +39,7 @@ return new class extends Migration
             $table->string('event_date')->nullable();
             $table->text('occurrence_remarks')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Refactored composite index
             $table->index(['taxon_tree_id', 'area_code_id', 'gazetteer_id'], 'dist_tree_area_gaz_idx');

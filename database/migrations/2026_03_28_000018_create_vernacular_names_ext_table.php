@@ -19,11 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->string('language', 10)->nullable();
             
-            // Audit fields for the sidecar itself
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
         });
     }

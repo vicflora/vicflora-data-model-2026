@@ -25,11 +25,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Indexes
             $table->index(['parent_id', 'taxon_tree_id'], 'ttn_hierarchy_idx');

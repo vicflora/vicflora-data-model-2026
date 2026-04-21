@@ -26,11 +26,7 @@ return new class extends Migration
                 ->constrained('references');
             $table->text('remarks')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->unsignedBigInteger('created_by_id')->constrained('agents')->nullable();
-            $table->unsignedBigInteger('updated_by_id')->constrained('agents')->nullable();
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

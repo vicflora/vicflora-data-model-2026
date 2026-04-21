@@ -22,10 +22,7 @@ return new class extends Migration
             // Crucial for Chicago: defines the order (1st author, 2nd author, etc.)
             $table->unsignedSmallInteger('sequence')->default(1);
 
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->unsignedBigInteger('created_by_id')->nullable();
-            $table->unsignedBigInteger('updated_by_id')->nullable();
-            $table->timestampsTz();
+            $table->auditable();
 
             // Ensure we don't accidentally add the same agent in the same role twice
             $table->unique(['reference_id', 'agent_id', 'contributor_role_id'], 'ref_agent_role_unique');

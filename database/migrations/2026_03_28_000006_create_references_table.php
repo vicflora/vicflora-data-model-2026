@@ -24,11 +24,7 @@ return new class extends Migration
             $table->string('short_citation_string')->nullable();
             $table->jsonb('metadata')->nullable();
 
-            // Auditing fields
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
 
         Schema::table('references', function (Blueprint $table) {

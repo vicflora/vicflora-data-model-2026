@@ -23,11 +23,7 @@ return new class extends Migration
             $table->foreignId('nomenclatural_code_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('nomenclatural_status_id')->nullable()->constrained('controlled_terms');
 
-            // Audit fields for the sidecar itself
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

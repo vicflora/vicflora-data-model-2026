@@ -31,11 +31,7 @@ return new class extends Migration
             // Materialized path for the Code Tree (e.g., '7/78/784')
             $table->string('path')->nullable()->index();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
             
             // Unique constraint to prevent duplicate entries within a scheme/level
             $table->unique(['scheme', 'level', 'code'], 'unique_scheme_code_idx');

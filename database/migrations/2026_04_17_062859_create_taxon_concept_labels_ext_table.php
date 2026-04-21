@@ -26,11 +26,7 @@ return new class extends Migration
                 ->constrained('taxon_concepts')
                 ->onDelete('cascade');
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

@@ -43,11 +43,7 @@ return new class extends Migration
                 ->constrained('profile_sections')
                 ->onDelete('set null');
 
-            // Blameable & Versioning
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Prevent duplicate vouching of the same specimen for the same profile
             $table->unique(['profile_id', 'specimen_id', 'voucher_type_id'], 'profile_specimen_unique');

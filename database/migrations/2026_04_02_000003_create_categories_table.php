@@ -17,11 +17,7 @@ return new class extends Migration
             
             $table->string('name');
             
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
 
         // Now we can safely add the foreign key constraint to the terms table

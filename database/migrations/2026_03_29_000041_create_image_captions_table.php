@@ -27,12 +27,8 @@ return new class extends Migration
             // Denormalized field for performance
             $table->text('formatted_caption')->nullable();
 
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
-
+            $table->auditable();
+            
             $table->unique(['image_id', 'taxon_tree_id', 'profile_id']);
         });
     }

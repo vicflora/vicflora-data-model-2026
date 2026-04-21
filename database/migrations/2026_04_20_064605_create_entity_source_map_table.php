@@ -23,11 +23,7 @@ return new class extends Migration
             // Metadata for specific citation details (pages, figs, etc.)
             $table->jsonb('metadata')->nullable();
             
-            // Blameable for the scientific ledger
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Integrity: An entity can only have a single source
             $table->unique([

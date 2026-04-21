@@ -23,11 +23,7 @@ return new class extends Migration
                 ->constrained('taxon_trees')
                 ->onDelete('no action');
 
-            // Blameable
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents')->onDelete('no action');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents')->onDelete('no action');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Required if you want to use the "Sanity Check" Composite FKs tomorrow
             $table->unique(['taxon_concept_id', 'taxon_tree_id'], 'profile_tree_unique');

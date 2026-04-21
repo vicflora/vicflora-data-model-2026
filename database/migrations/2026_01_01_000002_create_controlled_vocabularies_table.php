@@ -18,10 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('iri')->nullable();
 
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

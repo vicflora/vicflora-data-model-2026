@@ -10,13 +10,9 @@ return new class extends Migration
     {
         Schema::create('glossary.limitations', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // e.g., "Poaceae", "Victoria", "Alpine"
+            $table->string('name')->unique();
             
-            // Versioning, Blameable and Timestamps
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 

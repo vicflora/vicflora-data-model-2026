@@ -21,11 +21,7 @@ return new class extends Migration
             $table->dateTime('last_synced_at')->nullable();
             $table->jsonb('metadata')->nullable();
 
-            // Audit
-            $table->timestampsTz();
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->unsignedSmallInteger('version')->default(1);
+            $table->auditable();
         });
     }
 

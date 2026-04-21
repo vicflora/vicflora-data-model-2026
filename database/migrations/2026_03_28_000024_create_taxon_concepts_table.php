@@ -18,11 +18,7 @@ return new class extends Migration
             
             $table->foreignId('rank_id')->nullable()->constrained('controlled_terms');
            
-            // Audit
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
 
             // Compound index for faster tree-specific concept lookups
             $table->index(['taxon_tree_id', 'id']); 

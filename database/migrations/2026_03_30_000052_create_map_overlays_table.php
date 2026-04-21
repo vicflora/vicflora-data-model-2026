@@ -21,10 +21,7 @@ return new class extends Migration
             // PostGIS Multipolygon
             $table->geometry('geom', subtype: 'multipolygon', srid: 4326);
             
-            $table->unsignedSmallInteger('version')->default(1);
-            $table->foreignId('created_by_id')->nullable()->constrained('agents');
-            $table->foreignId('updated_by_id')->nullable()->constrained('agents');
-            $table->timestampsTz();
+            $table->auditable();
         });
     }
 
