@@ -51,6 +51,8 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ScientificName> $synonyms
  * @property-read Collection<int, VernacularName> $vernacularNames
  * @property-read VernacularName|null $preferredVernacularName
+ * @property-read Collection<int, ScientificNameUsageMap> $scientificNameUsages
+ * @property-read Collection<int, VernacularNameUsageMap> $vernacularNameUsages
  * @property-read Collection<int, TaxonConceptMapping> $mappings
  * @property-read Collection<int, TaxonConcept> $isCongruentWith
  * @property-read Collection<int, TaxonConcept> $includes
@@ -157,19 +159,18 @@ class TaxonConcept extends Model
      */
     public function acceptedName(): HasOneThrough
     {
+        $acceptedRoleId = ControlledTerm::getIdByCode('NAME_USAGE_ROLE', 'ACCEPTED');
+
         return $this->hasOneThrough(
             ScientificName::class,
-            TaxonNameUsageMap::class,
+            ScientificNameUsageMap::class,
             'taxon_concept_id',     // FK on TaxonName pointing to "this" concept
             'id',                   // FK on TaxonName (the target)
             'id',                   // Local key on "this" concept
             'taxon_name_id'         // Local key on TaxonNameUsageMap pointing to the ScientificName
         )
         ->whereHas('taxonName', fn($q) => $q->where('name_type', 'SCIENTIFIC'))
-        ->whereHas('nameUsageRole', function ($query) {
-            $query->where('code', 'ACCEPTED')
-                ->whereHas('vocabulary', fn($v) => $v->where('code', 'NAME_USAGE_ROLE'));
-        });
+        ->where('name_usage_role_id', $acceptedRoleId);
     }
 
     /**
@@ -183,16 +184,13 @@ class TaxonConcept extends Model
 
         return $this->hasManyThrough(
             ScientificName::class,
-            TaxonNameUsageMap::class,
+            ScientificNameUsageMap::class,
             'taxon_concept_id',
             'id',
             'id',
             'taxon_name_id'
         )
-        // 2. Exclude the current concept's name
-        ->where('taxon_name_id', '!=', $this->taxon_name_id)
-        
-        // 3. Simple column check instead of a subquery
+        ->whereHas('taxonName', fn($q) => $q->where('name_type', 'SCIENTIFIC'))
         ->where('name_usage_role_id', $synonymRoleId);
     }
 
@@ -202,18 +200,15 @@ class TaxonConcept extends Model
      */
     public function vernacularNames(): HasManyThrough
     {
-        $vernacularNameRoleId = ControlledTerm::getIdByCode('NAME_USAGE_ROLE', 'VERNACULAR_NAME');
-
         return $this->hasManyThrough(
             VernacularName::class,
-            TaxonNameUsageMap::class,
+            VernacularNameUsageMap::class,
             'taxon_concept_id',     // FK on TaxonName pointing to "this" concept
             'id',                   // FK on TaxonName (the target)
             'id',                   // Local key on "this" concept
             'taxon_name_id'         // Local key on TaxonNameUsageMap pointing to the VernacularName
         )
-        ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'))
-        ->where('name_usage_role_id', $vernacularNameRoleId);
+        ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'));
     }
 
     /**
@@ -222,19 +217,34 @@ class TaxonConcept extends Model
      */
     public function preferredVernacularName(): HasOneThrough
     {
-        $vernacularNameRoleId = ControlledTerm::getIdByCode('NAME_USAGE_ROLE', 'VERNACULAR_NAME');
-
         return $this->hasOneThrough(
             VernacularName::class,
-            TaxonNameUsageMap::class,
+            VernacularNameUsageMap::class,
             'taxon_concept_id',     // FK on TaxonName pointing to "this" concept
             'id',                   // FK on TaxonName (the target)
             'id',                   // Local key on "this" concept
             'taxon_name_id'         // Local key on TaxonNameUsageMap pointing to the VernacularName
         )
-        ->where('is_preferred_vernacular_name', true)
-        ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'))
-        ->where('name_usage_role_id', $vernacularNameRoleId);
+        ->where('is_preferred', true)
+        ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'));
+    }
+
+    /**
+     * All scientific name usage records.
+     */
+    public function scientificNameUsages(): HasMany
+    {
+        return $this->hasMany(ScientificNameUsageMap::class, 'taxon_concept_id')
+                    ->with(['taxonName', 'nameUsageRole']);
+    }
+
+    /**
+     * All vernacular name usage records.
+     */
+    public function vernacularNameUsages(): HasMany
+    {
+        return $this->hasMany(VernacularNameUsageMap::class, 'taxon_concept_id')
+                    ->with(['taxonName']);
     }
 
     /**

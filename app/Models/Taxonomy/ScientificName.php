@@ -5,7 +5,6 @@ namespace App\Models\Taxonomy;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasUsages;
 use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -61,6 +60,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ScientificNameAuthorMap> $basionymAuthors
  * @property-read Collection<int, ScientificNameAuthorMap> $combinationAscribedAuthors
  * @property-read Collection<int, ScientificNameAuthorMap> $basionymAscribedAuthors
+ * @property-read Collection<int, ScientificNameUsageMap> $usages
  * 
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
@@ -302,5 +302,16 @@ class ScientificName extends Model
     {
         return $this->authorshipMaps()->where('author_role_id', 
             ControlledTerm::getIdByCode('SCIENTIFIC_NAME_AUTHOR_ROLE', 'BASIONYM_ASCRIBED'));
+    }
+
+    /**
+     * Get all instances where this name has been applied to a Taxon Concept,
+     * either as an accepted name or a synonym.
+     *
+     * @return HasMany
+     */
+    public function usages(): HasMany
+    {
+        return $this->hasMany(ScientificNameUsageMap::class, 'taxon_name_id');
     }
 }

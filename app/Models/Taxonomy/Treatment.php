@@ -36,7 +36,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Taxonomy $taxonomy
  * @property-read TaxonConcept $taxonConcept
  * @property-read Profile|null $profile
- * @property-read TaxonNameUsageMap $taxonNameUsages
+ * @property-read Collection<int, ScientificNameUsageMap> $scientificNameUsages
+ * @property-read Collection<int, VernacularNameUsageMap> $vernacularNameUsages
  */
 #[Table(
     name: 'treatments_ext', 
@@ -109,8 +110,17 @@ class Treatment extends Model
      * The Nomenclature section (header (accepted name) and citation list (synonyms)) and vernacular names.
      * @return HasMany
      */
-    public function taxonNameUsages(): HasMany
+    public function ScientificNameUsages(): HasMany
     {
-        return $this->hasMany(TaxonNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
+        return $this->hasMany(ScientificNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
+    }
+
+    /**
+     * The Vernacular names applied to the taxon concept in this treatment.
+     * @return HasMany
+     */
+    public function VernacularNameUsages(): HasMany
+    {
+        return $this->hasMany(VernacularNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
     }
 }

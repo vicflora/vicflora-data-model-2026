@@ -141,11 +141,13 @@ erDiagram
     VernacularName_EXT }|--o| TaxonConcept : "preferredVernacularName"
 
     TaxonName |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
-    ScientificName_EXT |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
-    VernacularName_EXT |o--|{ TaxonNameUsage_MAP : "taxonName / taxonNameUsages"
-    TaxonNameUsage_MAP }|--o| TaxonConcept : "taxonConcept / taxonNameUsages"
-    TaxonNameUsage_MAP }o--|| Entity_Source_MAP : "morphs as 'sourceable'"
-    Entity_Source_MAP }|--o| Reference : "reference"
+
+
+    TaxonName |o--|| HybridFormula_EXT : "taxonName / hybridFormula"
+    TaxonName |o--||  HybridFormula_EXT : "firstHybridParentName"
+    TaxonName |o--|{ HybridFormula_EXT : "secondHybridParentName"
+
+    TaxonName |o--|| HorticulturalGroupName_EXT : "taxonName / horticulturalGroupName"
 
     TaxonName |o--|| TaxonConceptLabel_EXT : "taxonName / taxonConceptLabel"
 
@@ -156,16 +158,6 @@ erDiagram
     %% External identifiers
     TaxonName |o--|{ Entity_Identity_MAP : "morphs as 'entity'"
     Entity_Identity_MAP }|--o| ExternalIdentity : "externalIdentity"
-
-    TaxonNameUsage_MAP {
-        int id PK
-        int taxon_concept_id FK
-        int name_role_id FK
-        int taxon_name_id FK
-        boolean is_preferred_vernacular_name "nullable"
-        string country_code "nullable"
-        string usage_notes "nullable"    
-    }
 
     TaxonName {
         int id PK
@@ -195,6 +187,16 @@ erDiagram
       int base_name_id FK
     }
 
+    HybridFormula_EXT {
+      int id PK
+      int first_hybrid_parent_name_id FK
+      int second_hybrid_parent_name_id FK
+    }
+
+    HorticulturalGroupName_EXT {
+      in id PK
+    }
+
     NameRelation_MAP {
         int id PK
         int from_taxon_name_id FK
@@ -216,6 +218,32 @@ erDiagram
 
 **Resources:** [TaxonName](resources.md#taxonname), [ScientificName_EXT](resources.md#scientificname_ext), [NameRelation_MAP](resources.md#namerelation_map)
 
+
+### Layer 2b: Taxon Name Usage
+
+```mermaid
+---
+config:
+    layout: elk
+---
+erDiagram
+  TaxonNameUsage_MAP }|--o| TaxonName : "taxonName / taxonNameUsages"
+  TaxonNameUsage_MAP }|--o| ScientificName_EXT : "taxonName / taxonNameUsages"
+  TaxonNameUsage_MAP }|--o| VernacularName_EXT : "taxonName / taxonNameUsages"
+  TaxonNameUsage_MAP }|--o| TaxonConcept : "taxonConcept / taxonNameUsages"
+  TaxonNameUsage_MAP }o--|| Entity_Source_MAP : "morphs as 'sourceable'"
+  Entity_Source_MAP }|--o| Reference : "reference"
+
+  TaxonNameUsage_MAP {
+      int id PK
+      int taxon_concept_id FK
+      int name_role_id FK
+      int taxon_name_id FK
+      boolean is_preferred_vernacular_name "nullable"
+      string country_code "nullable"
+      string usage_notes "nullable"    
+  }
+```
 
 ### Layer 2c: Typification
 

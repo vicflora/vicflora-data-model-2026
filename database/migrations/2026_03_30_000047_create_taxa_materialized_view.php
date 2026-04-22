@@ -57,7 +57,7 @@ WITH RECURSIVE classification AS (
     WHERE ttn.end_date IS NULL
 )
 SELECT 
-    tnum.id,
+    snum.id,
     tt.guid as taxon_tree_id,      -- Swapped to GUID
     tc.guid as taxon_concept_id,   -- Swapped to GUID
     tn.guid as scientific_name_id, -- Swapped to GUID
@@ -74,9 +74,9 @@ SELECT
     deg.label as degree_of_establishment
 FROM classification cl 
 JOIN public.taxon_concepts tc ON cl.taxon_concept_id = tc.id
-JOIN public.taxon_name_usages_map tnum ON tc.id = tnum.taxon_concept_id
-JOIN public.controlled_terms nur ON tnum.name_usage_role_id = nur.id
-JOIN public.taxon_names tn ON tnum.taxon_name_id = tn.id
+JOIN public.scientific_name_usages_map snum ON tc.id = snum.taxon_concept_id
+JOIN public.controlled_terms nur ON snum.name_usage_role_id = nur.id
+JOIN public.taxon_names tn ON snum.taxon_name_id = tn.id
 JOIN public.scientific_names_ext sne ON tn.id = sne.id
 JOIN public.taxon_names an ON tc.taxon_name_id = an.id
 JOIN public.taxon_trees tt ON cl.taxon_tree_id = tt.id

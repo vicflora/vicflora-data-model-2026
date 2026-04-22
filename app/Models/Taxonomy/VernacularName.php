@@ -3,14 +3,13 @@
 namespace App\Models\Taxonomy;
 
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasSidecar;
-use App\Models\Traits\HasUsages;
 use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -33,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * 
  * @property-read TaxonName $taxonName
+ * @property-read Collection<int, VernacularNameUsageMap> $usages
  * 
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
@@ -91,5 +91,15 @@ class VernacularName extends Model
     protected function getSidecarForeignKey(): string
     {
         return 'taxon_name_id';
+    }
+
+    /**
+     * Define the relationship to the usages of this vernacular name.
+     * 
+     * @return HasMany
+     */
+    public function usages(): HasMany
+    {
+        return $this->hasMany(VernacularNameUsageMap::class, 'taxon_name_id');
     }
 }

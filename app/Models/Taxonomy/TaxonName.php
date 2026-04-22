@@ -7,14 +7,12 @@ use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\ExternalIdentity;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalIdentities;
-use App\Models\Traits\HasUsages;
 use App\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
@@ -47,7 +45,6 @@ use Illuminate\Support\Carbon;
  * 
  * @property-read ControlledTerm|null $rank
  * @property-read Collection<int, ExternalIdentity>|null $externalIdentities
- * @property-read Collection<int, TaxonNameUsageMap> $usages
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  * 
@@ -198,18 +195,4 @@ class TaxonName extends Model
                 $query->where('code', 'TAXON_RANK');
             });
     }
-
-    /**
-     * Get all instances where this name (in any of its roles) 
-     * has been cited or used in literature.
-     * 
-     * @return HasMany
-     */
-    public function usages(): HasMany
-    {
-        // Since all your name view-models share the base 'id' 
-        // from the taxon_names table, this relationship remains consistent.
-        return $this->hasMany(TaxonNameUsageMap::class, 'taxon_name_id');
-    }
-
 }
