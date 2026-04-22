@@ -4,15 +4,15 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
 use App\Models\Traits\Auditable;
 use App\Observers\ScientificNameUsageMapObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -41,6 +41,8 @@ use Illuminate\Support\Carbon;
  * 
  * @property-read TaxonName $taxonName
  * @property-read TaxonConcept $taxonConcept
+ * @property-read ControlledTerm $nameUsageRole
+ * @property-read Reference|null $treatment
  * @property-read Agent $createdBy
  * @property-read Agent $updatedBy
  */
@@ -98,5 +100,31 @@ class ScientificNameUsageMap extends Model
             ->whereHas('vocabulary', function ($query) {
                 $query->where('code', 'NAME_USAGE_ROLE');
             });
+    }
+
+
+    /**
+     * Get the treatment that contains this scientific name usage.
+     *
+     * This is a hasOneThrough relationship because the ScientificNameUsageMap
+     * points to a TaxonConcept, which in turn points to a Treatment (via
+     * according_to_id). We also need to filter the Treatment by reference_role
+     * 'TREATMENT' to ensure we only get treatments.
+     *
+     * @return HasOneThrough
+     */
+    public function treatment(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Reference::class,
+            TaxonConcept::class,
+            'id',               // Local key on TaxonConcept (matches taxon_concept_id)
+            'reference_id',     // FK on Treatment (points to the Reference Hub)
+            'taxon_concept_id', // FK on the UsageMap (this model)
+            'according_to_id'   // FK on TaxonConcept (points to the Reference Hub)
+        )
+        ->whereHas('reference', function ($query) {
+            $query->where('reference_role', 'TREATMENT');
+        });
     }
 }

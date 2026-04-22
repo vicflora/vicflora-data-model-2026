@@ -7,6 +7,7 @@ use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Taxonomy\TaxonConcept;
+use App\Models\Taxonomy\Treatment;
 use App\Models\Taxonomy\TreatmentVersion;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasImages;
@@ -50,6 +51,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection|ProfileSection[] $sections
  * @property-read Collection|Specimen[] $specimens
  * @property-read Collection|Image[] $images
+ * @property-read Reference|null $treatment
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -153,5 +155,15 @@ class Profile extends Model
         $heroRoleId = ControlledTerm::getIdByCode('IMAGE_ROLE', 'HERO');
 
         return $this->images()->wherePivot('image_role_id', $heroRoleId);
+    }
+
+    /**
+     * The Treatment that contains this Profile.
+     * * Since Profile and TaxonConcept share the same ID, and 
+     * TaxonConcept points to the Reference Hub via according_to_id.
+     */
+    public function treatment(): BelongsTo
+    {
+        return $this->belongsTo(Reference::class, 'id', 'taxon_concept_id');
     }
 }

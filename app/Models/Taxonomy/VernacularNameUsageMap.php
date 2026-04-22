@@ -3,7 +3,7 @@
 namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
-use App\Models\Shared\ControlledTerm;
+use App\Models\Shared\Reference;
 use App\Models\Traits\Auditable;
 use App\Observers\VernacularNameUsageMapObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Carbon;
 
 /**
@@ -39,6 +40,7 @@ use Illuminate\Support\Carbon;
  *
  * @property-read TaxonName $taxonName
  * @property-read TaxonConcept $taxonConcept
+ * @property-read Reference|null $treatment
  * @property-read Agent $createdBy
  * @property-read Agent $updatedBy
  */
@@ -88,6 +90,24 @@ class VernacularNameUsageMap extends Model
         return $this->belongsTo(TaxonConcept::class);
     }
 
-    
-
+    /**
+     * Get the Treatment in which this vernacular name usage is applied, if any.
+     * Treatment is the TaxonConcept's according_to reference.
+     *
+     * @return HasOneThrough
+     */
+    public function treatment(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Reference::class,
+            TaxonConcept::class,
+            'id',               // Local key on TaxonConcept (matches taxon_concept_id)
+            'reference_id',     // FK on Treatment (points to the Reference Hub)
+            'taxon_concept_id', // FK on the UsageMap (this model)
+            'according_to_id'   // FK on TaxonConcept (points to the Reference Hub)
+        )
+        ->whereHas('reference', function ($query) {
+            $query->where('reference_role', 'TREATMENT');
+        });
+    }
 }
