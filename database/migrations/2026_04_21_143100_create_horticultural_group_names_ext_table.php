@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('horticultural_group_names_ext', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->foreignId('id')
-                ->constrained('taxon_names')
-                ->cascadeOnDelete();
+            $table->foreign('id')
+                ->references('id')
+                ->on('taxon_names');
 
             $table->auditable(); 
         });

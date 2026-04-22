@@ -18,7 +18,7 @@ return new class extends Migration
                 ->on('references')
                 ->onDelete('cascade');
             $table->foreignId('treatment_id')->nullable()->constrained('treatments_ext');
-            $table->foreignId('taxonomy_id')->constrained('taxonomies');
+            $table->foreignId('taxonomy_id')->constrained('taxonomies_ext');
             $table->foreignId('taxon_concept_id')->constrained('taxon_concepts');
             $table->unsignedSmallInteger('version_number')->nullable();
             $table->string('version_label')->nullable();
