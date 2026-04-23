@@ -41,17 +41,26 @@ class MorphMapServiceProvider extends ServiceProvider
             // Mapper
             'assertion' => \App\Models\Mapper\Assertion::class,
             'map_overlay' => \App\Models\Mapper\MapOverlay::class,
-            'name_match_map' => \App\Models\Mapper\NameMatchMap::class,
             'occurrence' => \App\Models\Mapper\Occurrence::class,
             'parsed_name' => \App\Models\Mapper\ParsedName::class,
-            'taxon' => \App\Models\Mapper\Taxon::class,
-            'taxon_concept_map_overlay_map' => \App\Models\Mapper\TaxonConceptMapOverlayMap::class,
-            'taxon_concept_occurrence_map' => \App\Models\Mapper\TaxonConceptOccurrenceMap::class,
 
             // Profile
             'profile' => \App\Models\Profile\Profile::class,
-            'profile_area_map' => \App\Models\Profile\ProfileAreaMap::class,
             'profile_section' => \App\Models\Profile\ProfileSection::class,
+
+
+            // Shared
+            'agent' => \App\Models\Shared\Agent::class,
+            'external_identity' => \App\Models\Shared\ExternalIdentity::class,
+            'reference' => \App\Models\Shared\Reference::class,
+
+            // Taxonomy
+            'nomenclatural_type' => \App\Models\Taxonomy\NomenclaturalType::class,
+            'taxon_concept' => \App\Models\Taxonomy\TaxonConcept::class,
+            'taxon_concept_mapping' => \App\Models\Taxonomy\TaxonConceptMapping::class,
+            'taxon_tree' => \App\Models\Taxonomy\TaxonTree::class,
+            'taxon_tree_node' => \App\Models\Taxonomy\TaxonTreeNode::class,
+            'taxon_tree_revision' => \App\Models\Taxonomy\TaxonTreeRevision::class,            
         ]);
     }
 }
