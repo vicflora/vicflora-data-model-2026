@@ -4,11 +4,10 @@ namespace App\Models\Taxonomy;
 
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
-use App\Models\Shared\EntityIdentityMap;
 use App\Models\Shared\ExternalIdentity;
 use App\Models\Shared\Reference;
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasExternalIdentities;
+use App\Models\Traits\Linkable;
 use App\Observers\TaxonConceptObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -84,7 +83,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(TaxonConceptObserver::class)]
 class TaxonConcept extends Model
 {
-    use Auditable, HasExternalIdentities;
+    use Auditable, Linkable;
 
     /**
      * The TaxonTree this concept belongs to.

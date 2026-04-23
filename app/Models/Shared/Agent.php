@@ -3,7 +3,7 @@
 namespace App\Models\Shared;
 
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasExternalIdentities;
+use App\Models\Traits\Linkable;
 use App\Observers\AgentObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -64,7 +64,7 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(AgentObserver::class)]
 class Agent extends Model
 {
-    use Auditable, HasExternalIdentities;
+    use Auditable, Linkable;
 
     /**
      * Relationship: Scoped to the AGENT_TYPE vocabulary.

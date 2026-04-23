@@ -2,7 +2,7 @@
 
 namespace App\Models\Glossary;
 
-use App\Models\Contracts\HasLimitation;
+use App\Models\Contracts\Limitable;
 use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Carbon|null $updated_at
  * 
  * @property-read Limitation $limitation
- * @property-read Model|HasLimitation $limitable
+ * @property-read Model|Limitable $limitable
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
     'created_at',
     'updated_at',
 ])]
-class GlossaryLimitationMap extends MorphPivot implements HasLimitation
+class GlossaryLimitationMap extends MorphPivot implements Limitable
 {
     use Auditable;
 

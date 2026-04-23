@@ -2,6 +2,7 @@
 
 namespace App\Models\Media;
 
+use App\Models\Contracts\Depictable;
 use App\Models\Contracts\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * 
  * @property-read Image $image
  * @property-read ControlledTerm|null $imageRole
- * @property-read Model|HasImage $entity
+ * @property-read Model|Depictable $depictable
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -48,7 +49,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
     'created_at',
     'updated_at',
 ])]
-class EntityImageMap extends MorphPivot implements HasImage
+class EntityImageMap extends MorphPivot implements Depictable
 {
     use Auditable;
 
@@ -70,10 +71,10 @@ class EntityImageMap extends MorphPivot implements HasImage
 
     /**
      * Get the internal entity associated with this image map. This will return
-     * the related model based on the entity_type and entity_id fields.
+     * the related model based on the linkable_type and linkable_id fields.
      * @return MorphTo
      */
-    public function entity(): MorphTo
+    public function depictable(): MorphTo
     {
         return $this->morphTo();
     }

@@ -6,7 +6,7 @@ use App\Models\Shared\ExternalIdentity;
 use App\Models\Shared\EntityIdentityMap;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-trait HasExternalIdentities
+trait Linkable
 {
     /**
      * Get all external identities for this entity.

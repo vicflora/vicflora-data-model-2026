@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('entity_image_map', function (Blueprint $table) {
             $table->id();
-            $table->morphs('entity'); // entity_type, entity_id
+            $table->morphs('depictable');
             $table->foreignId('image_id')->constrained('images')->cascadeOnDelete();
             $table->foreignId('image_role_id')->constrained('controlled_terms');
             
@@ -22,8 +22,8 @@ return new class extends Migration
             $table->auditable();
 
             $table->unique([
-                'entity_type', 
-                'entity_id', 
+                'depictable_type', 
+                'depictable_id', 
                 'image_id'
             ], 'entity_image_unique');
         });

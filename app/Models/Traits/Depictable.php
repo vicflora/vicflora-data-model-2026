@@ -6,7 +6,7 @@ use App\Models\Media\EntityImageMap;
 use App\Models\Media\Image;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-trait HasImages
+trait Depictable
 {
     /**
      * Get all images associated with the model.

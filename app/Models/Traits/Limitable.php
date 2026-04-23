@@ -6,7 +6,7 @@ use App\Models\Glossary\Limitation;
 use App\Models\Glossary\GlossaryLimitationMap;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-trait HasLimitations
+trait Limitable
 {
     /**
      * Get all limitations associated with the model.

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             
             // The link to the Name or Concept
-            $table->morphs('entity');
+            $table->morphs('linkable');
             
             // The link to the External Authority ID
             $table->foreignId('external_identity_id')
@@ -26,10 +26,10 @@ return new class extends Migration
 
             // Integrity: An entity shouldn't have the same external ID twice
             $table->unique([
-                'entity_type', 
-                'entity_id', 
+                'linkable_type', 
+                'linkable_id', 
                 'external_identity_id'
-            ], 'entity_id_map_unique');
+            ], 'linkable_id_map_unique');
         });   
  }
 

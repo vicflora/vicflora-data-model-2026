@@ -5,7 +5,7 @@ namespace App\Models\Glossary;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasLimitations;
+use App\Models\Traits\Limitable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -59,7 +59,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class TermRelationship extends Model
 {
-    use Auditable, HasLimitations;
+    use Auditable, Limitable;
 
     public function glossary(): BelongsTo
     {

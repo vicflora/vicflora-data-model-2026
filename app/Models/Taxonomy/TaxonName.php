@@ -6,7 +6,7 @@ use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\ExternalIdentity;
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasExternalIdentities;
+use App\Models\Traits\Linkable;
 use App\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
@@ -67,7 +67,7 @@ use Illuminate\Support\Carbon;
 ])]
 class TaxonName extends Model
 {
-    use Auditable, ManagesSidecars, HasExternalIdentities;
+    use Auditable, ManagesSidecars, Linkable;
 
     /**
      * Set default attributes

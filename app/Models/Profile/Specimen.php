@@ -5,12 +5,13 @@ namespace App\Models\Profile;
 use App\Models\Media\Image;
 use App\Models\Shared\Reference;
 use App\Models\Traits\Auditable;
-use App\Models\Traits\HasImages;
+use App\Models\Traits\Depictable;
 use App\Models\Traits\Sourceable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -62,7 +63,7 @@ use Illuminate\Support\Carbon;
 ])]
 class Specimen extends Model
 {
-    use Auditable, HasImages, Sourceable;
+    use Auditable, Depictable, Sourceable;
 
     protected $casts = [
         'metadata' => 'array',
@@ -72,9 +73,9 @@ class Specimen extends Model
      * Define the many-to-many relationship to profiles through the profile_specimen_map pivot table.
      * We include the additional pivot fields 'taxon_tree_id' and 'voucher_type_id'.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function profiles()
+    public function profiles():BelongsToMany
     {
         return $this->belongsToMany(Profile::class, 'profile_specimen_map', 'specimen_id', 'profile_id')
             ->using(ProfileSpecimenMap::class)

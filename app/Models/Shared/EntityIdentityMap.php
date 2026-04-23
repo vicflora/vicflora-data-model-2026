@@ -3,6 +3,7 @@
 namespace App\Models\Shared;
 
 use App\Models\Contracts\HasExternalIdentity;
+use App\Models\Contracts\Linkable;
 use App\Models\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -34,7 +35,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  *
  * @property-read ExternalIdentity|null $externalIdentity
- * @property-read Model|HasExternalIdentity $entity
+ * @property-read Model|Linkable $linkable
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -44,7 +45,7 @@ use Illuminate\Support\Carbon;
     'entity_id',
     'external_identity_id',
 ])]
-class EntityIdentityMap extends MorphPivot implements HasExternalIdentity
+class EntityIdentityMap extends MorphPivot implements Linkable
 {
     use Auditable;
 
@@ -61,7 +62,7 @@ class EntityIdentityMap extends MorphPivot implements HasExternalIdentity
      * the related model based on the entity_type and entity_id fields.
      * @return MorphTo
      */
-    public function entity(): MorphTo
+    public function linkable(): MorphTo
     {
         return $this->morphTo();
     }

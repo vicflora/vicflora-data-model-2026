@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 
 /**
- * Interface HasLimitation This interface is for models that have a polymorphic
+ * Interface Limitable
+ * 
+ * This interface is for models that have a polymorphic
  * relationship to a "limitable" entity. The limitable entity can be any model
  * that implements the necessary fields (limitable_type and limitable_id).
  */
-interface HasLimitation
+interface limitable
 {
     /**
      * Get the limitable entity. This will return the related model based on the
