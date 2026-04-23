@@ -22,9 +22,13 @@ use Illuminate\Support\Carbon;
  * 
  * @property int $id
  * @property string $guid
+ * @property int|null $parent_id
+ * @property int|null $root_node_id
+ * @property int $taxonomy_id
  * @property string $name
  * @property bool $is_published
- * @property int $taxonomy_id
+ * @property array|null $metadata
+ * 
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -44,18 +48,48 @@ use Illuminate\Support\Carbon;
 )]
 #[Fillable([
     'id',
+    'guid',
+    'parent_id',
+    'root_node_id',
+    'taxonomy_id',
     'created_at',
     'updated_at',
     'guid',
     'name',
     'is_published',
-    'taxonomy_id',
+    'metadata',
     'created_by_id',
     'updated_by_id',
 ])]
 class TaxonTree extends Model
 {
     use Auditable;
+
+    protected $casts = [
+        'metadata' => 'array',
+    ];
+
+    /**
+     * Define the self-referential relationship to the parent tree.
+     * This allows for nested trees, where a tree can have a parent tree.
+     * 
+     * @return BelongsTo
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(TaxonTree::class, 'parent_id');
+    }
+
+    /**
+     * Define the relationship to the root node of the tree.
+     * This is a one-to-one relationship, as a tree can only have one root node.
+     * 
+     * @return BelongsTo
+     */
+    public function rootNode(): BelongsTo
+    {
+        return $this->belongsTo(TaxonTreeNode::class, 'root_node_id');
+    }
 
     /**
      * Define the relationship to the taxonomy.

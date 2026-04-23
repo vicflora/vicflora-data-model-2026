@@ -14,13 +14,23 @@ return new class extends Migration
         Schema::create('taxon_trees', function (Blueprint $table) {
             $table->id();
             $table->uuid('guid')->unique();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('root_node_id')->nullable();
+            $table->foreignId('taxonomy_id')->nullable()->constrained('references');
 
             $table->string('name');
             $table->boolean('is_published')->default(false);
-            $table->foreignId('taxonomy_id')->nullable()->constrained('references');
+
+            $table->jsonb('metadata')->nullable();
 
             $table->auditable();
+        });
 
+        Schema::table('taxon_trees', function (Blueprint $table) {
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('taxon_trees')
+                ->onDelete('cascade');
         });
     }
 

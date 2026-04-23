@@ -43,6 +43,12 @@ return new class extends Migration
             ON taxon_tree_nodes 
             USING GIST (daterange(start_date, end_date, \'[]\'))
         ');
+
+        Schema::table('taxon_trees', function (Blueprint $table) {
+            $table->foreignId('root_node_id')
+                ->constrained('taxon_tree_nodes')
+                ->onDelete('restrict');
+        });
     }
 
     public function down(): void
