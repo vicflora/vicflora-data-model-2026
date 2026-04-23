@@ -32,7 +32,12 @@ use Illuminate\Support\Carbon;
  * @property int|null $user_id
  * @property int|null $agent_type_id
  * @property string $name
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $initials
  * @property string|null $email
+ * @property string|null $legal_name
+ * 
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -53,13 +58,12 @@ use Illuminate\Support\Carbon;
 #[Fillable([
     'user_id',
     'agent_type_id',
-    'name', // Still fillable for Organizations
+    'name',
     'first_name',
     'last_name',
     'initials',
     'email',
     'legal_name',
-    'orcid',
 ])]
 #[ObservedBy(AgentObserver::class)]
 class Agent extends Model

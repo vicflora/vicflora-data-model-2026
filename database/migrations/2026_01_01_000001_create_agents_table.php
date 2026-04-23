@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('initials')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('legal_name')->nullable();
-            $table->string('orcid')->nullable();
 
             $table->foreignId('user_id')->nullable()->constrained('users');
         });
