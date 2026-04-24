@@ -1,18 +1,25 @@
-# Pathway keys
+# Layer 8: Extension
+
+## Layer 8d: Pathway key extension
 
 ```mermaid
+---
+config:
+  layout: elk
+---
 erDiagram
-  TaxonConcept |o--|{ Item : ""
-  Item |o--|{ Key : "taxonomicScope"
+  Key }|--o| Source : source
+  Key }|--o| Project : project
+  Key }|--o| Item : "taxonomicScope"
   Key ||--|| Lead : root
   Key ||--|{ Lead : key
   Lead }o--o| Key : subkey
   Lead }o--o| Item : item
 
   Project |o--|{ Item : project
-  Project |o--|{ Key : project
+  Project |o--o| Item : taxonomicScope
 
-  Key }|--o| Source : source
+  Item }|--o| taxonConcept : ""
 
   Item {
     int id PK

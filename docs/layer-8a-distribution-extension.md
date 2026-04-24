@@ -1,0 +1,58 @@
+# Layer 8: Extension
+
+## Layer 8a: Distribution extension
+
+```mermaid
+---
+config:
+  layout: elk
+---
+erDiagram
+  Profile_Area_MAP ||--o| Profile : "profile / distribution"
+
+  %% Profile }o--o{ Entity_Source_MAP : "morphs as 'provenanceable'"
+  Profile_Area_MAP }|--o| AreaCode : "areaCode"
+  AreaCode }|--o| Area : area
+  AreaCode }|--|| Gazetteer_EXT : "gazetteer"
+  Gazetteer_EXT ||--o| Reference : reference
+  Area |o--|| ThreatStatusAuthority_EXT : "threatStatusAuthority"
+  ThreatStatusAuthority_EXT ||--o| Reference : "reference / ThreatStatusAuthority"
+
+  Profile_Area_MAP }o--o| Entity_Source_MAP : "morphs as 'provenanceable'"
+  Entity_Source_MAP }|--o| Reference : "reference"
+
+  Profile_Area_MAP {
+    int id PK
+    int profile_id FK
+    int taxon_tree_id FK
+    string area_code_id 
+    string locality "nullable"
+    int occurrence_status_id FK "nullable"
+    int establishment_means_id FK "nullable"
+    int degree_of_establishment_id FK "nullable"
+    int threat_status_id FK "nullable"
+    string event_date "nullable"
+    string occurrence_remarks "nullable"
+  }
+
+  AreaCode {
+    int id PK
+    int gazetteer_id FK
+    int area_id FK
+    int parent_id FK
+    string scheme
+    int level "nullable"
+    string code
+    string path    
+  }
+
+  Area {
+    int id PK
+    string name
+    string area_type
+    bool is_accepted
+    int parent_id FK "nullable"
+    int accepted_id FK "nullable"
+    string area_path
+    int threat_status_authority_id FK "nullable"
+  }
