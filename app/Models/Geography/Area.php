@@ -2,7 +2,6 @@
 
 namespace App\Models\Geography;
 
-use App\Models\Profile\ThreatStatusAuthority;
 use App\Models\Shared\Agent;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Traits\Auditable;
@@ -11,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,7 +31,6 @@ use Illuminate\Support\Carbon;
  * @property bool $is_accepted
  * @property int|null $parent_id
  * @property int|null $accepted_id
- * @property int|null $threat_status_authority_id
  * @property string|null $area_path
  * @property int $version
  * @property int|null $created_by_id
@@ -43,7 +42,6 @@ use Illuminate\Support\Carbon;
  * @property-read Area|null $parent
  * @property-read Collection<int, Area> $children
  * @property-read Collection<int, AreaCode> $areaCodes
- * @property-read ThreatStatusAuthority|null $threatStatusAuthority
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
@@ -64,9 +62,11 @@ class Area extends Model
 
     /**
      * The type of area (e.g., Countinent, Country, State).
-     * 
-     * @return BelongsTo
      */
+    #[BelongsTo(
+        related: ControlledTerm::class, 
+        foreignKey: 'area_type_id'
+    )]
     public function type()
     {
         return $this->belongsTo(ControlledTerm::class, 'area_type_id')
@@ -77,9 +77,11 @@ class Area extends Model
 
     /**
      * The Parent Area (e.g., a County's parent might be a State).
-     * 
-     * @return BelongsTo
      */
+    #[BelongsTo(
+        related: Area::class, 
+        foreignKey: 'parent_id'
+    )]
     public function parent() 
     { 
         return $this->belongsTo(Area::class, 'parent_id'); 
@@ -87,31 +89,24 @@ class Area extends Model
     
     /**
      * The Child Areas (e.g., a State's children might be Counties).
-     * 
-     * @return HasMany
      */
+    #[HasMany(
+        related: Area::class, 
+        foreignKey: 'parent_id'
+    )]
     public function children() { 
         return $this->hasMany(Area::class, 'parent_id'); 
     }
 
     /**
     * The AreaCodes associated with this Area.
-    * 
-    * @return HasMany
     */
+    #[HasMany(
+        related: AreaCode::class, 
+        foreignKey: 'area_id'
+    )]
     public function areaCodes() 
     { 
-        return $this->hasMany(AreaCode::class); 
-    }
-
-
-    /**
-     * Threat Status Authority for this jurisdiction
-     *
-     * @return BelongsTo
-     */
-    public function threatStatusAuthority(): BelongsTo
-    {
-        return $this->belongsTo(ThreatStatusAuthority::class, 'threat_status_authority_id');
+        return $this->hasMany(AreaCode::class, 'area_id'); 
     }
 }

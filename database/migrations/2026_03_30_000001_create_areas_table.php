@@ -20,8 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('accepted_id')->nullable();
 
-            $table->foreignId('threat_status_authority_id')->nullable()->constrained('threat_status_authorities_ext');
-            
             // For fast tree traversal (e.g., '1/5/12')
             $table->string('area_path')->nullable()->index();
 

@@ -15,8 +15,11 @@ erDiagram
   AreaCode }|--o| Area : area
   AreaCode }|--|| Gazetteer_EXT : "gazetteer"
   Gazetteer_EXT ||--o| Reference : reference
-  Area |o--|| ThreatStatusAuthority_EXT : "threatStatusAuthority"
-  ThreatStatusAuthority_EXT ||--o| Reference : "reference / ThreatStatusAuthority"
+
+  Profile_Area_MAP |o--|| ThreatStatus : threatStatus
+  ThreatStatus }|--|| ThreatStatusAuthority_EXT : "authority"
+  ThreatStatus ||--o| Area : "area"
+  ThreatStatusAuthority_EXT ||--o| Reference : "reference / threatStatusAuthority"
 
   Profile_Area_MAP }o--o| Entity_Source_MAP : "morphs as 'provenanceable'"
   Entity_Source_MAP }|--o| Reference : "reference"
@@ -55,4 +58,13 @@ erDiagram
     int accepted_id FK "nullable"
     string area_path
     int threat_status_authority_id FK "nullable"
+  }
+
+  ThreatStatus {
+    int id PK
+    int scientific_name_id FK
+    int threat_status_authority_id FK
+    int threat_status_id FK
+    jsonb metadata "nullable"
+    text remarks "nullable" 
   }
