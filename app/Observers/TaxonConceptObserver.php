@@ -2,18 +2,17 @@
 
 namespace App\Observers;
 
+use App\Exceptions\MissingAccordingToException;
 use App\Models\Profile\Profile;
 use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\Reference;
 use App\Models\Shared\ReferenceContributorMap;
 use App\Models\Taxonomy\TaxonConcept;
-use App\Models\Taxonomy\TaxonConceptLabel;
 use App\Models\Taxonomy\TaxonName;
-use App\Models\Taxonomy\Treatment;
 
 class TaxonConceptObserver
 {
-/**
+    /**
      * Handle the TaxonConcept "created" event.
      */
     public function created(TaxonConcept $taxonConcept): void
@@ -23,7 +22,7 @@ class TaxonConceptObserver
         }
 
         if (!$taxonConcept->according_to_id) {
-            throw new \Exception("TaxonConcept [{$taxonConcept->id}] created without an 'according_to_id'.");
+            throw new MissingAccordingToException($taxonConcept);
         }
 
         $this->syncConceptLabel($taxonConcept->fresh(['accordingTo', 'taxonName']));
