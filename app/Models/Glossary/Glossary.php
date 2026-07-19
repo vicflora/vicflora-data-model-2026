@@ -27,7 +27,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Table(name: 'glossaries', schema: 'glossary', incrementing: true)]
+#[Table(name: 'glossary.glossaries', key: 'id', incrementing: true)]
 #[Fillable([
     'name',
     'description',

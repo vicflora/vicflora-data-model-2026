@@ -7,7 +7,7 @@ use App\Models\Shared\ControlledTerm;
 use App\Models\Shared\ExternalIdentity;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\Linkable;
-use App\Traits\ManagesSidecars;
+use App\Models\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;

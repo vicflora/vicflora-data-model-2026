@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'glossary_limitation_map', key: 'id', incrementing: true)]
+#[Table(name: 'glossary.glossary_limitation_map', key: 'id', incrementing: true)]
 #[Fillable([
     'id',
     'limitation_id',

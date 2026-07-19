@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
-#[Table(name: 'search_mv', primaryKey: 'id', keyType: 'string', incrementing: false)]
+#[Table(name: 'search_mv', key: 'id', keyType: 'string', incrementing: false)]
 #[WithoutTimestamps]
 class Search extends Model
 {

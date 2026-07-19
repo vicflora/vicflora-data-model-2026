@@ -50,8 +50,6 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ScientificName> $synonyms
  * @property-read Collection<int, VernacularName> $vernacularNames
  * @property-read VernacularName|null $preferredVernacularName
- * @property-read Collection<int, ScientificNameUsageMap> $scientificNameUsages
- * @property-read Collection<int, VernacularNameUsageMap> $vernacularNameUsages
  * @property-read Collection<int, TaxonConceptMapping> $mappings
  * @property-read Collection<int, TaxonConcept> $isCongruentWith
  * @property-read Collection<int, TaxonConcept> $includes
@@ -226,24 +224,6 @@ class TaxonConcept extends Model
         )
         ->where('is_preferred', true)
         ->whereHas('taxonName', fn($q) => $q->where('name_type', 'VERNACULAR'));
-    }
-
-    /**
-     * All scientific name usage records.
-     */
-    public function scientificNameUsages(): HasMany
-    {
-        return $this->hasMany(ScientificNameUsageMap::class, 'taxon_concept_id')
-                    ->with(['taxonName', 'nameUsageRole']);
-    }
-
-    /**
-     * All vernacular name usage records.
-     */
-    public function vernacularNameUsages(): HasMany
-    {
-        return $this->hasMany(VernacularNameUsageMap::class, 'taxon_concept_id')
-                    ->with(['taxonName']);
     }
 
     /**

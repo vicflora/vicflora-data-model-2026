@@ -45,14 +45,18 @@ return new class extends Migration
         ');
 
         Schema::table('taxon_trees', function (Blueprint $table) {
-            $table->foreignId('root_node_id')
-                ->constrained('taxon_tree_nodes')
+            $table->foreign('root_node_id')
+                ->references('id')
+                ->on('taxon_tree_nodes')
                 ->onDelete('restrict');
         });
     }
 
     public function down(): void
     {
+        Schema::table('taxon_trees', function (Blueprint $table) {
+            $table->dropForeign(['root_node_id']);
+        });
         Schema::dropIfExists('taxon_tree_nodes');
     }
 };

@@ -12,7 +12,7 @@ use App\Models\Taxonomy\TreatmentVersion;
 use App\Models\Taxonomy\Typification;
 use App\Models\Traits\Auditable;
 use App\Services\ReferenceFormatter;
-use App\Traits\ManagesSidecars;
+use App\Models\Traits\ManagesSidecars;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Casts\Attribute;

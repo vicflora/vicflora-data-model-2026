@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profile_specimen', function (Blueprint $table) {
+        Schema::create('profile_specimen_map', function (Blueprint $table) {
             $table->id();
 
             // The Anchor: Links to the Profile sidecar

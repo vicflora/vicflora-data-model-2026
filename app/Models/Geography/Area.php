@@ -45,7 +45,7 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'areas', schema: 'shared', incrementing: true)]
+#[Table(name: 'areas', key: 'id', incrementing: true)]
 #[Fillable([
     'name',
     'area_type_id',

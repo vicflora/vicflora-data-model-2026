@@ -41,7 +41,7 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'public.assertions', primaryKey: 'id', incrementing: true)]
+#[Table(name: 'assertions', key: 'id', incrementing: true)]
 #[Fillable([
     'guid', 'occurrence_id', 'term', 'asserted_value', 
     'reason', 'remarks', 'agent_id'

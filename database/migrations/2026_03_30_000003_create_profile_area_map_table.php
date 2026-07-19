@@ -31,7 +31,7 @@ return new class extends Migration
             $table->foreignId('occurrence_status_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('establishment_means_id')->nullable()->constrained('controlled_terms');
             $table->foreignId('degree_of_establishment_id')->nullable()->constrained('controlled_terms');
-            $table->foreignId('threat_status_id')->nullable()->constrained('threat_statuses');
+            $table->unsignedBigInteger('threat_status_id')->nullable();
             
             // The 'Flags' & Evidence
             $table->string('event_date')->nullable();

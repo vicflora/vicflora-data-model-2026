@@ -38,7 +38,7 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
  * @property-read int|null $nomenclatural_code_id
  * @property-read int|null $nomenclatural_status_id
  */
-#[Table(name: 'mapper.taxa', primaryKey: 'id', incrementing: false)]
+#[Table(name: 'mapper.taxa', key: 'id', incrementing: false)]
 #[WithoutTimestamps]
 class Taxon extends Model
 {

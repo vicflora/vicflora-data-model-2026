@@ -98,4 +98,16 @@ class ExternalIdentity extends Model
             'entity_identity_map'
         )->withTimestamps();
     }
+
+    /**
+     * Get all Agents associated with this identity.
+     */
+    public function agents(): MorphToMany
+    {
+        return $this->morphedByMany(
+            Agent::class, 
+            'entity', 
+            'entity_identity_map'
+        )->withTimestamps();
+    }
 }

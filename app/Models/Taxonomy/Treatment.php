@@ -7,10 +7,12 @@ use App\Models\Shared\Reference;
 use App\Models\Traits\IsSidecar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Treatment
@@ -110,7 +112,7 @@ class Treatment extends Model
      * The Nomenclature section (header (accepted name) and citation list (synonyms)) and vernacular names.
      * @return HasMany
      */
-    public function ScientificNameUsages(): HasMany
+    public function scientificNameUsages(): HasMany
     {
         return $this->hasMany(ScientificNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
     }
@@ -119,7 +121,7 @@ class Treatment extends Model
      * The Vernacular names applied to the taxon concept in this treatment.
      * @return HasMany
      */
-    public function VernacularNameUsages(): HasMany
+    public function vernacularNameUsages(): HasMany
     {
         return $this->hasMany(VernacularNameUsageMap::class, 'taxon_concept_id', 'taxon_concept_id');
     }

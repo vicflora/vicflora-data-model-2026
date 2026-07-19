@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'term_relationships', schema: 'glossary', incrementing: true)]
+#[Table(name: 'glossary.term_relationships', key: 'id', incrementing: true)]
 #[Fillable([
     'glossary_id',
     'term_id',

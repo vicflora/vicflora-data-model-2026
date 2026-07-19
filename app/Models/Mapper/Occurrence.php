@@ -82,7 +82,7 @@ use Illuminate\Support\Carbon;
  */
 #[Table(
     name: 'mapper.occurrences', 
-    primaryKey: 'id', 
+    key: 'id', 
     keyType: 'string', 
     incrementing: false
 )]

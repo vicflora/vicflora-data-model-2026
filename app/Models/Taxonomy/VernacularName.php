@@ -87,12 +87,6 @@ class VernacularName extends Model
         return [];
     }
 
-    #[\Override]
-    protected function getSidecarForeignKey(): string
-    {
-        return 'taxon_name_id';
-    }
-
     /**
      * Define the relationship to the usages of this vernacular name.
      * 

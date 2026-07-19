@@ -66,6 +66,12 @@ class NameRelationTypeVocabularySeeder extends Seeder
                 'label' => 'Orthographic Variant of', 
                 'description' => 'Invalid name with different spelling but same nomenclatural type as valid name.',
                 'iri' => null
+            ],
+            [
+                'code' => 'AMBIREGNAL',
+                'label' => 'Ambiregnal',
+                'description' => 'Name under a different nomenclatural code that applies to the same taxon.',
+                'iri' => null
             ]
         ];
 

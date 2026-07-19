@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Traits;
+namespace App\Models\Traits;
 
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Model
+ */
 trait ManagesSidecars
 {
     /**

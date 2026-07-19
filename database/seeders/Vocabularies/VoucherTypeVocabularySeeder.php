@@ -26,7 +26,7 @@ class VoucherTypeVocabularySeeder extends Seeder
         );
 
         $vocabId = DB::table('controlled_vocabularies')
-            ->where('code', 'TYPE_OF_TYPE')
+            ->where('code', 'VOUCHER_TYPE')
             ->value('id');
 
         // 2. Define the terms

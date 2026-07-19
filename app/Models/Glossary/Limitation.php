@@ -37,7 +37,7 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'limitations', schema: 'glossary', incrementing: true)]
+#[Table(name: 'glossary.limitations', key: 'id', incrementing: true)]
 #[Fillable([
     'name',
     'version',

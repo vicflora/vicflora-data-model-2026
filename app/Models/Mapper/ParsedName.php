@@ -75,7 +75,7 @@ use Illumimate\Support\Carbon;
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
  */
-#[Table(name: 'parsed_names', primaryKey: 'id')]
+#[Table(name: 'parsed_names', key: 'id', incrementing: true)]
 #[Fillable([
     'scientific_name', 'type', 'authors_parsed', 'genus_or_above',
     'infrageneric', 'specific_epithet', 'infraspecific_epithet',

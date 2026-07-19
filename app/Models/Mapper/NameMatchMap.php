@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\DB;
  * @property-read TaxonName|null $taxonName
  * @property-read ParsedName|null $parsedName
  */
-#[Table(name: 'mapper.name_match_map', primaryKey: 'id', incrementing: false)]
+#[Table(name: 'mapper.name_match_map', key: 'id', incrementing: false)]
 #[WithoutTimestamps]
 class NameMatchMap extends Model
 {

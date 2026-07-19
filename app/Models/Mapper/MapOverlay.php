@@ -37,8 +37,8 @@ use Illuminate\Support\Carbon;
  * @property-read Agent|null $updatedBy
  */
 #[Table(
-    name: 'mapper.map_overlays', 
-    primaryKey: 'id',
+    name: 'mapper.map_overlays',
+    key: 'id',
     incrementing: true
 )]
 #[Fillable([
