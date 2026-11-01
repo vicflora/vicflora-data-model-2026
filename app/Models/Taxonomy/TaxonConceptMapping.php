@@ -14,8 +14,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;  
 
 /**
  * Represents a mapping between two TaxonConcepts, indicating a relationship 
@@ -51,6 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read Collection<int, TaxonConcept> $partiallyOverlaps
  * @property-read Collection<int, TaxonConcept> $isDisjointWith
  * @property-read Collection<int, TaxonConcept> $intersects
+ * @property-read TaxonTreeRevision|null $taxonTreeRevision
  * @property-read Agent $createdBy
  * @property-read Agent $updatedBy
  */
@@ -137,5 +137,13 @@ class TaxonConceptMapping extends Model
             ->whereHas('vocabulary', function ($query) {
                 $query->where('code', 'MAPPING_METHOD');
             });
+    }
+
+    /**
+     * Get the tree revision associated with the concept mapping.
+     */
+    public function taxonTreeRevision(): HasOne
+    {
+        return $this->hasOne(TaxonTreeRevision::class);
     }
 }

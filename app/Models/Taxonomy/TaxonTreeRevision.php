@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $to_node_id
  * @property int|null $change_type_id
  * @property int|null $taxonomy_version_id
+ * @property int|null $taxon_concept_mapping_id
  * @property int $version
  * @property int|null $created_by_id
  * @property int|null $updated_by_id
@@ -39,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @property-read TaxonTreeNode|null $fromNode
  * @property-read TaxonTreeNode|null $toNode
  * @property-read ControlledTerm|null $changeType
+ * @property-read TaxonConceptMapping|null $taxonConceptMapping
  * @property-read TaxonomyVersion|null $taxonomyVersion
  * @property-read Agent|null $createdBy
  * @property-read Agent|null $updatedBy
@@ -114,5 +116,13 @@ class TaxonTreeRevision extends Model
     public function taxonomyVersion(): BelongsTo
     {
         return $this->belongsTo(TaxonomyVersion::class, 'taxonomy_version_id');
+    }
+
+    /**
+     * Get the concept mapping associated with the revision.
+     */
+    public function taxonConceptMapping(): BelongsTo
+    {
+        return $this->belongsTo(TaxonConceptMapping::class, 'taxon_concept_mapping_id');
     }
 }
