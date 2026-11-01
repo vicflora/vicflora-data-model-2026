@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * relationship to a "limitable" entity. The limitable entity can be any model
  * that implements the necessary fields (limitable_type and limitable_id).
  */
-interface limitable
+interface Limitable
 {
     /**
      * Get the limitable entity. This will return the related model based on the
