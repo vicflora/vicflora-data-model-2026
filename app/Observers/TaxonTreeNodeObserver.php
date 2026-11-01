@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Observers\Taxonomy;
+namespace App\Observers;
 
 use App\Models\Taxonomy\TaxonTreeNode;
 
